@@ -46,17 +46,21 @@ export async function refreshTournament(config: TournamentConfig): Promise<Refre
     return { success: true, snapshot: validated, durationMs }
   } catch (error) {
     const durationMs = Date.now() - startTime
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorMessage = error instanceof Error ? `${error.message}\n${error.stack}` : String(error)
 
-    // Update refresh meta with error
-    const existingMeta = await loadRefreshMeta(config.slug)
-    const meta: RefreshMeta = {
-      lastSuccessAt: existingMeta?.lastSuccessAt ?? null,
-      lastErrorAt: new Date().toISOString(),
-      lastErrorMessage: errorMessage,
-      consecutiveErrors: (existingMeta?.consecutiveErrors ?? 0) + 1,
+    // Try to update refresh meta with error, but don't let this fail the whole response
+    try {
+      const existingMeta = await loadRefreshMeta(config.slug)
+      const meta: RefreshMeta = {
+        lastSuccessAt: existingMeta?.lastSuccessAt ?? null,
+        lastErrorAt: new Date().toISOString(),
+        lastErrorMessage: errorMessage,
+        consecutiveErrors: (existingMeta?.consecutiveErrors ?? 0) + 1,
+      }
+      await saveRefreshMeta(config.slug, meta)
+    } catch {
+      // Ignore meta save errors
     }
-    await saveRefreshMeta(config.slug, meta)
 
     return { success: false, error: errorMessage, durationMs }
   }

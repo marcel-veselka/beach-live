@@ -28,6 +28,11 @@ export async function POST(request: NextRequest) {
   try {
     const result = await refreshTournament(config)
     return NextResponse.json(result, { status: result.success ? 200 : 500 })
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : String(error), success: false },
+      { status: 500 }
+    )
   } finally {
     releaseRefreshLock(config.slug)
   }
