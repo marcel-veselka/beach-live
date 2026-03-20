@@ -39,12 +39,16 @@ export async function saveSnapshot(slug: string, snapshot: TournamentSnapshot): 
 export async function loadSnapshot(slug: string): Promise<TournamentSnapshot | null> {
   try {
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const { list } = await import("@vercel/blob")
-      const { blobs } = await list({ prefix: getBlobKey(slug) })
-      if (blobs.length === 0) return null
-      const response = await fetch(blobs[0].url)
-      const data = await response.json()
-      return TournamentSnapshotSchema.parse(data)
+      const { head } = await import("@vercel/blob")
+      try {
+        const blob = await head(getBlobKey(slug))
+        const response = await fetch(blob.url)
+        const data = await response.json()
+        return TournamentSnapshotSchema.parse(data)
+      } catch {
+        // Blob not found
+        return null
+      }
     } else {
       const fs = await import("fs/promises")
       const path = await import("path")
@@ -77,11 +81,14 @@ export async function saveRefreshMeta(slug: string, meta: RefreshMeta): Promise<
 export async function loadRefreshMeta(slug: string): Promise<RefreshMeta | null> {
   try {
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const { list } = await import("@vercel/blob")
-      const { blobs } = await list({ prefix: getMetaKey(slug) })
-      if (blobs.length === 0) return null
-      const response = await fetch(blobs[0].url)
-      return await response.json()
+      const { head } = await import("@vercel/blob")
+      try {
+        const blob = await head(getMetaKey(slug))
+        const response = await fetch(blob.url)
+        return await response.json()
+      } catch {
+        return null
+      }
     } else {
       const fs = await import("fs/promises")
       const path = await import("path")
