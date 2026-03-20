@@ -9,7 +9,6 @@ import { t } from "@/lib/i18n"
 const navItems = [
   { href: "/", icon: LayoutGrid, labelKey: "overview" as const },
   { href: "/bracket", icon: GitBranch, labelKey: "bracket" as const },
-  { href: "/groups", icon: Trophy, labelKey: "groups" as const },
   { href: "/matches", icon: Swords, labelKey: "matches" as const },
   { href: "/teams", icon: Users, labelKey: "teams" as const },
 ]

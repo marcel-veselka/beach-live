@@ -2,7 +2,7 @@
 
 import { useFavorites } from "@/lib/favorites/context"
 import { Group, GroupStanding } from "@/lib/tournament/schema"
-import { Card, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { t } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
 
@@ -10,15 +10,28 @@ export function GroupCardClient({ group }: { group: Group }) {
   const msg = t().groups
   const { isFavorite } = useFavorites()
 
+  /* Improvement 1: extract group letter from name like "Skupina A" */
+  const groupLetter = group.name.replace(/^Skupina\s*/i, "").charAt(0).toUpperCase()
+
   return (
-    <Card>
-      <CardTitle className="mb-3">{group.name}</CardTitle>
+    <Card className="p-0 overflow-hidden">
+      {/* Improvement 1: group card header with letter badge and team count */}
+      <div className="flex items-center gap-3 px-4 py-3 bg-muted/40 border-b border-border/50">
+        <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary font-bold text-sm flex items-center justify-center shrink-0">
+          {groupLetter}
+        </span>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-base leading-tight">{group.name}</h3>
+          <p className="text-[11px] text-muted-foreground">{group.standings.length} týmů</p>
+        </div>
+      </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block overflow-x-auto">
+      <div className="hidden sm:block overflow-x-auto px-4 pb-3 pt-1">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border text-xs text-muted-foreground">
+            {/* Improvement 10: bold stats header row */}
+            <tr className="border-b border-border text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider">
               <th className="text-left py-2 pr-2 w-8">{msg.rank}</th>
               <th className="text-left py-2">{msg.team}</th>
               <th className="text-center py-2 w-8">{msg.played}</th>
@@ -33,34 +46,53 @@ export function GroupCardClient({ group }: { group: Group }) {
             </tr>
           </thead>
           <tbody>
-            {group.standings.map((standing: GroupStanding) => {
+            {group.standings.map((standing: GroupStanding, idx: number) => {
               const fav = isFavorite(standing.teamId)
+              const isFirst = standing.rank === 1
               return (
                 <tr
                   key={standing.teamId}
                   className={cn(
-                    "border-b border-border/50 last:border-0",
+                    "border-b border-border/40 last:border-0 transition-colors",
+                    /* Improvement 2: alternating row colors */
+                    idx % 2 === 1 && "bg-muted/20",
+                    /* Improvement 3: group winner highlight */
+                    isFirst && "bg-success/5",
                     fav && "bg-red-50/50"
                   )}
                 >
-                  <td className="py-2 pr-2 font-medium text-muted-foreground">
-                    {standing.rank}
+                  {/* Improvement 5: rank number styling */}
+                  <td className="py-2.5 pr-2">
+                    <span className={cn(
+                      "w-6 h-6 inline-flex items-center justify-center rounded-full text-xs font-bold",
+                      isFirst
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground"
+                    )}>
+                      {standing.rank}
+                    </span>
                   </td>
-                  <td className="py-2 font-medium">
+                  <td className={cn("py-2.5 font-medium", isFirst && "text-foreground")}>
                     {standing.teamName}
                     {fav && <span className="text-red-400 text-[10px] ml-1">♥</span>}
                   </td>
-                  <td className="py-2 text-center">{standing.played}</td>
-                  <td className="py-2 text-center text-success font-medium">
+                  <td className="py-2.5 text-center text-muted-foreground">{standing.played}</td>
+                  <td className="py-2.5 text-center text-success font-semibold">
                     {standing.won}
                   </td>
-                  <td className="py-2 text-center text-destructive">
+                  <td className="py-2.5 text-center text-destructive font-medium">
                     {standing.lost}
                   </td>
-                  <td className="py-2 text-center">
-                    {standing.setsWon}:{standing.setsLost}
+                  {/* Improvement 6: set ratio with colored indicator */}
+                  <td className="py-2.5 text-center">
+                    <span className={cn(
+                      "font-medium",
+                      standing.setsWon > standing.setsLost ? "text-success/80" : standing.setsWon < standing.setsLost ? "text-destructive/80" : "text-muted-foreground"
+                    )}>
+                      {standing.setsWon}:{standing.setsLost}
+                    </span>
                   </td>
-                  <td className="py-2 text-center">
+                  <td className="py-2.5 text-center text-muted-foreground">
                     {standing.pointsWon}:{standing.pointsLost}
                   </td>
                 </tr>
@@ -70,39 +102,56 @@ export function GroupCardClient({ group }: { group: Group }) {
         </table>
       </div>
 
-      {/* Mobile cards */}
-      <div className="sm:hidden space-y-2">
-        {group.standings.map((standing: GroupStanding) => {
-          const fav = isFavorite(standing.teamId)
-          return (
-            <div
-              key={standing.teamId}
-              className={cn(
-                "flex items-center justify-between py-2 border-b border-border/50 last:border-0",
-                fav && "bg-red-50/50 -mx-2 px-2 rounded"
-              )}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-muted-foreground w-5">
-                  {standing.rank}.
-                </span>
-                <span className="font-medium text-sm">
-                  {standing.teamName}
-                  {fav && <span className="text-red-400 text-[10px] ml-1">♥</span>}
-                </span>
+      {/* Mobile cards - improvement 7: better spacing */}
+      <div className="sm:hidden px-4 pb-3 pt-1">
+        <div className="space-y-0">
+          {group.standings.map((standing: GroupStanding, idx: number) => {
+            const fav = isFavorite(standing.teamId)
+            const isFirst = standing.rank === 1
+            return (
+              <div
+                key={standing.teamId}
+                className={cn(
+                  "flex items-center justify-between py-2.5 border-b border-border/40 last:border-0",
+                  /* Improvement 2: alternating row colors on mobile */
+                  idx % 2 === 1 && "bg-muted/20 -mx-4 px-4",
+                  /* Improvement 3: group winner highlight on mobile */
+                  isFirst && "bg-success/5 -mx-4 px-4",
+                  fav && "bg-red-50/50 -mx-4 px-4"
+                )}
+              >
+                <div className="flex items-center gap-2.5">
+                  {/* Improvement 5: rank circle badge */}
+                  <span className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0",
+                    isFirst
+                      ? "bg-primary/10 text-primary"
+                      : "bg-muted text-muted-foreground"
+                  )}>
+                    {standing.rank}
+                  </span>
+                  <span className={cn("font-medium text-sm", isFirst && "font-semibold")}>
+                    {standing.teamName}
+                    {fav && <span className="text-red-400 text-[10px] ml-1">♥</span>}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs shrink-0 ml-2">
+                  <span className="text-success font-semibold">
+                    {standing.won}V
+                  </span>
+                  <span className="text-destructive font-medium">{standing.lost}P</span>
+                  {/* Improvement 6: set ratio colored */}
+                  <span className={cn(
+                    "font-medium min-w-[24px] text-center",
+                    standing.setsWon > standing.setsLost ? "text-success/70" : standing.setsWon < standing.setsLost ? "text-destructive/70" : "text-muted-foreground"
+                  )}>
+                    {standing.setsWon}:{standing.setsLost}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="text-success font-medium">
-                  {standing.won}V
-                </span>
-                <span className="text-destructive">{standing.lost}P</span>
-                <span>
-                  {standing.setsWon}:{standing.setsLost}
-                </span>
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     </Card>
   )

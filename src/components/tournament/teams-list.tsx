@@ -9,6 +9,7 @@ import { t } from "@/lib/i18n"
 import Link from "next/link"
 import { useFavorites } from "@/lib/favorites/context"
 import { FavoriteButton } from "@/components/tournament/favorite-button"
+import { normalizeSearch } from "@/lib/utils"
 
 interface TeamsListProps {
   teams: Team[]
@@ -23,11 +24,11 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
   const filtered = useMemo(() => {
     let result = teams
     if (search) {
-      const q = search.toLowerCase()
+      const q = normalizeSearch(search)
       result = result.filter(
         (team) =>
-          team.name.toLowerCase().includes(q) ||
-          team.players.some((p) => p.name.toLowerCase().includes(q))
+          normalizeSearch(team.name).includes(q) ||
+          team.players.some((p) => normalizeSearch(p.name).includes(q))
       )
     }
     // Sort favorites to top

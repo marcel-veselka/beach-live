@@ -47,41 +47,26 @@ export default async function HomePage() {
     <>
       <AutoRefresh />
 
-      {/* Hero */}
-      <div className="relative -mx-4 mb-10 px-4 pt-8 pb-10 bg-hero-gradient rounded-b-2xl md:rounded-2xl md:mx-0">
-        <div className="mb-4">
-          <div className="flex items-center gap-2.5 flex-wrap mb-2">
-            <h1 className="text-[1.75rem] font-extrabold tracking-tight leading-tight md:text-3xl">
-              {snapshot.metadata.name}
-            </h1>
-            <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-[11px] px-3 py-1 whitespace-nowrap uppercase tracking-wider font-semibold">
-              {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
-            </Badge>
-          </div>
-          {snapshot.metadata.subtitle && (
-            <p className="text-muted-foreground text-[0.9rem] leading-relaxed">{snapshot.metadata.subtitle}</p>
-          )}
+      {/* Hero - compact */}
+      <div className="relative -mx-4 mb-6 px-4 pt-4 pb-4 bg-hero-gradient md:rounded-2xl md:mx-0">
+        <div className="flex items-center gap-2 mb-1">
+          <h1 className="text-xl font-bold tracking-tight md:text-2xl">
+            {snapshot.metadata.name}
+          </h1>
+          <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-[10px] px-2 py-0.5 whitespace-nowrap uppercase tracking-wider font-semibold">
+            {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
+          </Badge>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-          {snapshot.metadata.venue && (
-            <span className="inline-flex items-center gap-1.5 bg-card/60 rounded-full px-3 py-1">
-              📍 {snapshot.metadata.venue}
-            </span>
-          )}
-          {snapshot.metadata.dates && (
-            <span className="inline-flex items-center gap-1.5 bg-card/60 rounded-full px-3 py-1">
-              📅 {snapshot.metadata.dates}
-            </span>
-          )}
-          {snapshot.metadata.category && (
-            <span className="inline-flex items-center gap-1.5 bg-card/60 rounded-full px-3 py-1">
-              🏐 {snapshot.metadata.category}
-            </span>
-          )}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          {snapshot.metadata.subtitle && <span>{snapshot.metadata.subtitle}</span>}
+          {snapshot.metadata.subtitle && <span>•</span>}
+          {snapshot.metadata.venue && <span>📍 {snapshot.metadata.venue}</span>}
+          {snapshot.metadata.dates && <span>📅 {snapshot.metadata.dates}</span>}
+          {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
         </div>
 
-        <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+        <div className="mt-2 flex items-center gap-3 text-xs">
           <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
           <SourceLinks sources={snapshot.sources} />
         </div>
@@ -125,9 +110,8 @@ export default async function HomePage() {
 
       {/* Quick links */}
       <Section title={msg.overview.quickLinks}>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-3 gap-3">
           <QuickLinkCard href="/bracket" icon={<GitBranch className="h-5 w-5" />} label={msg.nav.bracket} count={snapshot.bracket?.rounds.length ?? 0} suffix="kol" />
-          <QuickLinkCard href="/groups" icon={<Trophy className="h-5 w-5" />} label={msg.nav.groups} count={snapshot.groups.length} suffix="skupin" />
           <QuickLinkCard href="/matches" icon={<Swords className="h-5 w-5" />} label={msg.nav.matches} count={snapshot.matches.length} suffix="zápasů" />
           <QuickLinkCard href="/teams" icon={<Users className="h-5 w-5" />} label={msg.nav.teams} count={snapshot.teams.length} suffix="týmů" />
         </div>

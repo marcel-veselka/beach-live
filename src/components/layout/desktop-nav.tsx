@@ -8,7 +8,6 @@ import { t } from "@/lib/i18n"
 const navItems = [
   { href: "/", labelKey: "overview" as const },
   { href: "/bracket", labelKey: "bracket" as const },
-  { href: "/groups", labelKey: "groups" as const },
   { href: "/matches", labelKey: "matches" as const },
   { href: "/teams", labelKey: "teams" as const },
 ]

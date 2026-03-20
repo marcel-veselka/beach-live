@@ -35,7 +35,8 @@ export default async function GroupsPage() {
         <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      {/* Improvement 9: better gap and section transitions between groups */}
+      <div className="grid gap-5 md:grid-cols-2">
         {snapshot.groups.map((group: Group) => (
           <GroupCardClient key={group.id} group={group} />
         ))}
