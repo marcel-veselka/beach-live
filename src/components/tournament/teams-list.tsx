@@ -112,8 +112,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
     const fav = isFavorite(team.id)
     const nextMatch = getNextMatch(team.id)
     const qualified = isQualified(team.id)
-    const seed = team.seed ?? index + 1
-    const isTopSeed = seed <= 4
+    const seed = team.seed
 
     return (
       <Link
@@ -129,16 +128,12 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           }`}
         >
           <div className="flex items-start gap-3">
-            {/* Seed circle — secondary color for Q-only teams */}
+            {/* Seed circle — consistent style, secondary color for Q-only teams */}
             <span className={cn(
               "shrink-0 w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center",
               isQSection
-                ? (isTopSeed
-                    ? "bg-gradient-to-br from-secondary to-secondary/70 text-secondary-foreground shadow-sm shadow-secondary/20"
-                    : "bg-secondary/10 text-secondary-foreground ring-1 ring-secondary/15")
-                : (isTopSeed
-                    ? "bg-gradient-to-br from-primary to-primary/70 text-white shadow-sm shadow-primary/20"
-                    : "bg-primary/10 text-primary ring-1 ring-primary/15")
+                ? "bg-secondary/15 text-secondary-foreground/80 ring-1 ring-secondary/25"
+                : "bg-primary/10 text-primary ring-1 ring-primary/20"
             )}>
               {seed}
             </span>
