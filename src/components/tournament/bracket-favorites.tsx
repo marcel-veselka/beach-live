@@ -19,7 +19,7 @@ export function BracketMatchNodeClient({ match }: { match: BracketMatch }) {
     <Card className={cn(
       "p-3 space-y-1",
       hasFav && "ring-1 ring-red-200 border-red-200/60",
-      isTBD && !match.winner && "border-dashed opacity-70",
+      isTBD && !match.winner && "border-dashed opacity-70 tbd-pattern",
       match.winner && "bg-muted/20",
     )}>
       <BracketTeamRow
@@ -52,15 +52,15 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
 
   return (
     <Card className={cn(
-      "p-3",
+      "p-3 press-scale",
       hasFav && "ring-1 ring-red-200 border-red-200/60",
-      isTBD && !match.winner && "border-dashed opacity-70",
+      isTBD && !match.winner && "border-dashed opacity-70 tbd-pattern",
       match.winner && "bg-muted/20",
     )}>
       <div className="flex items-center justify-between">
-        {/* Match number - more prominent with pill styling */}
+        {/* #7: Match number integrated as left accent */}
         {matchNumber && (
-          <span className="text-[10px] text-muted-foreground/50 font-score font-bold mr-2.5 self-start mt-1 bg-muted/40 rounded-full w-6 h-5 flex items-center justify-center shrink-0">
+          <span className="text-[10px] text-muted-foreground/40 font-score font-bold mr-2.5 self-stretch flex items-center justify-center shrink-0 border-r border-border/30 pr-2.5 min-w-[24px]">
             {matchNumber}
           </span>
         )}
@@ -80,7 +80,7 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
           />
         </div>
         {match.score && (
-          <div className="ml-3 text-xs font-score font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded-md shrink-0">
+          <div className="ml-3 text-xs font-score font-medium text-muted-foreground bg-muted/50 px-2.5 py-1.5 rounded-lg shrink-0">
             {match.score}
           </div>
         )}

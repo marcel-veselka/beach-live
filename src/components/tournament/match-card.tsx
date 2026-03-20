@@ -36,9 +36,9 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: Ma
     <div className={cn(
       "rounded-xl border bg-card p-4 transition-all",
       match.status === "live"
-        ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10"
+        ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10 live-glow"
         : match.status === "finished"
-          ? "border-border/60 shadow-none"
+          ? "border-border/40 shadow-none bg-card/80"
           : "border-border shadow-sm",
       hasFavorite && match.status !== "live" && "border-l-[3px] border-l-red-400/70 bg-red-50/30",
       isTBD && match.status === "scheduled" && "border-dashed border-border/50 opacity-75",
@@ -119,6 +119,7 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
         </span>
         {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
       </div>
+      {/* #2: Volleyball-style scoreboard look */}
       {sets && (
         <div className="flex items-center gap-0.5 ml-3 font-score shrink-0">
           {sets.map((s, i) => (
@@ -127,8 +128,8 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
               className={cn(
                 "w-7 h-7 flex items-center justify-center rounded-md text-sm",
                 isWinner
-                  ? "font-bold text-foreground"
-                  : "text-muted-foreground",
+                  ? "font-bold text-foreground bg-primary/5"
+                  : "text-muted-foreground bg-muted/40",
                 isLive && i === sets.length - 1 && "bg-live/10 text-live font-bold ring-1 ring-live/20"
               )}
             >

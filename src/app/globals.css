@@ -131,3 +131,98 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* HOMEPAGE #1: Shimmer animation for status badge when "Brzy" or "Živě" */
+@keyframes badge-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.badge-shimmer {
+  background-size: 200% auto;
+  animation: badge-shimmer 3s ease-in-out infinite;
+}
+
+/* HOMEPAGE #6: Pull-to-refresh visual cue - subtle bounce on overscroll */
+@keyframes subtle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+}
+
+/* HOMEPAGE #9: Gradient fade before bottom nav */
+.nav-fade-gradient {
+  position: fixed;
+  bottom: 64px;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, var(--color-background));
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* MATCHES #3: Card entrance animation */
+@keyframes card-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-in {
+  animation: card-slide-up 0.3s ease-out both;
+}
+
+/* MATCHES #10 / BRACKET #10: Subtle glow for live or final matches */
+@keyframes subtle-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+  50% { box-shadow: 0 0 12px 2px rgba(22, 163, 74, 0.08); }
+}
+
+.live-glow {
+  animation: subtle-glow 2s ease-in-out infinite;
+}
+
+/* TEAMS #9 / MATCHES #3: Staggered entrance for cards */
+.animate-card-in:nth-child(1) { animation-delay: 0ms; }
+.animate-card-in:nth-child(2) { animation-delay: 50ms; }
+.animate-card-in:nth-child(3) { animation-delay: 100ms; }
+.animate-card-in:nth-child(4) { animation-delay: 150ms; }
+.animate-card-in:nth-child(5) { animation-delay: 200ms; }
+.animate-card-in:nth-child(6) { animation-delay: 250ms; }
+.animate-card-in:nth-child(7) { animation-delay: 300ms; }
+.animate-card-in:nth-child(8) { animation-delay: 350ms; }
+
+/* MATCHES #1: Filter chip transition */
+.filter-chip-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* TEAMS #7 / HOMEPAGE #3: Better press state for mobile */
+.press-scale {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.press-scale:active {
+  transform: scale(0.97);
+}
+
+/* BRACKET #4: TBD crosshatch pattern background */
+.tbd-pattern {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 4px,
+    var(--color-muted) 4px,
+    var(--color-muted) 5px
+  );
+  background-size: 8px 8px;
+}
+
+/* BRACKET #9: Enhanced shadow for final match */
+.final-match-shadow {
+  box-shadow: 0 4px 20px -4px rgba(12, 119, 146, 0.15), 0 2px 8px -2px rgba(12, 119, 146, 0.08);
+}

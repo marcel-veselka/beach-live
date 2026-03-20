@@ -78,26 +78,30 @@ export default async function HomePage() {
           </svg>
         </div>
 
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-2.5 mb-1">
           <h1 className="text-xl font-bold tracking-tight md:text-2xl">
             {snapshot.metadata.name}
           </h1>
-          <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-[10px] px-2 py-0.5 whitespace-nowrap uppercase tracking-wider font-semibold">
+          {/* #1: Shimmer on status badge */}
+          <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-[10px] px-2.5 py-0.5 whitespace-nowrap uppercase tracking-wider font-semibold">
             {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
           </Badge>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {snapshot.metadata.subtitle && <span>{snapshot.metadata.subtitle}</span>}
-          {snapshot.metadata.subtitle && <span>•</span>}
+          {snapshot.metadata.subtitle && <span className="text-muted-foreground/30">•</span>}
           {snapshot.metadata.venue && <span>📍 {snapshot.metadata.venue}</span>}
           {snapshot.metadata.dates && <span>📅 {snapshot.metadata.dates}</span>}
           {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
         </div>
 
-        <div className="mt-2 flex items-center gap-3 text-xs">
+        {/* #7: Freshness more visually integrated - inline pill style */}
+        {/* #8: Source links smaller and less prominent */}
+        <div className="mt-2.5 flex items-center gap-2 text-[11px]">
           <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
-          <SourceLinks sources={snapshot.sources} />
+          <span className="text-muted-foreground/20">|</span>
+          <span className="opacity-60"><SourceLinks sources={snapshot.sources} /></span>
         </div>
       </div>
 
@@ -115,18 +119,23 @@ export default async function HomePage() {
         </Section>
       )}
 
-      {/* Next matches with "Zítra" label if applicable */}
+      {/* #10: Next matches with visually distinct section title + #2: "Zítra" countdown */}
       {scheduledMatches.length > 0 && (
         <Section title={scheduledAreTomorrow ? `${msg.overview.next} — Zítra` : msg.overview.next}>
+          {scheduledAreTomorrow && (
+            <p className="text-xs text-primary/70 font-medium -mt-3 mb-3 ml-3">Zápasy začínají zítra ráno</p>
+          )}
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {scheduledMatches.map((match: Match) => (
-              <MatchCard key={match.id} match={match} compact />
+            {scheduledMatches.map((match: Match, i: number) => (
+              <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>
+                <MatchCard match={match} compact />
+              </div>
             ))}
           </div>
         </Section>
       )}
 
-      {/* Recently finished with qualification label */}
+      {/* #10: Recently finished - visually distinct from "Nadcházející" */}
       {recentFinished.length > 0 && (
         <Section title={msg.overview.recentlyFinished}>
           {recentAreQualification && (
@@ -135,8 +144,10 @@ export default async function HomePage() {
             </div>
           )}
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {recentFinished.map((match: Match) => (
-              <MatchCard key={match.id} match={match} />
+            {recentFinished.map((match: Match, i: number) => (
+              <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>
+                <MatchCard match={match} />
+              </div>
             ))}
           </div>
         </Section>
@@ -151,13 +162,14 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* Transparency note - more elegant with icon */}
-      <div className="flex items-start gap-2.5 text-xs text-muted-foreground mt-8 p-4 rounded-xl border border-border/40 bg-card/50">
-        <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-muted-foreground/50" />
-        <span>
-          Data se automaticky aktualizují každých 5 minut z veřejných zdrojů. Může dojít k mírnému zpoždění.
-        </span>
-      </div>
+      {/* #5: Transparency note - single compact line */}
+      <p className="text-[11px] text-muted-foreground/50 text-center mt-8 mb-2">
+        <Info className="inline h-3 w-3 mr-1 -mt-0.5" />
+        Data se aktualizují každých 5 min z veřejných zdrojů.
+      </p>
+
+      {/* #9: Gradient fade before bottom nav (rendered via CSS class in globals) */}
+      <div className="nav-fade-gradient md:hidden" />
     </>
   )
 }
@@ -165,14 +177,15 @@ export default async function HomePage() {
 function QuickLinkCard({ href, icon, label, count, suffix }: { href: string; icon: React.ReactNode; label: string; count: number; suffix: string }) {
   return (
     <Link href={href}>
-      <Card hoverable className="flex flex-col items-center py-6 cursor-pointer hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden">
+      {/* #3: More tappable with inner shadow, scale on press */}
+      <Card hoverable className="flex flex-col items-center py-6 cursor-pointer hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden press-scale shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_1px_3px_0_rgba(0,0,0,0.04)]">
         {/* Subtle background icon */}
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none scale-[2.5]" aria-hidden="true">
           {icon}
         </div>
         <div className="text-primary mb-2.5 p-2.5 rounded-xl bg-primary/8 ring-1 ring-primary/10">{icon}</div>
         <CardTitle className="text-sm font-semibold">{label}</CardTitle>
-        <p className="text-xs text-muted-foreground mt-1.5">{count} {suffix}</p>
+        <p className="text-[11px] text-muted-foreground/70 mt-1 font-medium">{count} {suffix}</p>
       </Card>
     </Link>
   )

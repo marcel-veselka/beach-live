@@ -139,31 +139,38 @@ export default async function BracketPage() {
       {/* Mobile bracket - round by round cards */}
       <div className="md:hidden space-y-2">
         {/* Main draw rounds */}
-        {mainDrawRounds.map((round) => {
+        {mainDrawRounds.map((round, roundIdx) => {
           const globalIdx = snapshot.bracket!.rounds.indexOf(round)
           const isCurrentRound = globalIdx === activeRoundIdx
+          const isLastRound = roundIdx === mainDrawRounds.length - 1
+          {/* #5: Round number badges (R1, QF, SF, F) */}
+          const roundLabel = isLastRound ? "F" : roundIdx === mainDrawRounds.length - 2 ? "SF" : roundIdx === mainDrawRounds.length - 3 ? "QF" : `R${roundIdx + 1}`
           return (
             <div key={round.name}>
-              {/* Round header with visual progression indicator + current round highlight */}
+              {/* #1: Round headers with colored bar + #3 larger progression dots + #8 scroll indicator */}
               <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-3 mb-2">
-                <div className="flex items-center gap-2">
-                  {/* Visual round progression dots with current round indicator */}
+                <div className="flex items-center gap-2.5">
+                  {/* #3: Larger progression dots */}
                   <div className="flex gap-1">
                     {mainDrawRounds.map((_, i) => (
                       <span
                         key={i}
-                        className={`h-1.5 rounded-full transition-all ${
+                        className={`h-2 rounded-full transition-all ${
                           i < mainDrawRounds.indexOf(round)
-                            ? "w-4 bg-primary/60"
+                            ? "w-5 bg-primary/60"
                             : i === mainDrawRounds.indexOf(round)
                               ? isCurrentRound
-                                ? "w-5 bg-primary ring-2 ring-primary/20"
-                                : "w-4 bg-primary"
-                              : "w-1.5 bg-muted"
+                                ? "w-6 bg-primary ring-2 ring-primary/20"
+                                : "w-5 bg-primary"
+                              : "w-2 bg-muted"
                         }`}
                       />
                     ))}
                   </div>
+                  {/* #5: Round badge */}
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                    isCurrentRound ? "bg-primary text-white" : isLastRound ? "bg-secondary/20 text-secondary-foreground" : "bg-muted text-muted-foreground/70"
+                  }`}>{roundLabel}</span>
                   <h3 className={`text-xs font-bold uppercase tracking-widest ${
                     isCurrentRound ? "text-primary" : "text-muted-foreground"
                   }`}>
@@ -172,45 +179,57 @@ export default async function BracketPage() {
                   {isCurrentRound && (
                     <span className="text-[9px] font-bold text-primary bg-primary/10 rounded-full px-2 py-0.5 uppercase tracking-wider">Aktuální</span>
                   )}
-                  <span className="text-[10px] text-muted-foreground/50 ml-auto">
+                  <span className="text-[10px] text-muted-foreground/50 ml-auto font-medium">
                     {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
                   </span>
                 </div>
+                {/* #1: Colored bar under round header */}
+                <div className={`mt-2 h-0.5 rounded-full ${isCurrentRound ? "bg-primary/30" : isLastRound ? "bg-secondary/30" : "bg-border/30"}`} />
               </div>
+              {/* #10: Cards with increasing shadow toward final */}
               <div className="space-y-2.5">
-                {round.matches.map((match: BracketMatch) => {
+                {round.matches.map((match: BracketMatch, idx: number) => {
                   const matchNum = match.matchId.replace(/\D/g, "")
-                  return <BracketMatchCardClient key={match.matchId} match={match} matchNumber={matchNum} />
+                  return (
+                    <div key={match.matchId} className={`animate-card-in ${isLastRound ? "final-match-shadow rounded-xl" : ""}`} style={{ animationDelay: `${idx * 50}ms` }}>
+                      <BracketMatchCardClient match={match} matchNumber={matchNum} />
+                    </div>
+                  )
                 })}
               </div>
             </div>
           )
         })}
 
-        {/* Placement matches section (mobile) - visually separated */}
+        {/* #6: Placement matches section - visually distinct */}
         {placementRounds.length > 0 && (
           <>
-            <div className="flex items-center gap-3 my-4 pt-2">
-              <div className="h-px flex-1 bg-border/30" />
-              <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">O umístění</span>
-              <div className="h-px flex-1 bg-border/30" />
+            <div className="flex items-center gap-3 my-5 pt-2">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/40 to-transparent" />
+              <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest bg-muted/50 px-3 py-1 rounded-full">O umístění</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/40 to-transparent" />
             </div>
             {placementRounds.map((round) => (
               <div key={round.name}>
                 <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-3 mb-2">
                   <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary/60" />
                     <h3 className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">
                       {round.name}
                     </h3>
-                    <span className="text-[10px] text-muted-foreground/50 ml-auto">
+                    <span className="text-[10px] text-muted-foreground/50 ml-auto font-medium">
                       {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
                     </span>
                   </div>
                 </div>
                 <div className="space-y-2.5">
-                  {round.matches.map((match: BracketMatch) => {
+                  {round.matches.map((match: BracketMatch, idx: number) => {
                     const matchNum = match.matchId.replace(/\D/g, "")
-                    return <BracketMatchCardClient key={match.matchId} match={match} matchNumber={matchNum} />
+                    return (
+                      <div key={match.matchId} className="animate-card-in" style={{ animationDelay: `${idx * 50}ms` }}>
+                        <BracketMatchCardClient match={match} matchNumber={matchNum} />
+                      </div>
+                    )
                   })}
                 </div>
               </div>

@@ -7,9 +7,9 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: "bg-primary/10 text-primary",
-        live: "bg-live/15 text-live border border-live/20 animate-pulse",
+        live: "bg-live/15 text-live border border-live/20 animate-pulse live-glow",
         finished: "bg-muted text-muted-foreground border border-border/50",
-        scheduled: "bg-secondary/10 text-secondary-foreground border border-secondary/20",
+        scheduled: "bg-gradient-to-r from-secondary/15 via-secondary/25 to-secondary/15 text-secondary-foreground border border-secondary/20 badge-shimmer",
         warning: "bg-warning/10 text-warning border border-warning/20",
         success: "bg-success/10 text-success border border-success/20",
       },
