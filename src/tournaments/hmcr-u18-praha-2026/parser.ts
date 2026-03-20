@@ -397,16 +397,14 @@ export class BvisParser implements TournamentParser {
       return { teamId: team.id, name: team.name }
     }
 
-    // Make TBD references more readable: "vítěz #1" → "Vítěz z. č. 1", "poražený #1" → "Poražený z. č. 1"
+    // Make TBD references readable and aligned with bracket match numbers (#N)
     const vitezMatch = /^vítěz\s*#(\d+)\s*$/i.exec(name)
     if (vitezMatch) {
-      const displayName = `Vítěz zápasu č. ${vitezMatch[1]}`
-      return { teamId: makeId(name), name: displayName }
+      return { teamId: makeId(name), name: `Vítěz #${vitezMatch[1]}` }
     }
     const porazenyMatch = /^poražený\s*#(\d+)\s*$/i.exec(name)
     if (porazenyMatch) {
-      const displayName = `Poražený z. č. ${porazenyMatch[1]}`
-      return { teamId: makeId(name), name: displayName }
+      return { teamId: makeId(name), name: `Poražený #${porazenyMatch[1]}` }
     }
     return { teamId: makeId(name), name }
   }

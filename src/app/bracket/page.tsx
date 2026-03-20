@@ -49,15 +49,17 @@ export default async function BracketPage() {
               </div>
               {/* Improvement 6: better spacing between bracket matches */}
               <div className="flex flex-col gap-4 justify-around flex-1">
-                {round.matches.map((match: BracketMatch, matchIdx: number) => (
-                  <div key={match.matchId}>
-                    {/* Improvement 7: match number label */}
-                    <p className="text-[10px] text-muted-foreground/40 text-center mb-1 font-medium">
-                      Z{roundIdx * 10 + matchIdx + 1}
-                    </p>
-                    <BracketMatchNodeClient match={match} />
-                  </div>
-                ))}
+                {round.matches.map((match: BracketMatch) => {
+                  const matchNum = match.matchId.replace(/\D/g, "")
+                  return (
+                    <div key={match.matchId}>
+                      <p className="text-[10px] text-muted-foreground/50 text-center mb-1 font-medium font-score">
+                        #{matchNum}
+                      </p>
+                      <BracketMatchNodeClient match={match} />
+                    </div>
+                  )
+                })}
               </div>
             </div>
           ))}
@@ -93,9 +95,10 @@ export default async function BracketPage() {
             </div>
             {/* Improvement 6: better spacing */}
             <div className="space-y-2.5">
-              {round.matches.map((match: BracketMatch) => (
-                <BracketMatchCardClient key={match.matchId} match={match} />
-              ))}
+              {round.matches.map((match: BracketMatch) => {
+                const matchNum = match.matchId.replace(/\D/g, "")
+                return <BracketMatchCardClient key={match.matchId} match={match} matchNumber={matchNum} />
+              })}
             </div>
           </div>
         ))}

@@ -45,7 +45,7 @@ export function BracketMatchNodeClient({ match }: { match: BracketMatch }) {
   )
 }
 
-export function BracketMatchCardClient({ match }: { match: BracketMatch }) {
+export function BracketMatchCardClient({ match, matchNumber }: { match: BracketMatch; matchNumber?: string }) {
   const { isFavorite } = useFavorites()
   const hasFav = isFavorite(match.teamA?.teamId ?? "") || isFavorite(match.teamB?.teamId ?? "")
   const isTBD = !match.teamA?.name || !match.teamB?.name
@@ -63,6 +63,9 @@ export function BracketMatchCardClient({ match }: { match: BracketMatch }) {
       match.winner && "bg-muted/20",
     )}>
       <div className="flex items-center justify-between">
+        {matchNumber && (
+          <span className="text-[10px] text-muted-foreground/50 font-score font-medium mr-2 self-start mt-1">#{matchNumber}</span>
+        )}
         <div className="flex-1 space-y-0.5">
           <BracketTeamRow
             name={match.teamA?.name ?? "TBD"}
