@@ -41,18 +41,20 @@ export default async function HomePage() {
 
       {/* Hero */}
       <div className="relative -mx-4 mb-8 px-4 pt-6 pb-6 bg-hero-gradient rounded-b-2xl md:rounded-2xl md:mx-0">
-        <div className="flex items-start justify-between gap-4 mb-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-              {snapshot.metadata.name}
-            </h1>
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+                {snapshot.metadata.name}
+              </h1>
+              <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-xs px-2.5 py-0.5 whitespace-nowrap">
+                {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
+              </Badge>
+            </div>
             {snapshot.metadata.subtitle && (
-              <p className="text-muted-foreground mt-1.5">{snapshot.metadata.subtitle}</p>
+              <p className="text-muted-foreground mt-1.5 text-sm">{snapshot.metadata.subtitle}</p>
             )}
           </div>
-          <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-sm px-3 py-1">
-            {snapshot.status === "live" ? "Probíhá" : snapshot.status === "finished" ? "Dokončeno" : "Připravuje se"}
-          </Badge>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
@@ -61,7 +63,7 @@ export default async function HomePage() {
           {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
         </div>
 
-        <div className="mt-4 flex items-center gap-4">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
           <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
           <SourceLinks sources={snapshot.sources} />
         </div>

@@ -19,8 +19,8 @@ export function MobileNav() {
   const msg = t().nav
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 md:hidden">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-around px-2 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 safe-area-bottom md:hidden">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-evenly px-1 pb-safe">
         {navItems.map((item) => {
           const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
           return (
