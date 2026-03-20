@@ -5,6 +5,7 @@ export type MatchStatus = z.infer<typeof MatchStatusSchema>
 
 export const PlayerSchema = z.object({
   name: z.string(),
+  club: z.string().optional(),
 })
 export type Player = z.infer<typeof PlayerSchema>
 

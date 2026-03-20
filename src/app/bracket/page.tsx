@@ -26,6 +26,20 @@ export default async function BracketPage() {
     )
   }
 
+  // Determine current round (first round with incomplete matches)
+  const currentRoundIdx = snapshot.bracket.rounds.findIndex(
+    (round) => round.matches.some((m: BracketMatch) => !m.winner)
+  )
+  const activeRoundIdx = currentRoundIdx === -1 ? snapshot.bracket.rounds.length - 1 : currentRoundIdx
+
+  // Separate main draw rounds from placement rounds
+  const mainDrawRounds = snapshot.bracket.rounds.filter(
+    (r) => !r.name.toLowerCase().includes("místo") && !r.name.toLowerCase().includes("placement")
+  )
+  const placementRounds = snapshot.bracket.rounds.filter(
+    (r) => r.name.toLowerCase().includes("místo") || r.name.toLowerCase().includes("placement")
+  )
+
   return (
     <>
       <AutoRefresh />
@@ -36,72 +50,173 @@ export default async function BracketPage() {
         <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
       </div>
 
-      {/* Desktop bracket - horizontal flow */}
+      {/* Desktop bracket - horizontal flow with connectors */}
       <div className="hidden md:block overflow-x-auto">
-        <div className="flex gap-6 min-w-max pb-4">
-          {snapshot.bracket.rounds.map((round, roundIdx) => (
-            <div key={round.name} className="flex flex-col gap-4 min-w-[260px]">
-              {/* Improvement 1: round header styling with background pill */}
-              <div className="flex items-center justify-center">
-                <h3 className="text-[11px] font-bold text-muted-foreground/80 text-center uppercase tracking-widest bg-muted/60 rounded-full px-4 py-1.5">
-                  {round.name}
-                </h3>
-              </div>
-              {/* Improvement 6: better spacing between bracket matches */}
-              <div className="flex flex-col gap-4 justify-around flex-1">
-                {round.matches.map((match: BracketMatch) => {
-                  const matchNum = match.matchId.replace(/\D/g, "")
-                  return (
-                    <div key={match.matchId}>
-                      <p className="text-[10px] text-muted-foreground/50 text-center mb-1 font-medium font-score">
-                        #{matchNum}
-                      </p>
-                      <BracketMatchNodeClient match={match} />
+        {mainDrawRounds.length > 0 && (
+          <div className="flex gap-0 min-w-max pb-4">
+            {mainDrawRounds.map((round, roundIdx) => {
+              const globalIdx = snapshot.bracket!.rounds.indexOf(round)
+              const isCurrentRound = globalIdx === activeRoundIdx
+              const isLastRound = roundIdx === mainDrawRounds.length - 1
+              return (
+                <div key={round.name} className="flex items-stretch">
+                  <div className="flex flex-col gap-4 min-w-[260px]">
+                    {/* Round header with current indicator */}
+                    <div className="flex items-center justify-center gap-2">
+                      {isCurrentRound && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                      )}
+                      <h3 className={`text-[11px] font-bold text-center uppercase tracking-widest rounded-full px-4 py-1.5 ${
+                        isCurrentRound
+                          ? "bg-primary/10 text-primary border border-primary/20"
+                          : "bg-muted/60 text-muted-foreground/80"
+                      }`}>
+                        {round.name}
+                      </h3>
                     </div>
-                  )
-                })}
-              </div>
+                    <div className="flex flex-col gap-4 justify-around flex-1">
+                      {round.matches.map((match: BracketMatch) => {
+                        const matchNum = match.matchId.replace(/\D/g, "")
+                        return (
+                          <div key={match.matchId}>
+                            <p className="text-[10px] text-muted-foreground/40 text-center mb-1 font-bold font-score bg-muted/30 rounded-full w-7 h-5 flex items-center justify-center mx-auto">
+                              {matchNum}
+                            </p>
+                            <BracketMatchNodeClient match={match} />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                  {/* Connector between rounds */}
+                  {!isLastRound && (
+                    <div className="flex items-center justify-center w-6 self-stretch">
+                      <div className="w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent" />
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Placement matches section (desktop) */}
+        {placementRounds.length > 0 && (
+          <>
+            <div className="flex items-center gap-3 my-6">
+              <div className="h-px flex-1 bg-border/30" />
+              <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">O umístění</span>
+              <div className="h-px flex-1 bg-border/30" />
             </div>
-          ))}
-        </div>
+            <div className="flex gap-6 min-w-max pb-4">
+              {placementRounds.map((round) => (
+                <div key={round.name} className="flex flex-col gap-4 min-w-[260px]">
+                  <div className="flex items-center justify-center">
+                    <h3 className="text-[11px] font-bold text-muted-foreground/60 text-center uppercase tracking-widest bg-muted/40 rounded-full px-4 py-1.5 border border-border/30">
+                      {round.name}
+                    </h3>
+                  </div>
+                  <div className="flex flex-col gap-4 justify-around flex-1">
+                    {round.matches.map((match: BracketMatch) => {
+                      const matchNum = match.matchId.replace(/\D/g, "")
+                      return (
+                        <div key={match.matchId}>
+                          <p className="text-[10px] text-muted-foreground/40 text-center mb-1 font-bold font-score bg-muted/30 rounded-full w-7 h-5 flex items-center justify-center mx-auto">
+                            {matchNum}
+                          </p>
+                          <BracketMatchNodeClient match={match} />
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Mobile bracket - round by round cards */}
       <div className="md:hidden space-y-2">
-        {snapshot.bracket.rounds.map((round, roundIdx) => (
-          <div key={round.name}>
-            {/* Improvement 1 & 5: round header with visual progression indicator */}
-            <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-3 mb-2">
-              <div className="flex items-center gap-2">
-                {/* Improvement 5: visual round progression dots */}
-                <div className="flex gap-1">
-                  {snapshot.bracket!.rounds.map((_, i) => (
-                    <span
-                      key={i}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i <= roundIdx ? "w-4 bg-primary" : "w-1.5 bg-muted"
-                      }`}
-                    />
-                  ))}
+        {/* Main draw rounds */}
+        {mainDrawRounds.map((round) => {
+          const globalIdx = snapshot.bracket!.rounds.indexOf(round)
+          const isCurrentRound = globalIdx === activeRoundIdx
+          return (
+            <div key={round.name}>
+              {/* Round header with visual progression indicator + current round highlight */}
+              <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-3 mb-2">
+                <div className="flex items-center gap-2">
+                  {/* Visual round progression dots with current round indicator */}
+                  <div className="flex gap-1">
+                    {mainDrawRounds.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`h-1.5 rounded-full transition-all ${
+                          i < mainDrawRounds.indexOf(round)
+                            ? "w-4 bg-primary/60"
+                            : i === mainDrawRounds.indexOf(round)
+                              ? isCurrentRound
+                                ? "w-5 bg-primary ring-2 ring-primary/20"
+                                : "w-4 bg-primary"
+                              : "w-1.5 bg-muted"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <h3 className={`text-xs font-bold uppercase tracking-widest ${
+                    isCurrentRound ? "text-primary" : "text-muted-foreground"
+                  }`}>
+                    {round.name}
+                  </h3>
+                  {isCurrentRound && (
+                    <span className="text-[9px] font-bold text-primary bg-primary/10 rounded-full px-2 py-0.5 uppercase tracking-wider">Aktuální</span>
+                  )}
+                  <span className="text-[10px] text-muted-foreground/50 ml-auto">
+                    {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
+                  </span>
                 </div>
-                <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                  {round.name}
-                </h3>
-                {/* Improvement 9: match count hint */}
-                <span className="text-[10px] text-muted-foreground/50 ml-auto">
-                  {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
-                </span>
+              </div>
+              <div className="space-y-2.5">
+                {round.matches.map((match: BracketMatch) => {
+                  const matchNum = match.matchId.replace(/\D/g, "")
+                  return <BracketMatchCardClient key={match.matchId} match={match} matchNumber={matchNum} />
+                })}
               </div>
             </div>
-            {/* Improvement 6: better spacing */}
-            <div className="space-y-2.5">
-              {round.matches.map((match: BracketMatch) => {
-                const matchNum = match.matchId.replace(/\D/g, "")
-                return <BracketMatchCardClient key={match.matchId} match={match} matchNumber={matchNum} />
-              })}
+          )
+        })}
+
+        {/* Placement matches section (mobile) - visually separated */}
+        {placementRounds.length > 0 && (
+          <>
+            <div className="flex items-center gap-3 my-4 pt-2">
+              <div className="h-px flex-1 bg-border/30" />
+              <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">O umístění</span>
+              <div className="h-px flex-1 bg-border/30" />
             </div>
-          </div>
-        ))}
+            {placementRounds.map((round) => (
+              <div key={round.name}>
+                <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-3 mb-2">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest">
+                      {round.name}
+                    </h3>
+                    <span className="text-[10px] text-muted-foreground/50 ml-auto">
+                      {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-2.5">
+                  {round.matches.map((match: BracketMatch) => {
+                    const matchNum = match.matchId.replace(/\D/g, "")
+                    return <BracketMatchCardClient key={match.matchId} match={match} matchNumber={matchNum} />
+                  })}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </>
   )

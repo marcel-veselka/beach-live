@@ -19,7 +19,7 @@ export const cs = {
   },
   overview: {
     now: "Teď",
-    next: "Další",
+    next: "Nadcházející",
     recentlyFinished: "Právě dohráno",
     quickLinks: "Rychlé odkazy",
     tournamentStatus: "Stav turnaje",

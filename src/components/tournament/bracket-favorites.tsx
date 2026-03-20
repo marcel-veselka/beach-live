@@ -19,9 +19,7 @@ export function BracketMatchNodeClient({ match }: { match: BracketMatch }) {
     <Card className={cn(
       "p-3 space-y-1",
       hasFav && "ring-1 ring-red-200 border-red-200/60",
-      /* Improvement 2: TBD match placeholder with dashed border */
       isTBD && !match.winner && "border-dashed opacity-70",
-      /* Improvement 10: completed match subtle background */
       match.winner && "bg-muted/20",
     )}>
       <BracketTeamRow
@@ -35,7 +33,6 @@ export function BracketMatchNodeClient({ match }: { match: BracketMatch }) {
         isWinner={match.winner === "teamB"}
         isFavorite={isFavorite(match.teamB?.teamId ?? "")}
       />
-      {/* Improvement 4: better score display */}
       {match.score && (
         <div className="text-[11px] text-muted-foreground text-center pt-1 font-score font-medium tracking-wide">
           {match.score}
@@ -57,16 +54,17 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
     <Card className={cn(
       "p-3",
       hasFav && "ring-1 ring-red-200 border-red-200/60",
-      /* Improvement 2: TBD match placeholder */
       isTBD && !match.winner && "border-dashed opacity-70",
-      /* Improvement 10: completed match subtle background */
       match.winner && "bg-muted/20",
     )}>
       <div className="flex items-center justify-between">
+        {/* Match number - more prominent with pill styling */}
         {matchNumber && (
-          <span className="text-[10px] text-muted-foreground/50 font-score font-medium mr-2 self-start mt-1">#{matchNumber}</span>
+          <span className="text-[10px] text-muted-foreground/50 font-score font-bold mr-2.5 self-start mt-1 bg-muted/40 rounded-full w-6 h-5 flex items-center justify-center shrink-0">
+            {matchNumber}
+          </span>
         )}
-        <div className="flex-1 space-y-0.5">
+        <div className="flex-1 space-y-0.5 min-w-0">
           <BracketTeamRow
             name={match.teamA?.name ?? "TBD"}
             isWinner={match.winner === "teamA"}
@@ -81,15 +79,14 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
             isFavorite={isFavorite(match.teamB?.teamId ?? "")}
           />
         </div>
-        {/* Improvement 4: better score display in bracket */}
         {match.score && (
-          <div className="ml-3 text-xs font-score font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
+          <div className="ml-3 text-xs font-score font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded-md shrink-0">
             {match.score}
           </div>
         )}
         {match.winner && (
           <Badge variant="finished" className="ml-2 text-[10px]">
-            ✓
+            &#10003;
           </Badge>
         )}
       </div>
@@ -108,24 +105,30 @@ function BracketTeamRow({
   isLoser?: boolean
   isFavorite: boolean
 }) {
-  /* Improvement 2: TBD name styling */
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
+  const isLoserRef = name.startsWith("Poražen")
+
+  // Generate tooltip text for TBD entries explaining where the team comes from
+  const tbdTooltip = isTBDName && name !== "TBD"
+    ? `Bude doplněno po dohrání předchozího zápasu`
+    : isTBDName
+      ? "Tým bude určen"
+      : undefined
 
   return (
     <div
       className={cn(
         "text-sm py-0.5 flex items-center gap-1.5",
         isWinner ? "font-semibold text-foreground" : "text-muted-foreground",
-        /* Improvement 3: winner/loser distinction */
         isLoser && "opacity-50",
-        /* Improvement 2: TBD italic and lighter */
         isTBDName && "italic text-muted-foreground/40 text-[13px]",
+        isLoserRef && "text-muted-foreground/30",
       )}
+      title={tbdTooltip}
     >
-      {/* Improvement 3: better winner indicator */}
-      {isWinner && <span className="text-success text-[10px]">●</span>}
+      {isWinner && <span className="text-success text-[10px]">&#9679;</span>}
       <span className="truncate">{name}</span>
-      {isFavorite && <span className="text-red-400 text-xs">♥</span>}
+      {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
     </div>
   )
 }

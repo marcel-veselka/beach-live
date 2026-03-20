@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import { Match, Team } from "@/lib/tournament/schema"
 import { MatchCard } from "@/components/tournament/match-card"
-import { Search, X, SearchX } from "lucide-react"
-import { t } from "@/lib/i18n"
+import { Search, X, SearchX, ChevronRight } from "lucide-react"
+import { t, pluralize } from "@/lib/i18n"
 import { useFavorites } from "@/lib/favorites/context"
 import { normalizeSearch } from "@/lib/utils"
 
@@ -19,6 +19,18 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const msg = t()
   const { favorites } = useFavorites()
+  const chipsRef = useRef<HTMLDivElement>(null)
+  const [showScrollHint, setShowScrollHint] = useState(false)
+
+  // Check if filter chips overflow
+  useEffect(() => {
+    const el = chipsRef.current
+    if (!el) return
+    const check = () => setShowScrollHint(el.scrollWidth > el.clientWidth + 4)
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
+  }, [])
 
   const filtered = useMemo(() => {
     let result = matches
@@ -54,17 +66,28 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
   }, [matches, teams, search, statusFilter, favorites])
 
   // Group filtered matches by date for section headers
-  // scheduledTime format: "21. 3. 9:00" or "20. 3. 17:56" — extract "21. 3." as date
   const groupedMatches = useMemo(() => {
-    const groups: { date: string; matches: Match[] }[] = []
+    const groups: { date: string; dateLabel: string; matches: Match[] }[] = []
     let currentDate = ""
+
+    // Determine today/tomorrow for labels
+    const today = new Date()
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const todayStr = `${today.getDate()}. ${today.getMonth() + 1}.`
+    const tomorrowStr = `${tomorrow.getDate()}. ${tomorrow.getMonth() + 1}.`
+
     for (const match of filtered) {
-      // Extract date part: match "DD. M." pattern (everything before the time)
       const dateMatch = match.scheduledTime?.match(/^(\d+\.\s*\d+\.)/)
       const date = dateMatch ? dateMatch[1] : (match.scheduledTime ?? "")
       if (date !== currentDate) {
         currentDate = date
-        groups.push({ date, matches: [match] })
+        const normalized = date.replace(/\s+/g, " ").trim()
+        let dateLabel = date
+        if (normalized === todayStr) dateLabel = `${date} — Dnes`
+        else if (normalized === tomorrowStr) dateLabel = `${date} — Zítra`
+
+        groups.push({ date, dateLabel, matches: [match] })
       } else {
         groups[groups.length - 1].matches.push(match)
       }
@@ -72,13 +95,29 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
     return groups
   }, [filtered])
 
-  const liveCount = matches.filter((m) => m.status === "live").length
-  const scheduledCount = matches.filter((m) => m.status === "scheduled").length
-  const finishedCount = matches.filter((m) => m.status === "finished").length
+  // Compute counts from search-filtered set (before status filter)
+  const searchFiltered = useMemo(() => {
+    if (!search) return matches
+    const q = normalizeSearch(search)
+    return matches.filter(
+      (m) =>
+        normalizeSearch(m.teamA?.name ?? "").includes(q) ||
+        normalizeSearch(m.teamB?.name ?? "").includes(q) ||
+        teams.some(
+          (team) =>
+            (m.teamA?.teamId === team.id || m.teamB?.teamId === team.id) &&
+            team.players.some((p) => normalizeSearch(p.name).includes(q))
+        )
+    )
+  }, [matches, teams, search])
+
+  const liveCount = searchFiltered.filter((m) => m.status === "live").length
+  const scheduledCount = searchFiltered.filter((m) => m.status === "scheduled").length
+  const finishedCount = searchFiltered.filter((m) => m.status === "finished").length
 
   return (
     <div className="space-y-4">
-      {/* Search - improvement 2: larger icon, rounded-full, clear button */}
+      {/* Search */}
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground/60" />
         <input
@@ -98,71 +137,95 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
         )}
       </div>
 
-      {/* Status filters - improvement 1: larger pills, prominent active state with shadow */}
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-        <FilterChip
-          active={statusFilter === "all"}
-          onClick={() => setStatusFilter("all")}
-        >
-          Vše ({matches.length})
-        </FilterChip>
-        {liveCount > 0 && (
+      {/* Status filters with scroll indicator */}
+      <div className="relative">
+        <div ref={chipsRef} className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           <FilterChip
-            active={statusFilter === "live"}
-            onClick={() => setStatusFilter("live")}
-            variant="live"
+            active={statusFilter === "all"}
+            onClick={() => setStatusFilter("all")}
           >
-            {msg.match.live} ({liveCount})
+            Vše ({searchFiltered.length})
           </FilterChip>
+          {liveCount > 0 && (
+            <FilterChip
+              active={statusFilter === "live"}
+              onClick={() => setStatusFilter("live")}
+              variant="live"
+            >
+              {msg.match.live} ({liveCount})
+            </FilterChip>
+          )}
+          <FilterChip
+            active={statusFilter === "scheduled"}
+            onClick={() => setStatusFilter("scheduled")}
+          >
+            {msg.match.scheduled} ({scheduledCount})
+          </FilterChip>
+          <FilterChip
+            active={statusFilter === "finished"}
+            onClick={() => setStatusFilter("finished")}
+          >
+            {msg.match.finished} ({finishedCount})
+          </FilterChip>
+        </div>
+        {/* Scroll affordance gradient + chevron */}
+        {showScrollHint && (
+          <div className="absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none flex items-center justify-end">
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40" />
+          </div>
         )}
-        <FilterChip
-          active={statusFilter === "scheduled"}
-          onClick={() => setStatusFilter("scheduled")}
-        >
-          {msg.match.scheduled} ({scheduledCount})
-        </FilterChip>
-        <FilterChip
-          active={statusFilter === "finished"}
-          onClick={() => setStatusFilter("finished")}
-        >
-          {msg.match.finished} ({finishedCount})
-        </FilterChip>
       </div>
 
       {/* Scroll affordance hint when filtered */}
       {(search || statusFilter !== "all") && filtered.length > 0 && (
         <p className="text-xs text-muted-foreground/60 text-center">
-          {filtered.length} z {matches.length} zápasů
+          {filtered.length} z {matches.length} {pluralize(matches.length, "zápas", "zápasy", "zápasů")}
         </p>
       )}
 
-      {/* Match list - improvement 3: grouped by date with section headers */}
+      {/* Match list grouped by date */}
       <div className="space-y-2">
         {filtered.length === 0 ? (
-          /* Improvement 9: empty search state with icon */
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <SearchX className="h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-sm font-medium text-muted-foreground">
-              Žádné zápasy neodpovídají filtru
+          /* Better empty state with icon, message and reset action */
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-16 h-16 rounded-full bg-muted/60 flex items-center justify-center mb-4">
+              <SearchX className="h-7 w-7 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm font-semibold text-foreground/70">
+              Žádné zápasy nenalezeny
             </p>
-            <p className="text-xs text-muted-foreground/60 mt-1">
-              Zkuste upravit hledání nebo filtr
+            <p className="text-xs text-muted-foreground/60 mt-1.5 max-w-[220px]">
+              {search
+                ? `Pro "${search}" nebyly nalezeny žádné výsledky`
+                : "Pro zvolený filtr nejsou žádné zápasy"}
             </p>
+            {(search || statusFilter !== "all") && (
+              <button
+                onClick={() => { setSearch(""); setStatusFilter("all") }}
+                className="mt-4 text-xs text-primary font-medium hover:underline"
+              >
+                Zobrazit všechny zápasy
+              </button>
+            )}
           </div>
         ) : (
           groupedMatches.map((group) => (
             <div key={group.date}>
-              {/* Improvement 3: date section header */}
+              {/* Date section header with centered line design */}
               {group.date && (
-                <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-2 mb-1">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {group.date}
-                  </p>
+                <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm py-2.5 mb-1">
+                  <div className="flex items-center gap-2">
+                    <div className="h-px flex-1 bg-border/40" />
+                    <p className="text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest px-2">
+                      {group.dateLabel}
+                    </p>
+                    <div className="h-px flex-1 bg-border/40" />
+                  </div>
                 </div>
               )}
               <div className="space-y-2.5">
                 {group.matches.map((match) => (
-                  <MatchCard key={match.id} match={match} favoriteTeamIds={favorites} />
+                  <MatchCard key={match.id} match={match} favoriteTeamIds={favorites} showMatchType />
                 ))}
               </div>
             </div>

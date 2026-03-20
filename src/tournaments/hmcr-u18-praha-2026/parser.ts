@@ -14,6 +14,7 @@ import {
   GroupStanding,
 } from "@/lib/tournament/schema"
 import { makeId } from "@/lib/parsers/sheet-utils"
+import { clubData } from "./clubs"
 
 const SOURCE = "bvis-parser"
 
@@ -153,13 +154,21 @@ export class BvisParser implements TournamentParser {
       const qualifier = (row[3] ?? "").trim().toUpperCase() === "Q"
 
       const id = makeId(teamName)
-      teams.push({
+      const team: Team = {
         id,
         name: teamName,
         players,
         seed,
         ...(qualifier ? { groupId: "qualifier" } : {}),
-      })
+      }
+
+      const clubs = clubData[teamName]
+      if (clubs && team.players.length >= 2) {
+        team.players[0].club = clubs.player1Club
+        team.players[1].club = clubs.player2Club
+      }
+
+      teams.push(team)
     }
 
     if (teams.length > 0) {
@@ -199,13 +208,21 @@ export class BvisParser implements TournamentParser {
       const id = makeId(teamName)
 
       // Check for duplicate (team may already exist in HS startlist)
-      teams.push({
+      const team: Team = {
         id,
         name: teamName,
         players,
         seed,
         ...(groupId ? { groupId } : {}),
-      })
+      }
+
+      const clubs = clubData[teamName]
+      if (clubs && team.players.length >= 2) {
+        team.players[0].club = clubs.player1Club
+        team.players[1].club = clubs.player2Club
+      }
+
+      teams.push(team)
     }
 
     if (teams.length > 0) {

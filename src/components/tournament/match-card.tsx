@@ -7,9 +7,10 @@ interface MatchCardProps {
   match: Match
   compact?: boolean
   favoriteTeamIds?: Set<string>
+  showMatchType?: boolean
 }
 
-export function MatchCard({ match, compact, favoriteTeamIds }: MatchCardProps) {
+export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: MatchCardProps) {
   const msg = t().match
 
   const statusVariant = match.status === "live" ? "live" : match.status === "finished" ? "finished" : "scheduled"
@@ -20,9 +21,16 @@ export function MatchCard({ match, compact, favoriteTeamIds }: MatchCardProps) {
     favoriteTeamIds.has(match.teamB?.teamId ?? "")
   )
 
+  // Extract match number from ID (e.g., "hs-match-1" -> "1")
+  const matchNumber = match.id.match(/-(\d+)$/)?.[1]
+
   const isTBD = !match.teamA?.name || !match.teamB?.name
     || match.teamA.name.startsWith("Vítěz") || match.teamB.name.startsWith("Vítěz")
     || match.teamA.name.startsWith("Poražen") || match.teamB.name.startsWith("Poražen")
+
+  // Determine match type for badge display
+  const isQualification = match.round?.toLowerCase().includes("kvalifikac") || match.phase === "group"
+  const isPlayoff = match.phase === "playoff" || match.bracketRound != null
 
   return (
     <div className={cn(
@@ -30,24 +38,32 @@ export function MatchCard({ match, compact, favoriteTeamIds }: MatchCardProps) {
       match.status === "live"
         ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10"
         : match.status === "finished"
-          ? "border-border/60 shadow-none"  /* Improvement 5: finished matches more muted */
+          ? "border-border/60 shadow-none"
           : "border-border shadow-sm",
-      /* Improvement 10: favorite team highlight with subtle background */
       hasFavorite && match.status !== "live" && "border-l-[3px] border-l-red-400/70 bg-red-50/30",
-      /* Improvement 8: TBD matches styled with dashed border */
       isTBD && match.status === "scheduled" && "border-dashed border-border/50 opacity-75",
     )}>
-      {/* Improvement 4: better time/court/round hierarchy */}
+      {/* Time/court/round hierarchy */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
           {match.scheduledTime && (
             <span className="font-bold text-foreground/80 text-[13px] tracking-tight">{match.scheduledTime}</span>
           )}
           {match.round && !compact && (
             <span className="text-[11px] text-muted-foreground/70 font-medium">{match.round}</span>
           )}
+          {matchNumber && (
+            <span className="text-[11px] text-muted-foreground/50 font-medium">#{matchNumber}</span>
+          )}
           {match.court && (
             <span className="bg-muted/80 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/70">Kurt {match.court}</span>
+          )}
+          {/* Match type indicator */}
+          {showMatchType && isQualification && (
+            <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-secondary/15 text-secondary-foreground/70 border border-secondary/20">Kvalifikace</span>
+          )}
+          {showMatchType && isPlayoff && (
+            <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-primary/10 text-primary/80 border border-primary/15">Playoff</span>
           )}
         </div>
         <Badge variant={statusVariant}>{statusLabel}</Badge>
@@ -79,14 +95,14 @@ export function MatchCard({ match, compact, favoriteTeamIds }: MatchCardProps) {
 function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
   name: string; isWinner: boolean; sets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean
 }) {
-  /* Improvement 6: TBD entries styled differently */
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
+  /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
+  const isLoserRef = name.startsWith("Poražen")
 
   return (
     <div className={cn(
       "flex items-center justify-between py-1.5",
       isWinner ? "font-semibold" : "text-muted-foreground",
-      /* Improvement 5: finished losers more muted */
       isFinished && !isWinner && sets && sets.length > 0 && "opacity-60",
     )}>
       <div className="flex items-center gap-2 min-w-0">
@@ -95,12 +111,13 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
         <span className={cn(
           "truncate",
           isWinner ? "text-[15px]" : "text-sm",
-          /* Improvement 6: TBD styled italic and muted */
+          /* TBD styled italic and muted; "Poražený" entries even more muted */
           isTBDName && "italic text-muted-foreground/50 text-[13px]",
+          isLoserRef && "text-muted-foreground/35",
         )}>
           {name}
         </span>
-        {isFavorite && <span className="text-red-400 text-xs">♥</span>}
+        {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
       </div>
       {sets && (
         <div className="flex items-center gap-0.5 ml-3 font-score shrink-0">
