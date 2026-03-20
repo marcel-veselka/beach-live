@@ -20,10 +20,17 @@ export function findRows(sheet: SheetData, header: string, value: string): strin
   return sheet.rows.filter((row) => (row[idx] ?? "").trim() === value)
 }
 
-/** Generate a stable ID from parts */
+/** Generate a stable ID from parts. Normalizes Czech diacritics for consistent IDs. */
 export function makeId(...parts: string[]): string {
   return parts
-    .map((p) => p.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))
+    .map((p) =>
+      p
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")
+    )
     .filter(Boolean)
     .join("-")
 }

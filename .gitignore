@@ -32,6 +32,9 @@ yarn-error.log*
 .env
 .env*.local
 
+# local data (dev fallback for blob storage)
+.data/
+
 # vercel
 .vercel
 

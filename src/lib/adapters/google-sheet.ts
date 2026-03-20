@@ -12,8 +12,16 @@ export interface GoogleSheetResult {
 }
 
 function parseCSV(csv: string): SheetData {
-  const lines = csv.split("\n").filter((line) => line.trim() !== "")
-  if (lines.length === 0) return { headers: [], rows: [] }
+  // Strip BOM (byte order mark) that some sources prepend
+  const cleaned = csv.charCodeAt(0) === 0xfeff ? csv.slice(1) : csv
+
+  // Normalize line endings: \r\n -> \n, lone \r -> \n
+  const normalized = cleaned.replace(/\r\n/g, "\n").replace(/\r/g, "\n")
+
+  const lines = normalized.split("\n")
+  // Filter out completely empty rows, but keep rows that have commas (they may contain data)
+  const nonEmptyLines = lines.filter((line) => line.trim() !== "")
+  if (nonEmptyLines.length === 0) return { headers: [], rows: [] }
 
   const parseLine = (line: string): string[] => {
     const result: string[] = []
@@ -40,8 +48,12 @@ function parseCSV(csv: string): SheetData {
     return result
   }
 
-  const headers = parseLine(lines[0])
-  const rows = lines.slice(1).map(parseLine)
+  const headers = parseLine(nonEmptyLines[0])
+  const rows = nonEmptyLines
+    .slice(1)
+    .map(parseLine)
+    // Skip rows where every cell is empty (common in Google Sheets exports)
+    .filter((row) => row.some((cell) => cell !== ""))
   return { headers, rows }
 }
 
@@ -66,6 +78,7 @@ export class GoogleSheetPublicAdapter implements SourceAdapter<GoogleSheetResult
         const response = await fetch(url, {
           headers: { "User-Agent": "BeachLive/1.0" },
           next: { revalidate: 0 },
+          signal: AbortSignal.timeout(15_000),
         })
 
         if (!response.ok) {

@@ -40,28 +40,28 @@ export default async function HomePage() {
       <AutoRefresh />
 
       {/* Hero */}
-      <div className="mb-8">
-        <div className="flex items-start justify-between gap-4 mb-2">
+      <div className="relative -mx-4 mb-8 px-4 pt-6 pb-6 bg-hero-gradient rounded-b-2xl md:rounded-2xl md:mx-0">
+        <div className="flex items-start justify-between gap-4 mb-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
               {snapshot.metadata.name}
             </h1>
             {snapshot.metadata.subtitle && (
-              <p className="text-muted-foreground mt-1">{snapshot.metadata.subtitle}</p>
+              <p className="text-muted-foreground mt-1.5">{snapshot.metadata.subtitle}</p>
             )}
           </div>
-          <Badge variant={statusBadge as "live" | "finished" | "scheduled"}>
+          <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-sm px-3 py-1">
             {snapshot.status === "live" ? "Probíhá" : snapshot.status === "finished" ? "Dokončeno" : "Připravuje se"}
           </Badge>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
           {snapshot.metadata.venue && <span>📍 {snapshot.metadata.venue}</span>}
           {snapshot.metadata.dates && <span>📅 {snapshot.metadata.dates}</span>}
           {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
         </div>
 
-        <div className="mt-3 flex items-center gap-4">
+        <div className="mt-4 flex items-center gap-4">
           <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
           <SourceLinks sources={snapshot.sources} />
         </div>
@@ -121,7 +121,7 @@ export default async function HomePage() {
 function QuickLinkCard({ href, icon, label, count, suffix }: { href: string; icon: React.ReactNode; label: string; count: number; suffix: string }) {
   return (
     <Link href={href}>
-      <Card className="flex flex-col items-center py-4 hover:border-primary/30 hover:shadow-md transition-all cursor-pointer">
+      <Card hoverable className="flex flex-col items-center py-5 cursor-pointer hover:-translate-y-0.5 transition-all duration-200">
         <div className="text-primary mb-2">{icon}</div>
         <CardTitle className="text-sm">{label}</CardTitle>
         <p className="text-xs text-muted-foreground mt-1">{count} {suffix}</p>

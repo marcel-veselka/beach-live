@@ -32,7 +32,36 @@
   --radius-xl: 1rem;
 }
 
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+/* Safe area padding for mobile bottom nav */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Subtle gradient backgrounds */
+.bg-hero-gradient {
+  background: linear-gradient(180deg, var(--color-background) 0%, #eee8df 100%);
+}
+
+/* Score display */
+.font-score {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { refreshTournament } from "@/lib/refresh/pipeline"
 import { getActiveTournament } from "@/lib/tournament/registry"
+import { acquireRefreshLock, releaseRefreshLock } from "@/lib/refresh/lock"
 import "@/tournaments"
 
 export async function GET(request: NextRequest) {
@@ -15,6 +16,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "No active tournament" }, { status: 404 })
   }
 
-  const result = await refreshTournament(config)
-  return NextResponse.json(result)
+  if (!acquireRefreshLock(config.slug)) {
+    return NextResponse.json(
+      { error: "Refresh already in progress", slug: config.slug },
+      { status: 429 }
+    )
+  }
+
+  try {
+    const result = await refreshTournament(config)
+    return NextResponse.json(result)
+  } finally {
+    releaseRefreshLock(config.slug)
+  }
 }

@@ -57,8 +57,10 @@ describe("sheet-utils", () => {
       expect(makeId("match", "1")).toBe("match-1")
     })
 
-    it("removes special characters", () => {
-      expect(makeId("Štefan & Eva")).toBe("tefan-eva")
+    it("normalizes diacritics and removes special characters", () => {
+      expect(makeId("Štefan & Eva")).toBe("stefan-eva")
+      expect(makeId("Příbram")).toBe("pribram")
+      expect(makeId("Žďár")).toBe("zdar")
     })
 
     it("handles multiple parts", () => {
