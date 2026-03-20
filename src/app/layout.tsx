@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header"
 import { DesktopNav } from "@/components/layout/desktop-nav"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { Footer } from "@/components/layout/footer"
+import { Providers } from "@/components/layout/providers"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -35,13 +36,15 @@ export default function RootLayout({
   return (
     <html lang="cs">
       <body className="antialiased min-h-screen flex flex-col">
-        <Header />
-        <DesktopNav />
-        <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 pb-20 md:pb-6">
-          {children}
-        </main>
-        <Footer />
-        <MobileNav />
+        <Providers>
+          <Header />
+          <DesktopNav />
+          <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 pb-20 md:pb-6">
+            {children}
+          </main>
+          <Footer />
+          <MobileNav />
+        </Providers>
       </body>
     </html>
   )

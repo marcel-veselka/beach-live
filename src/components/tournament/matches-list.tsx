@@ -5,6 +5,7 @@ import { Match, Team } from "@/lib/tournament/schema"
 import { MatchCard } from "@/components/tournament/match-card"
 import { Search } from "lucide-react"
 import { t } from "@/lib/i18n"
+import { useFavorites } from "@/lib/favorites/context"
 
 interface MatchesListProps {
   matches: Match[]
@@ -16,6 +17,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
   const [search, setSearch] = useState(initialSearch ?? "")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const msg = t()
+  const { favorites } = useFavorites()
 
   const filtered = useMemo(() => {
     let result = matches
@@ -39,8 +41,17 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
       result = result.filter((m) => m.status === statusFilter)
     }
 
+    // Sort favorite team matches to the top
+    if (favorites.size > 0) {
+      result = [...result].sort((a, b) => {
+        const aFav = favorites.has(a.teamA?.teamId ?? "") || favorites.has(a.teamB?.teamId ?? "") ? 0 : 1
+        const bFav = favorites.has(b.teamA?.teamId ?? "") || favorites.has(b.teamB?.teamId ?? "") ? 0 : 1
+        return aFav - bFav
+      })
+    }
+
     return result
-  }, [matches, teams, search, statusFilter])
+  }, [matches, teams, search, statusFilter, favorites])
 
   const liveCount = matches.filter((m) => m.status === "live").length
   const scheduledCount = matches.filter((m) => m.status === "scheduled").length
@@ -97,7 +108,9 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
             Žádné zápasy neodpovídají filtru.
           </p>
         ) : (
-          filtered.map((match) => <MatchCard key={match.id} match={match} />)
+          filtered.map((match) => (
+            <MatchCard key={match.id} match={match} favoriteTeamIds={favorites} />
+          ))
         )}
       </div>
     </div>

@@ -1,11 +1,10 @@
 import { Metadata } from "next"
 import { loadTournamentData } from "@/lib/tournament/load"
 import { Section } from "@/components/ui/section"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { EmptyState } from "@/components/ui/empty-state"
 import { FreshnessIndicator } from "@/components/tournament/freshness-indicator"
 import { AutoRefresh } from "@/components/tournament/auto-refresh"
+import { BracketMatchNodeClient, BracketMatchCardClient } from "@/components/tournament/bracket-favorites"
 import { t } from "@/lib/i18n"
 import { GitBranch } from "lucide-react"
 import { BracketMatch } from "@/lib/tournament/schema"
@@ -47,7 +46,7 @@ export default async function BracketPage() {
               </h3>
               <div className="flex flex-col gap-3 justify-around flex-1">
                 {round.matches.map((match: BracketMatch) => (
-                  <BracketMatchNode key={match.matchId} match={match} />
+                  <BracketMatchNodeClient key={match.matchId} match={match} />
                 ))}
               </div>
             </div>
@@ -61,79 +60,12 @@ export default async function BracketPage() {
           <Section key={round.name} title={round.name}>
             <div className="space-y-3">
               {round.matches.map((match: BracketMatch) => (
-                <BracketMatchCard key={match.matchId} match={match} />
+                <BracketMatchCardClient key={match.matchId} match={match} />
               ))}
             </div>
           </Section>
         ))}
       </div>
     </>
-  )
-}
-
-function BracketMatchNode({ match }: { match: BracketMatch }) {
-  return (
-    <Card className="p-3 space-y-1">
-      <BracketTeamRow
-        name={match.teamA?.name ?? "TBD"}
-        isWinner={match.winner === "teamA"}
-      />
-      <div className="border-t border-border" />
-      <BracketTeamRow
-        name={match.teamB?.name ?? "TBD"}
-        isWinner={match.winner === "teamB"}
-      />
-      {match.score && (
-        <div className="text-xs text-muted-foreground text-center pt-1">
-          {match.score}
-        </div>
-      )}
-    </Card>
-  )
-}
-
-function BracketMatchCard({ match }: { match: BracketMatch }) {
-  return (
-    <Card className="p-3">
-      <div className="flex items-center justify-between">
-        <div className="flex-1 space-y-1">
-          <BracketTeamRow
-            name={match.teamA?.name ?? "TBD"}
-            isWinner={match.winner === "teamA"}
-          />
-          <BracketTeamRow
-            name={match.teamB?.name ?? "TBD"}
-            isWinner={match.winner === "teamB"}
-          />
-        </div>
-        {match.score && (
-          <div className="ml-3 text-sm font-mono text-muted-foreground">
-            {match.score}
-          </div>
-        )}
-        {match.winner && (
-          <Badge variant="finished" className="ml-2">
-            ✓
-          </Badge>
-        )}
-      </div>
-    </Card>
-  )
-}
-
-function BracketTeamRow({
-  name,
-  isWinner,
-}: {
-  name: string
-  isWinner: boolean
-}) {
-  return (
-    <div
-      className={`text-sm py-0.5 ${isWinner ? "font-semibold text-foreground" : "text-muted-foreground"}`}
-    >
-      {isWinner && <span className="text-success mr-1">▸</span>}
-      {name}
-    </div>
   )
 }

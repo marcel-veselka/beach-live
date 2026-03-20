@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Search, Users } from "lucide-react"
 import { t } from "@/lib/i18n"
 import Link from "next/link"
+import { useFavorites } from "@/lib/favorites/context"
+import { FavoriteButton } from "@/components/tournament/favorite-button"
 
 interface TeamsListProps {
   teams: Team[]
@@ -16,16 +18,25 @@ interface TeamsListProps {
 export function TeamsList({ teams, matches }: TeamsListProps) {
   const [search, setSearch] = useState("")
   const msg = t()
+  const { isFavorite } = useFavorites()
 
   const filtered = useMemo(() => {
-    if (!search) return teams
-    const q = search.toLowerCase()
-    return teams.filter(
-      (team) =>
-        team.name.toLowerCase().includes(q) ||
-        team.players.some((p) => p.name.toLowerCase().includes(q))
-    )
-  }, [teams, search])
+    let result = teams
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter(
+        (team) =>
+          team.name.toLowerCase().includes(q) ||
+          team.players.some((p) => p.name.toLowerCase().includes(q))
+      )
+    }
+    // Sort favorites to top
+    return [...result].sort((a, b) => {
+      const aFav = isFavorite(a.id) ? 0 : 1
+      const bFav = isFavorite(b.id) ? 0 : 1
+      return aFav - bFav
+    })
+  }, [teams, search, isFavorite])
 
   const getTeamStats = (teamId: string) => {
     const teamMatches = matches.filter(
@@ -76,6 +87,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
         ) : (
           filtered.map((team, index) => {
             const stats = getTeamStats(team.id)
+            const fav = isFavorite(team.id)
             return (
               <Link
                 key={team.id}
@@ -83,7 +95,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
                 className="block"
               >
                 <Card
-                  className="hover:border-primary/30 hover:shadow-md transition-all group cursor-pointer"
+                  className={`hover:border-primary/30 hover:shadow-md transition-all group cursor-pointer ${fav ? "ring-1 ring-red-200 border-red-200/60" : ""}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -106,9 +118,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
                         </div>
                       )}
                     </div>
-                    <div className="shrink-0 p-1.5 rounded-lg bg-muted/50">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                    </div>
+                    <FavoriteButton teamId={team.id} />
                   </div>
 
                   {stats.played > 0 && (

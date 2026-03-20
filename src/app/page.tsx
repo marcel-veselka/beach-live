@@ -6,6 +6,7 @@ import { MatchCard } from "@/components/tournament/match-card"
 import { FreshnessIndicator } from "@/components/tournament/freshness-indicator"
 import { SourceLinks } from "@/components/tournament/source-links"
 import { AutoRefresh } from "@/components/tournament/auto-refresh"
+import { FavoriteMatches } from "@/components/tournament/favorite-matches"
 import { EmptyState } from "@/components/ui/empty-state"
 import { t } from "@/lib/i18n"
 import { Trophy, GitBranch, Users, Swords, LayoutGrid } from "lucide-react"
@@ -85,6 +86,9 @@ export default async function HomePage() {
           <SourceLinks sources={snapshot.sources} />
         </div>
       </div>
+
+      {/* Favorite teams matches */}
+      <FavoriteMatches matches={snapshot.matches.filter(hasRealTeams)} />
 
       {/* Live / Now */}
       {liveMatches.length > 0 && (

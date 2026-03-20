@@ -6,18 +6,25 @@ import { cn } from "@/lib/utils"
 interface MatchCardProps {
   match: Match
   compact?: boolean
+  favoriteTeamIds?: Set<string>
 }
 
-export function MatchCard({ match, compact }: MatchCardProps) {
+export function MatchCard({ match, compact, favoriteTeamIds }: MatchCardProps) {
   const msg = t().match
 
   const statusVariant = match.status === "live" ? "live" : match.status === "finished" ? "finished" : "scheduled"
   const statusLabel = match.status === "live" ? msg.live : match.status === "finished" ? msg.finished : msg.scheduled
 
+  const hasFavorite = favoriteTeamIds && (
+    favoriteTeamIds.has(match.teamA?.teamId ?? "") ||
+    favoriteTeamIds.has(match.teamB?.teamId ?? "")
+  )
+
   return (
     <div className={cn(
       "rounded-xl border bg-card p-4 transition-all",
       match.status === "live" ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10" : "border-border shadow-sm",
+      hasFavorite && match.status !== "live" && "border-l-2 border-l-red-400/60",
     )}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -40,6 +47,7 @@ export function MatchCard({ match, compact }: MatchCardProps) {
           isWinner={match.score?.winner === "teamA"}
           sets={match.score?.sets.map(s => s.teamA)}
           isLive={match.status === "live"}
+          isFavorite={favoriteTeamIds?.has(match.teamA?.teamId ?? "") ?? false}
         />
         <div className="score-separator my-1" />
         <TeamRow
@@ -47,13 +55,14 @@ export function MatchCard({ match, compact }: MatchCardProps) {
           isWinner={match.score?.winner === "teamB"}
           sets={match.score?.sets.map(s => s.teamB)}
           isLive={match.status === "live"}
+          isFavorite={favoriteTeamIds?.has(match.teamB?.teamId ?? "") ?? false}
         />
       </div>
     </div>
   )
 }
 
-function TeamRow({ name, isWinner, sets, isLive }: { name: string; isWinner: boolean; sets?: number[]; isLive?: boolean }) {
+function TeamRow({ name, isWinner, sets, isLive, isFavorite }: { name: string; isWinner: boolean; sets?: number[]; isLive?: boolean; isFavorite?: boolean }) {
   return (
     <div className={cn(
       "flex items-center justify-between py-1",
@@ -63,6 +72,7 @@ function TeamRow({ name, isWinner, sets, isLive }: { name: string; isWinner: boo
         {isWinner && <span className="text-success text-[10px]">●</span>}
         {!isWinner && sets && sets.length > 0 && <span className="w-[10px]" />}
         <span className={cn("truncate", isWinner ? "text-[15px]" : "text-sm")}>{name}</span>
+        {isFavorite && <span className="text-red-400 text-[10px]">♥</span>}
       </div>
       {sets && (
         <div className="flex items-center gap-0 ml-3 font-score shrink-0">
