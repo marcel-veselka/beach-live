@@ -1,0 +1,27 @@
+name: Refresh Tournament Data
+
+on:
+  schedule:
+    # Every 5 minutes during tournament hours (6:00-22:00 UTC, roughly 7:00-23:00 CET)
+    - cron: "*/5 6-22 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger refresh
+        run: |
+          response=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            "${{ vars.DEPLOYMENT_URL }}/api/refresh?secret=${{ secrets.REFRESH_SECRET }}")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "HTTP $http_code"
+          echo "$body" | jq . 2>/dev/null || echo "$body"
+
+          if [ "$http_code" -ge 500 ]; then
+            echo "::warning::Refresh returned $http_code"
+          fi

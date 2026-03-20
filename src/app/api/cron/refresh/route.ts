@@ -5,9 +5,13 @@ import { acquireRefreshLock, releaseRefreshLock } from "@/lib/refresh/lock"
 import "@/tournaments"
 
 export async function GET(request: NextRequest) {
-  // Verify cron secret
+  // Verify secret via Bearer header or query param
   const authHeader = request.headers.get("authorization")
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const querySecret = request.nextUrl.searchParams.get("secret")
+  const isAuthorized =
+    authHeader === `Bearer ${process.env.CRON_SECRET}` ||
+    querySecret === process.env.REFRESH_SECRET
+  if (!isAuthorized) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
