@@ -10,7 +10,8 @@ export function Header() {
             Beach Live
           </span>
         </Link>
-        <span className="hidden sm:inline-flex items-center gap-1 text-xs text-muted-foreground">
+        <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="w-1.5 h-1.5 rounded-full bg-live animate-pulse" />
           Živé výsledky
         </span>
       </div>

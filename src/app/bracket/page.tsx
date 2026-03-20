@@ -90,8 +90,8 @@ export default async function BracketPage() {
                   </div>
                   {/* Connector between rounds */}
                   {!isLastRound && (
-                    <div className="flex items-center justify-center w-6 self-stretch">
-                      <div className="w-px h-full bg-gradient-to-b from-transparent via-border/50 to-transparent" />
+                    <div className="flex items-center justify-center w-8 self-stretch">
+                      <div className="w-px h-3/4 bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
                     </div>
                   )}
                 </div>
@@ -104,9 +104,9 @@ export default async function BracketPage() {
         {placementRounds.length > 0 && (
           <>
             <div className="flex items-center gap-3 my-6">
-              <div className="h-px flex-1 bg-border/30" />
-              <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">O umístění</span>
-              <div className="h-px flex-1 bg-border/30" />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/40 to-transparent" />
+              <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest bg-muted/50 px-3 py-1 rounded-full">O umístění</span>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/40 to-transparent" />
             </div>
             <div className="flex gap-6 min-w-max pb-4">
               {placementRounds.map((round) => (

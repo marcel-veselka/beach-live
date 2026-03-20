@@ -15,9 +15,8 @@ export function GroupCardClient({ group }: { group: Group }) {
 
   return (
     <Card className="p-0 overflow-hidden">
-      {/* Improvement 1: group card header with letter badge and team count */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-muted/40 border-b border-border/50">
-        <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary font-bold text-sm flex items-center justify-center shrink-0">
+      <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-muted/50 to-muted/20 border-b border-border/50">
+        <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/70 text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-sm shadow-primary/20">
           {groupLetter}
         </span>
         <div className="flex-1 min-w-0">
