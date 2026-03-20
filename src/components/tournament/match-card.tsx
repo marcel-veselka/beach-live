@@ -116,8 +116,8 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
   )
 }
 
-function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite, isSeedFavorite }: {
-  name: string; isWinner: boolean; sets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean
+function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed }: {
+  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number
 }) {
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
   /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
@@ -132,6 +132,7 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite, isSeedF
       <div className="flex items-center gap-2 min-w-0">
         {isWinner && <span className="text-success text-xs">▸</span>}
         {!isWinner && sets && sets.length > 0 && <span className="w-[12px]" />}
+        {seed && <span className="text-[10px] text-muted-foreground/40 font-score font-bold w-5 text-right shrink-0">{seed}</span>}
         <span className={cn(
           "truncate",
           isWinner ? "text-[15px]" : "text-sm",

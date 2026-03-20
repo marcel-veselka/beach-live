@@ -70,14 +70,9 @@ export default async function HomePage() {
 
       {/* Hero - compact with volleyball decorative element */}
       <div className="relative -mx-4 mb-6 px-4 pt-4 pb-4 bg-hero-gradient md:rounded-2xl md:mx-0">
-        {/* Decorative volleyball SVG */}
-        <div className="absolute top-1 right-3 opacity-[0.08] pointer-events-none" aria-hidden="true">
-          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 2a14.5 14.5 0 0 0 0 20" />
-            <path d="M2 12c2.5-3.5 5.5-5 10-5s7.5 1.5 10 5" />
-            <path d="M2 12c2.5 3.5 5.5 5 10 5s7.5-1.5 10-5" />
-          </svg>
+        {/* Decorative Mikasa-style volleyball */}
+        <div className="absolute top-1 right-3 opacity-[0.15] pointer-events-none" aria-hidden="true">
+          <VolleyballIcon size={72} />
         </div>
 
         <div className="flex items-center gap-2.5 mb-1">
@@ -95,7 +90,7 @@ export default async function HomePage() {
           {snapshot.metadata.subtitle && <span className="text-muted-foreground/30">•</span>}
           {snapshot.metadata.venue && <span>📍 {snapshot.metadata.venue}</span>}
           {snapshot.metadata.dates && <span>📅 {snapshot.metadata.dates}</span>}
-          {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
+          {snapshot.metadata.category && <span className="inline-flex items-center gap-1"><VolleyballIcon size={12} /> {snapshot.metadata.category}</span>}
         </div>
 
         {(() => {
