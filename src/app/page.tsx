@@ -70,8 +70,8 @@ export default async function HomePage() {
       {/* Hero - compact with volleyball decorative element */}
       <div className="relative -mx-4 mb-6 px-4 pt-4 pb-4 bg-hero-gradient md:rounded-2xl md:mx-0">
         {/* Decorative volleyball SVG */}
-        <div className="absolute top-2 right-4 opacity-[0.06] pointer-events-none" aria-hidden="true">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+        <div className="absolute top-1 right-3 opacity-[0.08] pointer-events-none" aria-hidden="true">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 2a14.5 14.5 0 0 0 0 20" />
             <path d="M2 12c2.5-3.5 5.5-5 10-5s7.5 1.5 10 5" />

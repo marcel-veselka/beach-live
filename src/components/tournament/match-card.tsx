@@ -44,12 +44,12 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
 
   return (
     <div className={cn(
-      "rounded-xl border bg-card p-4 transition-all",
+      "rounded-xl border bg-card p-4 transition-all duration-200",
       match.status === "live"
         ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10 live-glow"
         : match.status === "finished"
-          ? "border-border/40 shadow-none bg-card/80"
-          : "border-border shadow-sm",
+          ? "border-border/40 shadow-none bg-card/80 hover:border-border/60"
+          : "border-border shadow-sm hover:shadow-md hover:border-primary/20",
       hasFavorite && match.status !== "live" && "border-l-[3px] border-l-red-400/70 bg-red-50/30",
       isTBD && match.status === "scheduled" && "border-dashed border-border/50 opacity-75",
     )}>
