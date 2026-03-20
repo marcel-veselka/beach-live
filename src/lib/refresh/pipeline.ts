@@ -20,7 +20,7 @@ export async function refreshTournament(config: TournamentConfig): Promise<Refre
     const { data: sheetData, warnings: adapterWarnings } = await adapter.fetch(config)
 
     // 2. Parse into normalized snapshot
-    const parser = new DefaultTournamentParser()
+    const parser = config.parser ?? new DefaultTournamentParser()
     const { snapshot, warnings: parserWarnings } = parser.parse(sheetData, config)
 
     // 3. Update meta

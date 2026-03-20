@@ -74,9 +74,13 @@ export class GoogleSheetPublicAdapter implements SourceAdapter<GoogleSheetResult
 
     for (const sheet of sheetsToFetch) {
       try {
-        // Try gviz/tq endpoint first (works for most public sheets), then fall back to /export
-        const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/gviz/tq?tqx=out:csv&gid=${sheet.gid}`
-        const exportUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/export?format=csv&gid=${sheet.gid}`
+        // Build URLs based on whether we have a sheetName or gid
+        const sheetParam = sheet.sheetName
+          ? `sheet=${encodeURIComponent(sheet.sheetName)}`
+          : `gid=${sheet.gid ?? 0}`
+
+        const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/gviz/tq?tqx=out:csv&${sheetParam}`
+        const exportUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/export?format=csv&${sheetParam}`
 
         let csv: string | null = null
 
@@ -104,7 +108,7 @@ export class GoogleSheetPublicAdapter implements SourceAdapter<GoogleSheetResult
         if (!csv) {
           warnings.push({
             source: this.name,
-            message: `Failed to fetch sheet "${sheet.name}" (gid=${sheet.gid}): all endpoints failed`,
+            message: `Failed to fetch sheet "${sheet.name}" (${sheet.sheetName ? `sheetName=${sheet.sheetName}` : `gid=${sheet.gid}`}): all endpoints failed`,
             timestamp: new Date().toISOString(),
           })
           continue

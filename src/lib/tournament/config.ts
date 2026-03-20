@@ -1,10 +1,11 @@
 import { SourceReference } from "./schema"
+import { TournamentParser } from "@/lib/parsers/types"
 
 export interface TournamentSourceConfig {
   googleSheet?: {
     spreadsheetId: string
     /** Tab names or gids to fetch */
-    sheets?: { name: string; gid: number }[]
+    sheets?: { name: string; gid?: number; sheetName?: string }[]
   }
   pdf?: {
     url: string
@@ -26,4 +27,6 @@ export interface TournamentConfig {
   sourceReferences: SourceReference[]
   /** If true, this is the active/default tournament shown at / */
   active?: boolean
+  /** Custom parser for this tournament's data format */
+  parser?: TournamentParser
 }
