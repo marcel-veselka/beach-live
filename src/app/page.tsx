@@ -40,8 +40,8 @@ export default async function HomePage() {
     m.teamA.name !== "TBD" && m.teamB.name !== "TBD"
 
   const liveMatches = snapshot.matches.filter((m: Match) => m.status === "live" && hasRealTeams(m))
-  const scheduledMatches = snapshot.matches.filter((m: Match) => m.status === "scheduled" && hasRealTeams(m)).slice(0, 4)
-  const recentFinished = snapshot.matches.filter((m: Match) => m.status === "finished" && hasRealTeams(m)).slice(-4).reverse()
+  const scheduledMatches = snapshot.matches.filter((m: Match) => m.status === "scheduled" && hasRealTeams(m)).slice(0, 6)
+  const recentFinished = snapshot.matches.filter((m: Match) => m.status === "finished" && hasRealTeams(m)).slice(-6).reverse()
 
   const statusBadge = snapshot.status === "live" ? "live" : snapshot.status === "finished" ? "finished" : "scheduled"
 

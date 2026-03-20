@@ -4,7 +4,7 @@
   --color-background: #faf8f5;
   --color-foreground: #1c1917;
   --color-muted: #f5f0eb;
-  --color-muted-foreground: #78716c;
+  --color-muted-foreground: #65605a;
   --color-card: #ffffff;
   --color-card-foreground: #1c1917;
   --color-popover: #ffffff;
@@ -15,8 +15,8 @@
   --color-secondary-foreground: #1c1917;
   --color-accent: #e8e0d4;
   --color-accent-foreground: #1c1917;
-  --color-border: #e7e0d8;
-  --color-input: #e7e0d8;
+  --color-border: #ddd5cc;
+  --color-input: #ddd5cc;
   --color-ring: #0c7792;
   --color-success: #16a34a;
   --color-warning: #d97706;

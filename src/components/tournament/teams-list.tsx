@@ -96,6 +96,15 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
     )
   }
 
+  /** Get the last finished match for a team */
+  const getLastMatch = (teamId: string): Match | undefined => {
+    const finished = matches.filter(
+      (m) => m.status === "finished" &&
+        (m.teamA?.teamId === teamId || m.teamB?.teamId === teamId)
+    )
+    return finished[finished.length - 1]
+  }
+
   /** Check if team qualified (came through qualification rounds) */
   const isQualified = (teamId: string): boolean => {
     return matches.some(
@@ -111,6 +120,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
     const stats = getTeamStats(team.id)
     const fav = isFavorite(team.id)
     const nextMatch = getNextMatch(team.id)
+    const lastMatch = getLastMatch(team.id)
     const qualified = isQualified(team.id)
     const seed = team.seed
 
@@ -157,7 +167,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           </div>
 
           {/* Badges row */}
-          <div className="mt-3 pt-3 border-t border-border/40 flex items-center gap-1.5 text-xs flex-wrap">
+          <div className="mt-2.5 pt-2.5 border-t border-border/40 flex items-center gap-1.5 text-xs flex-wrap">
             {qualified && !isQSection && (
               <Badge variant="default" className="text-[10px] font-semibold uppercase tracking-wider bg-gradient-to-r from-secondary/20 to-secondary/10 text-secondary-foreground/80 border border-secondary/25">Kvalifikace</Badge>
             )}
@@ -178,6 +188,26 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
             )}
           </div>
 
+          {/* Last match result (shown when no next match) */}
+          {lastMatch && !nextMatch && (() => {
+            const isTeamA = lastMatch.teamA?.teamId === team.id
+            const won = (lastMatch.score?.winner === "teamA" && isTeamA) || (lastMatch.score?.winner === "teamB" && !isTeamA)
+            const opponent = isTeamA ? lastMatch.teamB?.name : lastMatch.teamA?.name
+            const setsA = lastMatch.score?.sets.reduce((c, s) => c + (s.teamA > s.teamB ? 1 : 0), 0) ?? 0
+            const setsB = lastMatch.score?.sets.reduce((c, s) => c + (s.teamB > s.teamA ? 1 : 0), 0) ?? 0
+            const setScore = isTeamA ? `${setsA}:${setsB}` : `${setsB}:${setsA}`
+            return (
+              <div className={cn(
+                "mt-2.5 flex items-center gap-2 text-[11px] rounded-lg px-3 py-2 border",
+                won ? "text-success/80 bg-success/[0.03] border-success/15" : "text-warning/80 bg-warning/[0.03] border-warning/15"
+              )}>
+                <span className="font-bold font-score">{setScore}</span>
+                <span className="truncate">vs {opponent}</span>
+                <span className={cn("text-[10px] font-bold ml-auto shrink-0", won ? "text-success" : "text-warning")}>{won ? "V" : "P"}</span>
+              </div>
+            )
+          })()}
+
           {/* Next match preview */}
           {nextMatch && (
             <div className="mt-2.5 flex items-center gap-2 text-[11px] text-muted-foreground/70 bg-primary/[0.03] border border-primary/10 rounded-lg px-3 py-2">
@@ -191,7 +221,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
             </div>
           )}
 
-          <span className="mt-3 inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:underline bg-primary/5 rounded-full px-3 py-1.5 transition-colors group-hover:bg-primary/10">
+          <span className="mt-2 inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:underline bg-primary/5 rounded-full px-3 py-1.5 transition-colors group-hover:bg-primary/10">
             Zobrazit zápasy &rarr;
           </span>
         </Card>

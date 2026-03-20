@@ -96,20 +96,24 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           name={match.teamA?.name ?? "TBD"}
           isWinner={match.score?.winner === "teamA"}
           sets={match.score?.sets.map(s => s.teamA)}
+          opponentSets={match.score?.sets.map(s => s.teamB)}
           isLive={match.status === "live"}
           isFinished={match.status === "finished"}
           isFavorite={favoriteTeamIds?.has(match.teamA?.teamId ?? "") ?? false}
           isSeedFavorite={teamAIsSeedFavorite}
+          seed={seedA}
         />
         <div className="score-separator my-1" />
         <TeamRow
           name={match.teamB?.name ?? "TBD"}
           isWinner={match.score?.winner === "teamB"}
           sets={match.score?.sets.map(s => s.teamB)}
+          opponentSets={match.score?.sets.map(s => s.teamA)}
           isLive={match.status === "live"}
           isFinished={match.status === "finished"}
           isFavorite={favoriteTeamIds?.has(match.teamB?.teamId ?? "") ?? false}
           isSeedFavorite={teamBIsSeedFavorite}
+          seed={seedB}
         />
       </div>
     </div>
@@ -148,20 +152,23 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
       {/* #2: Volleyball-style scoreboard look */}
       {sets && (
         <div className="flex items-center gap-px ml-3 font-score shrink-0 bg-muted/30 rounded-lg p-0.5">
-          {sets.map((s, i) => (
+          {sets.map((s, i) => {
+            const wonThisSet = opponentSets && opponentSets[i] !== undefined && s > opponentSets[i]
+            return (
             <span
               key={i}
               className={cn(
                 "w-8 h-8 flex items-center justify-center text-[15px] first:rounded-l-md last:rounded-r-md",
-                isWinner
-                  ? "font-bold text-foreground bg-card"
+                wonThisSet
+                  ? "font-bold text-success bg-success/8"
                   : "text-muted-foreground bg-transparent",
                 isLive && i === sets.length - 1 && "bg-live/10 text-live font-bold ring-1 ring-live/20"
               )}
             >
               {s}
             </span>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

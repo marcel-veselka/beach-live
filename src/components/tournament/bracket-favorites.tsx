@@ -56,6 +56,7 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
       hasFav && "ring-1 ring-red-200 border-red-200/60",
       isTBD && !match.winner && "border-dashed opacity-70 tbd-pattern",
       match.winner && "bg-muted/20",
+      match.winner && "border-l-2 border-l-secondary/50",
     )}>
       <div className="flex items-center justify-between">
         {/* #7: Match number integrated as left accent */}
@@ -121,14 +122,14 @@ function BracketTeamRow({
     <div
       className={cn(
         "text-sm py-0.5 flex items-center gap-1.5",
-        isWinner ? "font-semibold text-foreground" : "text-muted-foreground",
+        isWinner ? "font-bold text-foreground text-[15px]" : "text-muted-foreground",
         isLoser && "opacity-50",
         isTBDName && "italic text-muted-foreground/40 text-[13px]",
         isLoserRef && "text-muted-foreground/30",
       )}
       title={tbdTooltip}
     >
-      {isWinner && <span className="text-success text-xs">&#9656;</span>}
+      {isWinner && <span className="text-secondary text-xs">&#9733;</span>}
       <span className="truncate">{name}</span>
       {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
     </div>
