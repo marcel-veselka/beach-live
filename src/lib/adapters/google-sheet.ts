@@ -69,28 +69,47 @@ export class GoogleSheetPublicAdapter implements SourceAdapter<GoogleSheetResult
     const warnings: ParserWarning[] = []
     const sheets: Record<string, SheetData> = {}
 
-    // If specific sheets are configured, fetch each
+    // If specific sheets are configured, fetch each; otherwise fetch the default sheet
     const sheetsToFetch = sheetConfig.sheets ?? [{ name: "default", gid: 0 }]
 
     for (const sheet of sheetsToFetch) {
       try {
-        const url = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/export?format=csv&gid=${sheet.gid}`
-        const response = await fetch(url, {
-          headers: { "User-Agent": "BeachLive/1.0" },
-          next: { revalidate: 0 },
-          signal: AbortSignal.timeout(15_000),
-        })
+        // Try gviz/tq endpoint first (works for most public sheets), then fall back to /export
+        const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/gviz/tq?tqx=out:csv&gid=${sheet.gid}`
+        const exportUrl = `https://docs.google.com/spreadsheets/d/${sheetConfig.spreadsheetId}/export?format=csv&gid=${sheet.gid}`
 
-        if (!response.ok) {
+        let csv: string | null = null
+
+        for (const url of [gvizUrl, exportUrl]) {
+          try {
+            const response = await fetch(url, {
+              headers: { "User-Agent": "BeachLive/1.0" },
+              redirect: "follow",
+              signal: AbortSignal.timeout(15_000),
+            })
+
+            if (response.ok) {
+              const text = await response.text()
+              // Verify it's actually CSV, not HTML error page
+              if (!text.trim().startsWith("<!DOCTYPE") && !text.trim().startsWith("<html")) {
+                csv = text
+                break
+              }
+            }
+          } catch {
+            // Try next URL
+          }
+        }
+
+        if (!csv) {
           warnings.push({
             source: this.name,
-            message: `Failed to fetch sheet "${sheet.name}" (gid=${sheet.gid}): ${response.status}`,
+            message: `Failed to fetch sheet "${sheet.name}" (gid=${sheet.gid}): all endpoints failed`,
             timestamp: new Date().toISOString(),
           })
           continue
         }
 
-        const csv = await response.text()
         sheets[sheet.name] = parseCSV(csv)
       } catch (error) {
         warnings.push({
