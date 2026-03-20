@@ -44,7 +44,7 @@ export default async function BracketPage() {
     <>
       <AutoRefresh />
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="section-heading text-2xl font-extrabold tracking-tight">
           {msg.bracket.title}
         </h1>
         <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />

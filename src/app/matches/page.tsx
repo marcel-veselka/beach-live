@@ -33,7 +33,7 @@ export default async function MatchesPage({ searchParams }: PageProps) {
     <>
       <AutoRefresh />
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="section-heading text-2xl font-extrabold tracking-tight">
           {msg.nav.matches}
         </h1>
         <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />

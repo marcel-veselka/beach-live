@@ -174,7 +174,7 @@ body {
 }
 
 .animate-card-in {
-  animation: card-slide-up 0.3s ease-out both;
+  animation: card-slide-up 0.2s ease-out both;
 }
 
 /* MATCHES #10 / BRACKET #10: Glow for live matches */
@@ -241,4 +241,21 @@ body {
 
 .animate-fade-in-up {
   animation: fade-in-up 0.4s ease-out both;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .animate-card-in,
+  .animate-fade-in-up {
+    animation: none !important;
+  }
+  .live-glow {
+    animation: none !important;
+  }
+  .badge-shimmer {
+    animation: none !important;
+  }
+  .press-scale:active {
+    transform: none;
+  }
 }

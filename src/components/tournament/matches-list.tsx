@@ -118,6 +118,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
   return (
     <div className="space-y-4">
       {/* Search */}
+      <div className="sticky top-14 z-20 bg-background/95 backdrop-blur-sm pb-2 -mx-4 px-4 pt-2 md:static md:bg-transparent md:backdrop-blur-none md:p-0 md:m-0">
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground/60" />
         <input
@@ -136,6 +137,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
             <X className="h-3.5 w-3.5 text-primary/70" />
           </button>
         )}
+      </div>
       </div>
 
       {/* #1: Status filters with animated transitions */}

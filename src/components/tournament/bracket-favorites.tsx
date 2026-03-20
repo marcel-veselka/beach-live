@@ -80,7 +80,7 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
           />
         </div>
         {match.score && (
-          <div className="ml-3 text-xs font-score font-medium text-muted-foreground bg-muted/50 px-2.5 py-1.5 rounded-lg shrink-0">
+          <div className="ml-3 text-sm font-score font-medium text-muted-foreground bg-muted/50 px-2.5 py-1.5 rounded-lg shrink-0">
             {match.score}
           </div>
         )}

@@ -163,7 +163,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
 
           {/* Badges row */}
           <div className="mt-3 pt-3 border-t border-border/40 flex items-center gap-1.5 text-xs flex-wrap">
-            {qualified && (
+            {qualified && !isQSection && (
               <Badge variant="default" className="text-[10px] font-semibold uppercase tracking-wider bg-gradient-to-r from-secondary/20 to-secondary/10 text-secondary-foreground/80 border border-secondary/25">Kvalifikace</Badge>
             )}
             {stats.played > 0 && (
@@ -207,6 +207,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
   return (
     <div className="space-y-4">
       {/* Search */}
+      <div className="sticky top-14 z-20 bg-background/95 backdrop-blur-sm pb-2 -mx-4 px-4 pt-2 md:static md:bg-transparent md:backdrop-blur-none md:p-0 md:m-0">
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-muted-foreground/60" />
         <input
@@ -225,6 +226,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           </button>
         )}
       </div>
+      </div>
 
       {/* Results count */}
       <p className="text-[11px] text-muted-foreground/50 px-1 font-medium tracking-wide">
@@ -234,9 +236,18 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
 
       {/* Team grid */}
       {filtered.length === 0 ? (
-        <p className="text-center text-sm text-muted-foreground py-8">
-          Žádné týmy neodpovídají hledání.
-        </p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-16 h-16 rounded-full bg-muted/60 flex items-center justify-center mb-4">
+            <Search className="h-7 w-7 text-muted-foreground/40" />
+          </div>
+          <p className="text-sm font-semibold text-foreground/70">Žádné týmy nenalezeny</p>
+          <p className="text-xs text-muted-foreground/60 mt-1.5 max-w-[220px]">
+            Pro &ldquo;{search}&rdquo; nebyly nalezeny žádné výsledky
+          </p>
+          <button onClick={() => setSearch("")} className="mt-4 text-xs text-primary font-medium hover:underline">
+            Zobrazit všechny týmy
+          </button>
+        </div>
       ) : hasQTeams ? (
         <div className="space-y-4">
           {/* Main event section */}

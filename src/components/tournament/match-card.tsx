@@ -77,6 +77,11 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           )}
         </div>
         <Badge variant={statusVariant}>{statusLabel}</Badge>
+        {(match.status === "finished" || match.status === "live") && match.score?.sets && match.score.sets.length > 0 && (() => {
+          const setsA = match.score!.sets.reduce((count, s) => count + (s.teamA > s.teamB ? 1 : 0), 0)
+          const setsB = match.score!.sets.reduce((count, s) => count + (s.teamB > s.teamA ? 1 : 0), 0)
+          return <span className={cn("text-base font-bold font-score", match.status === "finished" && "text-foreground")}>{setsA}:{setsB}</span>
+        })()}
       </div>
 
       <div className="space-y-0">
@@ -139,7 +144,7 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite, isSeedF
             <span
               key={i}
               className={cn(
-                "w-7 h-7 flex items-center justify-center text-sm first:rounded-l-md last:rounded-r-md",
+                "w-8 h-8 flex items-center justify-center text-[15px] first:rounded-l-md last:rounded-r-md",
                 isWinner
                   ? "font-bold text-foreground bg-card"
                   : "text-muted-foreground bg-transparent",
