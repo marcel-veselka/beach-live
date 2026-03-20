@@ -159,12 +159,14 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
           <FilterChip
             active={statusFilter === "scheduled"}
             onClick={() => setStatusFilter("scheduled")}
+            variant="scheduled"
           >
             {msg.match.scheduled} ({scheduledCount})
           </FilterChip>
           <FilterChip
             active={statusFilter === "finished"}
             onClick={() => setStatusFilter("finished")}
+            variant="finished"
           >
             {msg.match.finished} ({finishedCount})
           </FilterChip>
@@ -189,7 +191,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
         {filtered.length === 0 ? (
           /* Better empty state with icon, message and reset action */
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-muted/60 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-muted/60 flex items-center justify-center mb-4 animate-fade-in-up">
               <SearchX className="h-7 w-7 text-muted-foreground/40" />
             </div>
             <p className="text-sm font-semibold text-foreground/70">
@@ -249,16 +251,21 @@ function FilterChip({
   active: boolean
   onClick: () => void
   children: React.ReactNode
-  variant?: "live"
+  variant?: "live" | "scheduled" | "finished"
 }) {
+  const activeStyles = {
+    live: "bg-live text-white shadow-md shadow-live/25",
+    scheduled: "bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20",
+    finished: "bg-muted-foreground/80 text-white shadow-md shadow-muted-foreground/15",
+    default: "bg-primary text-primary-foreground shadow-md shadow-primary/20",
+  }
+
   return (
     <button
       onClick={onClick}
       className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold filter-chip-transition press-scale ${
         active
-          ? variant === "live"
-            ? "bg-live text-white shadow-md shadow-live/25 scale-[1.02]"
-            : "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-[1.02]"
+          ? `${activeStyles[variant ?? "default"]} scale-[1.02]`
           : "bg-muted text-muted-foreground hover:bg-accent border border-transparent hover:border-border/50"
       }`}
     >

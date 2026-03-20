@@ -126,7 +126,7 @@ function BracketTeamRow({
       )}
       title={tbdTooltip}
     >
-      {isWinner && <span className="text-success text-[10px]">&#9679;</span>}
+      {isWinner && <span className="text-success text-xs">&#9656;</span>}
       <span className="truncate">{name}</span>
       {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
     </div>

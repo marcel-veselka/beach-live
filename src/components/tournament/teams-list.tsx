@@ -179,10 +179,10 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
                       <Badge variant="default">{stats.played} {pluralize(stats.played, "zápas", "zápasy", "zápasů")}</Badge>
                     )}
                     {stats.won > 0 && (
-                      <Badge variant="success">{stats.won}V</Badge>
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-success/12 text-success border border-success/20">{stats.won}V</span>
                     )}
                     {stats.lost > 0 && (
-                      <Badge variant="warning">{stats.lost}P</Badge>
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-warning/12 text-warning border border-warning/20">{stats.lost}P</span>
                     )}
                   </div>
 

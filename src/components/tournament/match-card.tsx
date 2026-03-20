@@ -1,4 +1,4 @@
-import { Match } from "@/lib/tournament/schema"
+import { Match, Team } from "@/lib/tournament/schema"
 import { Badge } from "@/components/ui/badge"
 import { t } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
@@ -8,6 +8,7 @@ interface MatchCardProps {
   compact?: boolean
   favoriteTeamIds?: Set<string>
   showMatchType?: boolean
+  teams?: Team[]
 }
 
 export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: MatchCardProps) {
@@ -106,8 +107,8 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
       isFinished && !isWinner && sets && sets.length > 0 && "opacity-60",
     )}>
       <div className="flex items-center gap-2 min-w-0">
-        {isWinner && <span className="text-success text-[10px]">●</span>}
-        {!isWinner && sets && sets.length > 0 && <span className="w-[10px]" />}
+        {isWinner && <span className="text-success text-xs">▸</span>}
+        {!isWinner && sets && sets.length > 0 && <span className="w-[12px]" />}
         <span className={cn(
           "truncate",
           isWinner ? "text-[15px]" : "text-sm",
@@ -121,15 +122,15 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
       </div>
       {/* #2: Volleyball-style scoreboard look */}
       {sets && (
-        <div className="flex items-center gap-0.5 ml-3 font-score shrink-0">
+        <div className="flex items-center gap-px ml-3 font-score shrink-0 bg-muted/30 rounded-lg p-0.5">
           {sets.map((s, i) => (
             <span
               key={i}
               className={cn(
-                "w-7 h-7 flex items-center justify-center rounded-md text-sm",
+                "w-7 h-7 flex items-center justify-center text-sm first:rounded-l-md last:rounded-r-md",
                 isWinner
-                  ? "font-bold text-foreground bg-primary/5"
-                  : "text-muted-foreground bg-muted/40",
+                  ? "font-bold text-foreground bg-card"
+                  : "text-muted-foreground bg-transparent",
                 isLive && i === sets.length - 1 && "bg-live/10 text-live font-bold ring-1 ring-live/20"
               )}
             >
