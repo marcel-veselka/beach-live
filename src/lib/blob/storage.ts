@@ -24,6 +24,7 @@ export async function saveSnapshot(slug: string, snapshot: TournamentSnapshot): 
     await put(getBlobKey(slug), JSON.stringify(snapshot), {
       access: "public",
       addRandomSuffix: false,
+      allowOverwrite: true,
     })
   } else {
     // Fallback: write to filesystem in dev
@@ -62,6 +63,7 @@ export async function saveRefreshMeta(slug: string, meta: RefreshMeta): Promise<
     await put(getMetaKey(slug), JSON.stringify(meta), {
       access: "public",
       addRandomSuffix: false,
+      allowOverwrite: true,
     })
   } else {
     const fs = await import("fs/promises")
