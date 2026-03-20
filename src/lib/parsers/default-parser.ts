@@ -69,9 +69,14 @@ export class DefaultTournamentParser implements TournamentParser {
 
     const headerLower = sheet.headers.map(h => h.toLowerCase().trim())
 
-    const teamIdx = headerLower.findIndex(h => teamHeaders.some(th => h.includes(th)))
-    const p1Idx = headerLower.findIndex(h => player1Headers.some(ph => h.includes(ph)))
-    const p2Idx = headerLower.findIndex(h => player2Headers.some(ph => h.includes(ph)))
+    // Use strict matching: header must be short (< 30 chars) and match closely
+    // This prevents matching metadata labels like "Všeobecné informace o turnaji Název turnaje..."
+    const findHeader = (headers: string[], candidates: string[]) =>
+      headers.findIndex(h => h.length < 30 && candidates.some(c => h === c || h.startsWith(c + " ") || h.endsWith(" " + c)))
+
+    const teamIdx = findHeader(headerLower, teamHeaders)
+    const p1Idx = findHeader(headerLower, player1Headers)
+    const p2Idx = findHeader(headerLower, player2Headers)
 
     if (teamIdx >= 0) {
       for (const row of sheet.rows) {
@@ -110,8 +115,10 @@ export class DefaultTournamentParser implements TournamentParser {
     const teamBHeaders = ["tým b", "team b", "hosté", "away", "tým 2", "team 2"]
 
     const headerLower = sheet.headers.map(h => h.toLowerCase().trim())
-    const aIdx = headerLower.findIndex(h => teamAHeaders.some(th => h.includes(th)))
-    const bIdx = headerLower.findIndex(h => teamBHeaders.some(th => h.includes(th)))
+    const findHeader = (headers: string[], candidates: string[]) =>
+      headers.findIndex(h => h.length < 30 && candidates.some(c => h === c || h.startsWith(c + " ") || h.endsWith(" " + c)))
+    const aIdx = findHeader(headerLower, teamAHeaders)
+    const bIdx = findHeader(headerLower, teamBHeaders)
 
     if (aIdx >= 0 && bIdx >= 0) {
       for (const row of sheet.rows) {
@@ -140,12 +147,15 @@ export class DefaultTournamentParser implements TournamentParser {
     const courtHeaders = ["kurt", "court", "hřiště"]
     const timeHeaders = ["čas", "time", "začátek"]
 
-    const aIdx = headerLower.findIndex(h => teamAHeaders.some(th => h.includes(th)))
-    const bIdx = headerLower.findIndex(h => teamBHeaders.some(th => h.includes(th)))
-    const scoreIdx = headerLower.findIndex(h => scoreHeaders.some(sh => h.includes(sh)))
-    const roundIdx = headerLower.findIndex(h => roundHeaders.some(rh => h.includes(rh)))
-    const courtIdx = headerLower.findIndex(h => courtHeaders.some(ch => h.includes(ch)))
-    const timeIdx = headerLower.findIndex(h => timeHeaders.some(th => h.includes(th)))
+    const findHeader = (headers: string[], candidates: string[]) =>
+      headers.findIndex(h => h.length < 30 && candidates.some(c => h === c || h.startsWith(c + " ") || h.endsWith(" " + c)))
+
+    const aIdx = findHeader(headerLower, teamAHeaders)
+    const bIdx = findHeader(headerLower, teamBHeaders)
+    const scoreIdx = findHeader(headerLower, scoreHeaders)
+    const roundIdx = findHeader(headerLower, roundHeaders)
+    const courtIdx = findHeader(headerLower, courtHeaders)
+    const timeIdx = findHeader(headerLower, timeHeaders)
 
     if (aIdx < 0 || bIdx < 0) return matches
 
