@@ -230,7 +230,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
               <div className="space-y-2.5">
                 {group.matches.map((match, idx) => (
                   <div key={match.id} className="animate-card-in" style={{ animationDelay: `${idx * 40}ms` }}>
-                    <MatchCard match={match} favoriteTeamIds={favorites} showMatchType />
+                    <MatchCard match={match} favoriteTeamIds={favorites} showMatchType teams={teams} />
                   </div>
                 ))}
               </div>

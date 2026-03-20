@@ -9,6 +9,7 @@ import { AutoRefresh } from "@/components/tournament/auto-refresh"
 import { FavoriteMatches } from "@/components/tournament/favorite-matches"
 import { EmptyState } from "@/components/ui/empty-state"
 import { t, pluralize } from "@/lib/i18n"
+import { cn } from "@/lib/utils"
 import { Trophy, GitBranch, Users, Swords, LayoutGrid, Info } from "lucide-react"
 import Link from "next/link"
 import { Match } from "@/lib/tournament/schema"
@@ -106,14 +107,14 @@ export default async function HomePage() {
       </div>
 
       {/* Favorite teams matches */}
-      <FavoriteMatches matches={snapshot.matches.filter(hasRealTeams)} />
+      <FavoriteMatches matches={snapshot.matches.filter(hasRealTeams)} teams={snapshot.teams} />
 
       {/* Live / Now */}
       {liveMatches.length > 0 && (
         <Section title={msg.overview.now}>
           <div className="grid gap-3 md:grid-cols-2">
             {liveMatches.map((match: Match) => (
-              <MatchCard key={match.id} match={match} />
+              <MatchCard key={match.id} match={match} teams={snapshot.teams} />
             ))}
           </div>
         </Section>
@@ -128,7 +129,7 @@ export default async function HomePage() {
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {scheduledMatches.map((match: Match, i: number) => (
               <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>
-                <MatchCard match={match} compact />
+                <MatchCard match={match} compact teams={snapshot.teams} />
               </div>
             ))}
           </div>
@@ -146,7 +147,7 @@ export default async function HomePage() {
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {recentFinished.map((match: Match, i: number) => (
               <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>
-                <MatchCard match={match} />
+                <MatchCard match={match} teams={snapshot.teams} />
               </div>
             ))}
           </div>
@@ -156,9 +157,9 @@ export default async function HomePage() {
       {/* Quick links with subtle icon backgrounds */}
       <Section title={msg.overview.quickLinks}>
         <div className="grid grid-cols-3 gap-3">
-          <QuickLinkCard href="/bracket" icon={<GitBranch className="h-5 w-5" />} label={msg.nav.bracket} count={snapshot.bracket?.rounds.length ?? 0} suffix={pluralize(snapshot.bracket?.rounds.length ?? 0, "kolo", "kola", "kol")} />
-          <QuickLinkCard href="/matches" icon={<Swords className="h-5 w-5" />} label={msg.nav.matches} count={snapshot.matches.length} suffix={pluralize(snapshot.matches.length, "zápas", "zápasy", "zápasů")} />
-          <QuickLinkCard href="/teams" icon={<Users className="h-5 w-5" />} label={msg.nav.teams} count={snapshot.teams.length} suffix={pluralize(snapshot.teams.length, "tým", "týmy", "týmů")} />
+          <QuickLinkCard href="/bracket" icon={<GitBranch className="h-5 w-5" />} label={msg.nav.bracket} count={snapshot.bracket?.rounds.length ?? 0} suffix={pluralize(snapshot.bracket?.rounds.length ?? 0, "kolo", "kola", "kol")} accent="primary" />
+          <QuickLinkCard href="/matches" icon={<Swords className="h-5 w-5" />} label={msg.nav.matches} count={snapshot.matches.length} suffix={pluralize(snapshot.matches.length, "zápas", "zápasy", "zápasů")} accent="secondary" />
+          <QuickLinkCard href="/teams" icon={<Users className="h-5 w-5" />} label={msg.nav.teams} count={snapshot.teams.length} suffix={pluralize(snapshot.teams.length, "tým", "týmy", "týmů")} accent="primary" />
         </div>
       </Section>
 
@@ -174,16 +175,17 @@ export default async function HomePage() {
   )
 }
 
-function QuickLinkCard({ href, icon, label, count, suffix }: { href: string; icon: React.ReactNode; label: string; count: number; suffix: string }) {
+function QuickLinkCard({ href, icon, label, count, suffix, accent = "primary" }: { href: string; icon: React.ReactNode; label: string; count: number; suffix: string; accent?: "primary" | "secondary" }) {
+  const iconBg = accent === "secondary" ? "bg-secondary/10 ring-1 ring-secondary/15" : "bg-primary/8 ring-1 ring-primary/10"
+  const iconColor = accent === "secondary" ? "text-secondary-foreground" : "text-primary"
+
   return (
     <Link href={href}>
-      {/* #3: More tappable with inner shadow, scale on press */}
       <Card hoverable className="flex flex-col items-center py-6 cursor-pointer hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden press-scale shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_1px_3px_0_rgba(0,0,0,0.04)]">
-        {/* Subtle background icon */}
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none scale-[2.5]" aria-hidden="true">
           {icon}
         </div>
-        <div className="text-primary mb-2.5 p-2.5 rounded-xl bg-primary/8 ring-1 ring-primary/10">{icon}</div>
+        <div className={cn("mb-2.5 p-2.5 rounded-xl", iconBg, iconColor)}>{icon}</div>
         <CardTitle className="text-sm font-semibold">{label}</CardTitle>
         <p className="text-[11px] text-muted-foreground/70 mt-1 font-medium">{count} {suffix}</p>
       </Card>

@@ -1,15 +1,16 @@
 "use client"
 
 import { useFavorites } from "@/lib/favorites/context"
-import { Match } from "@/lib/tournament/schema"
+import { Match, Team } from "@/lib/tournament/schema"
 import { MatchCard } from "./match-card"
 import { Section } from "@/components/ui/section"
 
 interface FavoriteMatchesProps {
   matches: Match[]
+  teams: Team[]
 }
 
-export function FavoriteMatches({ matches }: FavoriteMatchesProps) {
+export function FavoriteMatches({ matches, teams }: FavoriteMatchesProps) {
   const { favorites } = useFavorites()
 
   if (favorites.size === 0) return null
@@ -31,7 +32,7 @@ export function FavoriteMatches({ matches }: FavoriteMatchesProps) {
     <Section title="Moje týmy" description="Zápasy oblíbených týmů">
       <div className="grid gap-3 md:grid-cols-2">
         {display.map(match => (
-          <MatchCard key={match.id} match={match} favoriteTeamIds={favorites} />
+          <MatchCard key={match.id} match={match} favoriteTeamIds={favorites} teams={teams} />
         ))}
       </div>
     </Section>

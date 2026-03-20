@@ -11,7 +11,7 @@ interface MatchCardProps {
   teams?: Team[]
 }
 
-export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: MatchCardProps) {
+export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, teams }: MatchCardProps) {
   const msg = t().match
 
   const statusVariant = match.status === "live" ? "live" : match.status === "finished" ? "finished" : "scheduled"
@@ -24,6 +24,15 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: Ma
 
   // Extract match number from ID (e.g., "hs-match-1" -> "1")
   const matchNumber = match.id.match(/-(\d+)$/)?.[1]
+
+  // Determine seed favorite (lower seed number = stronger team)
+  const teamAData = teams?.find(t => t.id === match.teamA?.teamId)
+  const teamBData = teams?.find(t => t.id === match.teamB?.teamId)
+  const seedA = teamAData?.seed
+  const seedB = teamBData?.seed
+  const isNotFinished = match.status !== "finished"
+  const teamAIsSeedFavorite = isNotFinished && seedA != null && seedB != null && seedA < seedB
+  const teamBIsSeedFavorite = isNotFinished && seedA != null && seedB != null && seedB < seedA
 
   const isTBD = !match.teamA?.name || !match.teamB?.name
     || match.teamA.name.startsWith("Vítěz") || match.teamB.name.startsWith("Vítěz")
@@ -78,6 +87,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: Ma
           isLive={match.status === "live"}
           isFinished={match.status === "finished"}
           isFavorite={favoriteTeamIds?.has(match.teamA?.teamId ?? "") ?? false}
+          isSeedFavorite={teamAIsSeedFavorite}
         />
         <div className="score-separator my-1" />
         <TeamRow
@@ -87,14 +97,15 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType }: Ma
           isLive={match.status === "live"}
           isFinished={match.status === "finished"}
           isFavorite={favoriteTeamIds?.has(match.teamB?.teamId ?? "") ?? false}
+          isSeedFavorite={teamBIsSeedFavorite}
         />
       </div>
     </div>
   )
 }
 
-function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
-  name: string; isWinner: boolean; sets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean
+function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite, isSeedFavorite }: {
+  name: string; isWinner: boolean; sets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean
 }) {
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
   /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
@@ -119,6 +130,7 @@ function TeamRow({ name, isWinner, sets, isLive, isFinished, isFavorite }: {
           {name}
         </span>
         {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
+        {isSeedFavorite && <span className="text-primary/30 text-[8px] leading-none" title="Vyšší nasazení">▲</span>}
       </div>
       {/* #2: Volleyball-style scoreboard look */}
       {sets && (
