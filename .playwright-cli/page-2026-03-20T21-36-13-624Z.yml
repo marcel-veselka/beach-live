@@ -1,0 +1,558 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "volleyball Beach Live" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img "volleyball" [ref=e5]: 🏐
+      - generic [ref=e6]: Beach Live
+  - main [ref=e7]:
+    - generic [ref=e8]:
+      - heading "Týmy" [level=1] [ref=e9]
+      - generic [ref=e11]:
+        - img [ref=e12]
+        - text: 5 min zpět
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - img [ref=e17]
+        - textbox "Hledat tým nebo hráče..." [ref=e20]
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e24]:
+              - heading "Lea Mífková / Ema Šebová" [level=3] [ref=e25]
+              - generic [ref=e26]:
+                - paragraph [ref=e27]: Lea Mífková
+                - paragraph [ref=e28]: Ema Šebová
+            - img [ref=e30]
+          - generic [ref=e36]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e37] [cursor=pointer]:
+            - /url: /matches?team=Lea%20M%C3%ADfkov%C3%A1%20%2F%20Ema%20%C5%A0ebov%C3%A1
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]:
+              - heading "Zuzana Lajkebová / Barbora Dostalíková" [level=3] [ref=e41]
+              - generic [ref=e42]:
+                - paragraph [ref=e43]: Zuzana Lajkebová
+                - paragraph [ref=e44]: Barbora Dostalíková
+            - img [ref=e46]
+          - generic [ref=e52]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e53] [cursor=pointer]:
+            - /url: /matches?team=Zuzana%20Lajkebov%C3%A1%20%2F%20Barbora%20Dostal%C3%ADkov%C3%A1
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - heading "Růžena Procházková / Denisa Dufková" [level=3] [ref=e57]
+              - generic [ref=e58]:
+                - paragraph [ref=e59]: Růžena Procházková
+                - paragraph [ref=e60]: Denisa Dufková
+            - img [ref=e62]
+          - generic [ref=e68]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e69] [cursor=pointer]:
+            - /url: /matches?team=R%C5%AF%C5%BEena%20Proch%C3%A1zkov%C3%A1%20%2F%20Denisa%20Dufkov%C3%A1
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - generic [ref=e72]:
+              - heading "Monika Holá / Barbora Šimková" [level=3] [ref=e73]
+              - generic [ref=e74]:
+                - paragraph [ref=e75]: Monika Holá
+                - paragraph [ref=e76]: Barbora Šimková
+            - img [ref=e78]
+          - generic [ref=e84]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e85] [cursor=pointer]:
+            - /url: /matches?team=Monika%20Hol%C3%A1%20%2F%20Barbora%20%C5%A0imkov%C3%A1
+        - generic [ref=e86]:
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - heading "Monika Entlicherová / Kristýna Uhrová" [level=3] [ref=e89]
+              - generic [ref=e90]:
+                - paragraph [ref=e91]: Monika Entlicherová
+                - paragraph [ref=e92]: Kristýna Uhrová
+            - img [ref=e94]
+          - generic [ref=e100]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e101] [cursor=pointer]:
+            - /url: /matches?team=Monika%20Entlicherov%C3%A1%20%2F%20Krist%C3%BDna%20Uhrov%C3%A1
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - heading "Sára Červinková / Ema Rosí" [level=3] [ref=e105]
+              - generic [ref=e106]:
+                - paragraph [ref=e107]: Sára Červinková
+                - paragraph [ref=e108]: Ema Rosí
+            - img [ref=e110]
+          - generic [ref=e116]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e117] [cursor=pointer]:
+            - /url: /matches?team=S%C3%A1ra%20%C4%8Cervinkov%C3%A1%20%2F%20Ema%20Ros%C3%AD
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - heading "Emily Moserová / Zuzana Dundáčková" [level=3] [ref=e121]
+              - generic [ref=e122]:
+                - paragraph [ref=e123]: Emily Moserová
+                - paragraph [ref=e124]: Zuzana Dundáčková
+            - img [ref=e126]
+          - generic [ref=e132]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e133] [cursor=pointer]:
+            - /url: /matches?team=Emily%20Moserov%C3%A1%20%2F%20Zuzana%20Dund%C3%A1%C4%8Dkov%C3%A1
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - heading "Lucie Jandová / Pavlína Schwarzová" [level=3] [ref=e137]
+              - generic [ref=e138]:
+                - paragraph [ref=e139]: Lucie Jandová
+                - paragraph [ref=e140]: Pavlína Schwarzová
+            - img [ref=e142]
+          - generic [ref=e148]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e149] [cursor=pointer]:
+            - /url: /matches?team=Lucie%20Jandov%C3%A1%20%2F%20Pavl%C3%ADna%20Schwarzov%C3%A1
+        - generic [ref=e150]:
+          - generic [ref=e151]:
+            - generic [ref=e152]:
+              - heading "Kateřina Staňková / Monika Valentová" [level=3] [ref=e153]
+              - generic [ref=e154]:
+                - paragraph [ref=e155]: Kateřina Staňková
+                - paragraph [ref=e156]: Monika Valentová
+            - img [ref=e158]
+          - generic [ref=e164]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e165] [cursor=pointer]:
+            - /url: /matches?team=Kate%C5%99ina%20Sta%C5%88kov%C3%A1%20%2F%20Monika%20Valentov%C3%A1
+        - generic [ref=e166]:
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - heading "Lucie Koldovská / Lucie Teturová" [level=3] [ref=e169]
+              - generic [ref=e170]:
+                - paragraph [ref=e171]: Lucie Koldovská
+                - paragraph [ref=e172]: Lucie Teturová
+            - img [ref=e174]
+          - generic [ref=e180]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e181] [cursor=pointer]:
+            - /url: /matches?team=Lucie%20Koldovsk%C3%A1%20%2F%20Lucie%20Teturov%C3%A1
+        - generic [ref=e182]:
+          - generic [ref=e183]:
+            - generic [ref=e184]:
+              - heading "Magda Chládková / Veronika Šedivá" [level=3] [ref=e185]
+              - generic [ref=e186]:
+                - paragraph [ref=e187]: Magda Chládková
+                - paragraph [ref=e188]: Veronika Šedivá
+            - img [ref=e190]
+          - generic [ref=e196]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e197] [cursor=pointer]:
+            - /url: /matches?team=Magda%20Chl%C3%A1dkov%C3%A1%20%2F%20Veronika%20%C5%A0ediv%C3%A1
+        - generic [ref=e198]:
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - heading "Natálie Markalousová / Adéla Zelenková" [level=3] [ref=e201]
+              - generic [ref=e202]:
+                - paragraph [ref=e203]: Natálie Markalousová
+                - paragraph [ref=e204]: Adéla Zelenková
+            - img [ref=e206]
+          - generic [ref=e212]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e213] [cursor=pointer]:
+            - /url: /matches?team=Nat%C3%A1lie%20Markalousov%C3%A1%20%2F%20Ad%C3%A9la%20Zelenkov%C3%A1
+        - generic [ref=e214]:
+          - generic [ref=e215]:
+            - generic [ref=e216]:
+              - heading "Daniela Smutná / Nikola Naskosová" [level=3] [ref=e217]
+              - generic [ref=e218]:
+                - paragraph [ref=e219]: Daniela Smutná
+                - paragraph [ref=e220]: Nikola Naskosová
+            - img [ref=e222]
+          - generic [ref=e228]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e229] [cursor=pointer]:
+            - /url: /matches?team=Daniela%20Smutn%C3%A1%20%2F%20Nikola%20Naskosov%C3%A1
+        - generic [ref=e230]:
+          - generic [ref=e231]:
+            - generic [ref=e232]:
+              - heading "Jolana Koudelková / Nela Janošková" [level=3] [ref=e233]
+              - generic [ref=e234]:
+                - paragraph [ref=e235]: Jolana Koudelková
+                - paragraph [ref=e236]: Nela Janošková
+            - img [ref=e238]
+          - generic [ref=e244]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e245] [cursor=pointer]:
+            - /url: /matches?team=Jolana%20Koudelkov%C3%A1%20%2F%20Nela%20Jano%C5%A1kov%C3%A1
+        - generic [ref=e246]:
+          - generic [ref=e247]:
+            - generic [ref=e248]:
+              - heading "Julie Táborská / Veronika Davidová" [level=3] [ref=e249]
+              - generic [ref=e250]:
+                - paragraph [ref=e251]: Julie Táborská
+                - paragraph [ref=e252]: Veronika Davidová
+            - img [ref=e254]
+          - generic [ref=e260]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e261] [cursor=pointer]:
+            - /url: /matches?team=Julie%20T%C3%A1borsk%C3%A1%20%2F%20Veronika%20Davidov%C3%A1
+        - generic [ref=e262]:
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - heading "Veronika Holoubková / Edita Mrkousová" [level=3] [ref=e265]
+              - generic [ref=e266]:
+                - paragraph [ref=e267]: Veronika Holoubková
+                - paragraph [ref=e268]: Edita Mrkousová
+            - img [ref=e270]
+          - generic [ref=e276]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e277] [cursor=pointer]:
+            - /url: /matches?team=Veronika%20Holoubkov%C3%A1%20%2F%20Edita%20Mrkousov%C3%A1
+        - generic [ref=e278]:
+          - generic [ref=e279]:
+            - generic [ref=e280]:
+              - heading "Eliška Šalanská / Markéta Ptáčková" [level=3] [ref=e281]
+              - generic [ref=e282]:
+                - paragraph [ref=e283]: Eliška Šalanská
+                - paragraph [ref=e284]: Markéta Ptáčková
+            - img [ref=e286]
+          - generic [ref=e292]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e293] [cursor=pointer]:
+            - /url: /matches?team=Eli%C5%A1ka%20%C5%A0alansk%C3%A1%20%2F%20Mark%C3%A9ta%20Pt%C3%A1%C4%8Dkov%C3%A1
+        - generic [ref=e294]:
+          - generic [ref=e295]:
+            - generic [ref=e296]:
+              - heading "Daniela Veselková / Eliška Krčová" [level=3] [ref=e297]
+              - generic [ref=e298]:
+                - paragraph [ref=e299]: Daniela Veselková
+                - paragraph [ref=e300]: Eliška Krčová
+            - img [ref=e302]
+          - generic [ref=e308]: 1 zápasů
+          - link "Zobrazit zápasy →" [ref=e309] [cursor=pointer]:
+            - /url: /matches?team=Daniela%20Veselkov%C3%A1%20%2F%20Eli%C5%A1ka%20Kr%C4%8Dov%C3%A1
+        - generic [ref=e310]:
+          - generic [ref=e311]:
+            - generic [ref=e312]:
+              - heading "Marie Pavelková / Eliška Vorálková" [level=3] [ref=e313]
+              - generic [ref=e314]:
+                - paragraph [ref=e315]: Marie Pavelková
+                - paragraph [ref=e316]: Eliška Vorálková
+            - img [ref=e318]
+          - generic [ref=e323]:
+            - generic [ref=e324]: 4 zápasů
+            - generic [ref=e325]: 3V
+          - link "Zobrazit zápasy →" [ref=e326] [cursor=pointer]:
+            - /url: /matches?team=Marie%20Pavelkov%C3%A1%20%2F%20Eli%C5%A1ka%20Vor%C3%A1lkov%C3%A1
+        - generic [ref=e327]:
+          - generic [ref=e328]:
+            - generic [ref=e329]:
+              - heading "Natálie Váňová / Lea Klimentová" [level=3] [ref=e330]
+              - generic [ref=e331]:
+                - paragraph [ref=e332]: Natálie Váňová
+                - paragraph [ref=e333]: Lea Klimentová
+            - img [ref=e335]
+          - generic [ref=e340]:
+            - generic [ref=e341]: 4 zápasů
+            - generic [ref=e342]: 3V
+          - link "Zobrazit zápasy →" [ref=e343] [cursor=pointer]:
+            - /url: /matches?team=Nat%C3%A1lie%20V%C3%A1%C5%88ov%C3%A1%20%2F%20Lea%20Klimentov%C3%A1
+        - generic [ref=e344]:
+          - generic [ref=e345]:
+            - generic [ref=e346]:
+              - heading "Hana Štěpánková / Linda Hynková" [level=3] [ref=e347]
+              - generic [ref=e348]:
+                - paragraph [ref=e349]: Hana Štěpánková
+                - paragraph [ref=e350]: Linda Hynková
+            - img [ref=e352]
+          - generic [ref=e357]:
+            - generic [ref=e358]: 4 zápasů
+            - generic [ref=e359]: 3V
+          - link "Zobrazit zápasy →" [ref=e360] [cursor=pointer]:
+            - /url: /matches?team=Hana%20%C5%A0t%C4%9Bp%C3%A1nkov%C3%A1%20%2F%20Linda%20Hynkov%C3%A1
+        - generic [ref=e361]:
+          - generic [ref=e362]:
+            - generic [ref=e363]:
+              - heading "Vanda Mastníková / Lucie Štěpánková" [level=3] [ref=e364]
+              - generic [ref=e365]:
+                - paragraph [ref=e366]: Vanda Mastníková
+                - paragraph [ref=e367]: Lucie Štěpánková
+            - img [ref=e369]
+          - generic [ref=e374]:
+            - generic [ref=e375]: 4 zápasů
+            - generic [ref=e376]: 2V
+            - generic [ref=e377]: 1P
+          - link "Zobrazit zápasy →" [ref=e378] [cursor=pointer]:
+            - /url: /matches?team=Vanda%20Mastn%C3%ADkov%C3%A1%20%2F%20Lucie%20%C5%A0t%C4%9Bp%C3%A1nkov%C3%A1
+        - generic [ref=e379]:
+          - generic [ref=e380]:
+            - generic [ref=e381]:
+              - heading "Žofie Řechtáčková / Markéta Brandejsová" [level=3] [ref=e382]
+              - generic [ref=e383]:
+                - paragraph [ref=e384]: Žofie Řechtáčková
+                - paragraph [ref=e385]: Markéta Brandejsová
+            - img [ref=e387]
+          - generic [ref=e392]:
+            - generic [ref=e393]: 4 zápasů
+            - generic [ref=e394]: 3V
+          - link "Zobrazit zápasy →" [ref=e395] [cursor=pointer]:
+            - /url: /matches?team=%C5%BDofie%20%C5%98echt%C3%A1%C4%8Dkov%C3%A1%20%2F%20Mark%C3%A9ta%20Brandejsov%C3%A1
+        - generic [ref=e396]:
+          - generic [ref=e397]:
+            - generic [ref=e398]:
+              - heading "Laura Čejková / Lucie Frkalová" [level=3] [ref=e399]
+              - generic [ref=e400]:
+                - paragraph [ref=e401]: Laura Čejková
+                - paragraph [ref=e402]: Lucie Frkalová
+            - img [ref=e404]
+          - generic [ref=e409]:
+            - generic [ref=e410]: 4 zápasů
+            - generic [ref=e411]: 3V
+          - link "Zobrazit zápasy →" [ref=e412] [cursor=pointer]:
+            - /url: /matches?team=Laura%20%C4%8Cejkov%C3%A1%20%2F%20Lucie%20Frkalov%C3%A1
+        - generic [ref=e413]:
+          - generic [ref=e414]:
+            - generic [ref=e415]:
+              - heading "Marie Pavelková / Eliška Vorálková" [level=3] [ref=e416]
+              - generic [ref=e417]:
+                - paragraph [ref=e418]: Marie Pavelková
+                - paragraph [ref=e419]: Eliška Vorálková
+            - img [ref=e421]
+          - generic [ref=e426]:
+            - generic [ref=e427]: 4 zápasů
+            - generic [ref=e428]: 3V
+          - link "Zobrazit zápasy →" [ref=e429] [cursor=pointer]:
+            - /url: /matches?team=Marie%20Pavelkov%C3%A1%20%2F%20Eli%C5%A1ka%20Vor%C3%A1lkov%C3%A1
+        - generic [ref=e430]:
+          - generic [ref=e431]:
+            - generic [ref=e432]:
+              - heading "Natálie Váňová / Lea Klimentová" [level=3] [ref=e433]
+              - generic [ref=e434]:
+                - paragraph [ref=e435]: Natálie Váňová
+                - paragraph [ref=e436]: Lea Klimentová
+            - img [ref=e438]
+          - generic [ref=e443]:
+            - generic [ref=e444]: 4 zápasů
+            - generic [ref=e445]: 3V
+          - link "Zobrazit zápasy →" [ref=e446] [cursor=pointer]:
+            - /url: /matches?team=Nat%C3%A1lie%20V%C3%A1%C5%88ov%C3%A1%20%2F%20Lea%20Klimentov%C3%A1
+        - generic [ref=e447]:
+          - generic [ref=e448]:
+            - generic [ref=e449]:
+              - heading "Hana Štěpánková / Linda Hynková" [level=3] [ref=e450]
+              - generic [ref=e451]:
+                - paragraph [ref=e452]: Hana Štěpánková
+                - paragraph [ref=e453]: Linda Hynková
+            - img [ref=e455]
+          - generic [ref=e460]:
+            - generic [ref=e461]: 4 zápasů
+            - generic [ref=e462]: 3V
+          - link "Zobrazit zápasy →" [ref=e463] [cursor=pointer]:
+            - /url: /matches?team=Hana%20%C5%A0t%C4%9Bp%C3%A1nkov%C3%A1%20%2F%20Linda%20Hynkov%C3%A1
+        - generic [ref=e464]:
+          - generic [ref=e465]:
+            - generic [ref=e466]:
+              - heading "Terezie Krajčíková / Emma Kavanová" [level=3] [ref=e467]
+              - generic [ref=e468]:
+                - paragraph [ref=e469]: Terezie Krajčíková
+                - paragraph [ref=e470]: Emma Kavanová
+            - img [ref=e472]
+          - generic [ref=e477]:
+            - generic [ref=e478]: 2 zápasů
+            - generic [ref=e479]: 2P
+          - link "Zobrazit zápasy →" [ref=e480] [cursor=pointer]:
+            - /url: /matches?team=Terezie%20Kraj%C4%8D%C3%ADkov%C3%A1%20%2F%20Emma%20Kavanov%C3%A1
+        - generic [ref=e481]:
+          - generic [ref=e482]:
+            - generic [ref=e483]:
+              - heading "Žofie Heroutová / Aneta Žižková" [level=3] [ref=e484]
+              - generic [ref=e485]:
+                - paragraph [ref=e486]: Žofie Heroutová
+                - paragraph [ref=e487]: Aneta Žižková
+            - img [ref=e489]
+          - generic [ref=e494]:
+            - generic [ref=e495]: 3 zápasů
+            - generic [ref=e496]: 2V
+            - generic [ref=e497]: 1P
+          - link "Zobrazit zápasy →" [ref=e498] [cursor=pointer]:
+            - /url: /matches?team=%C5%BDofie%20Heroutov%C3%A1%20%2F%20Aneta%20%C5%BDi%C5%BEkov%C3%A1
+        - generic [ref=e499]:
+          - generic [ref=e500]:
+            - generic [ref=e501]:
+              - heading "Vanda Mastníková / Lucie Štěpánková" [level=3] [ref=e502]
+              - generic [ref=e503]:
+                - paragraph [ref=e504]: Vanda Mastníková
+                - paragraph [ref=e505]: Lucie Štěpánková
+            - img [ref=e507]
+          - generic [ref=e512]:
+            - generic [ref=e513]: 4 zápasů
+            - generic [ref=e514]: 2V
+            - generic [ref=e515]: 1P
+          - link "Zobrazit zápasy →" [ref=e516] [cursor=pointer]:
+            - /url: /matches?team=Vanda%20Mastn%C3%ADkov%C3%A1%20%2F%20Lucie%20%C5%A0t%C4%9Bp%C3%A1nkov%C3%A1
+        - generic [ref=e517]:
+          - generic [ref=e518]:
+            - generic [ref=e519]:
+              - heading "Eliška Muchová / Anna Kuchařová" [level=3] [ref=e520]
+              - generic [ref=e521]:
+                - paragraph [ref=e522]: Eliška Muchová
+                - paragraph [ref=e523]: Anna Kuchařová
+            - img [ref=e525]
+          - generic [ref=e530]:
+            - generic [ref=e531]: 2 zápasů
+            - generic [ref=e532]: 2P
+          - link "Zobrazit zápasy →" [ref=e533] [cursor=pointer]:
+            - /url: /matches?team=Eli%C5%A1ka%20Muchov%C3%A1%20%2F%20Anna%20Kucha%C5%99ov%C3%A1
+        - generic [ref=e534]:
+          - generic [ref=e535]:
+            - generic [ref=e536]:
+              - heading "Nicol Macková / Luisa Strnadová" [level=3] [ref=e537]
+              - generic [ref=e538]:
+                - paragraph [ref=e539]: Nicol Macková
+                - paragraph [ref=e540]: Luisa Strnadová
+            - img [ref=e542]
+          - generic [ref=e547]:
+            - generic [ref=e548]: 3 zápasů
+            - generic [ref=e549]: 1V
+            - generic [ref=e550]: 2P
+          - link "Zobrazit zápasy →" [ref=e551] [cursor=pointer]:
+            - /url: /matches?team=Nicol%20Mackov%C3%A1%20%2F%20Luisa%20Strnadov%C3%A1
+        - generic [ref=e552]:
+          - generic [ref=e553]:
+            - generic [ref=e554]:
+              - heading "Žofie Řechtáčková / Markéta Brandejsová" [level=3] [ref=e555]
+              - generic [ref=e556]:
+                - paragraph [ref=e557]: Žofie Řechtáčková
+                - paragraph [ref=e558]: Markéta Brandejsová
+            - img [ref=e560]
+          - generic [ref=e565]:
+            - generic [ref=e566]: 4 zápasů
+            - generic [ref=e567]: 3V
+          - link "Zobrazit zápasy →" [ref=e568] [cursor=pointer]:
+            - /url: /matches?team=%C5%BDofie%20%C5%98echt%C3%A1%C4%8Dkov%C3%A1%20%2F%20Mark%C3%A9ta%20Brandejsov%C3%A1
+        - generic [ref=e569]:
+          - generic [ref=e570]:
+            - generic [ref=e571]:
+              - heading "Anna Šimková / Tereza Hajšmanová" [level=3] [ref=e572]
+              - generic [ref=e573]:
+                - paragraph [ref=e574]: Anna Šimková
+                - paragraph [ref=e575]: Tereza Hajšmanová
+            - img [ref=e577]
+          - generic [ref=e582]:
+            - generic [ref=e583]: 2 zápasů
+            - generic [ref=e584]: 2P
+          - link "Zobrazit zápasy →" [ref=e585] [cursor=pointer]:
+            - /url: /matches?team=Anna%20%C5%A0imkov%C3%A1%20%2F%20Tereza%20Haj%C5%A1manov%C3%A1
+        - generic [ref=e586]:
+          - generic [ref=e587]:
+            - generic [ref=e588]:
+              - heading "Natálie Tomčíková / Mariana Jančarová" [level=3] [ref=e589]
+              - generic [ref=e590]:
+                - paragraph [ref=e591]: Natálie Tomčíková
+                - paragraph [ref=e592]: Mariana Jančarová
+            - img [ref=e594]
+          - generic [ref=e599]:
+            - generic [ref=e600]: 3 zápasů
+            - generic [ref=e601]: 1V
+            - generic [ref=e602]: 2P
+          - link "Zobrazit zápasy →" [ref=e603] [cursor=pointer]:
+            - /url: /matches?team=Nat%C3%A1lie%20Tom%C4%8D%C3%ADkov%C3%A1%20%2F%20Mariana%20Jan%C4%8Darov%C3%A1
+        - generic [ref=e604]:
+          - generic [ref=e605]:
+            - generic [ref=e606]:
+              - heading "Barbora Bílá / Viktorie Sobíšková" [level=3] [ref=e607]
+              - generic [ref=e608]:
+                - paragraph [ref=e609]: Barbora Bílá
+                - paragraph [ref=e610]: Viktorie Sobíšková
+            - img [ref=e612]
+          - generic [ref=e617]:
+            - generic [ref=e618]: 2 zápasů
+            - generic [ref=e619]: 2P
+          - link "Zobrazit zápasy →" [ref=e620] [cursor=pointer]:
+            - /url: /matches?team=Barbora%20B%C3%ADl%C3%A1%20%2F%20Viktorie%20Sob%C3%AD%C5%A1kov%C3%A1
+        - generic [ref=e621]:
+          - generic [ref=e622]:
+            - generic [ref=e623]:
+              - heading "Laura Čejková / Lucie Frkalová" [level=3] [ref=e624]
+              - generic [ref=e625]:
+                - paragraph [ref=e626]: Laura Čejková
+                - paragraph [ref=e627]: Lucie Frkalová
+            - img [ref=e629]
+          - generic [ref=e634]:
+            - generic [ref=e635]: 4 zápasů
+            - generic [ref=e636]: 3V
+          - link "Zobrazit zápasy →" [ref=e637] [cursor=pointer]:
+            - /url: /matches?team=Laura%20%C4%8Cejkov%C3%A1%20%2F%20Lucie%20Frkalov%C3%A1
+        - generic [ref=e638]:
+          - generic [ref=e639]:
+            - generic [ref=e640]:
+              - heading "Anežka Petrusová / Ella Rybová" [level=3] [ref=e641]
+              - generic [ref=e642]:
+                - paragraph [ref=e643]: Anežka Petrusová
+                - paragraph [ref=e644]: Ella Rybová
+            - img [ref=e646]
+          - generic [ref=e651]:
+            - generic [ref=e652]: 2 zápasů
+            - generic [ref=e653]: 2P
+          - link "Zobrazit zápasy →" [ref=e654] [cursor=pointer]:
+            - /url: /matches?team=Ane%C5%BEka%20Petrusov%C3%A1%20%2F%20Ella%20Rybov%C3%A1
+        - generic [ref=e655]:
+          - generic [ref=e656]:
+            - generic [ref=e657]:
+              - heading "Sofie Varyšová / Viktorie Matoušková" [level=3] [ref=e658]
+              - generic [ref=e659]:
+                - paragraph [ref=e660]: Sofie Varyšová
+                - paragraph [ref=e661]: Viktorie Matoušková
+            - img [ref=e663]
+          - generic [ref=e668]:
+            - generic [ref=e669]: 3 zápasů
+            - generic [ref=e670]: 1V
+            - generic [ref=e671]: 2P
+          - link "Zobrazit zápasy →" [ref=e672] [cursor=pointer]:
+            - /url: /matches?team=Sofie%20Vary%C5%A1ov%C3%A1%20%2F%20Viktorie%20Matou%C5%A1kov%C3%A1
+        - generic [ref=e673]:
+          - generic [ref=e674]:
+            - generic [ref=e675]:
+              - heading "Magdalena Houdková / Miriam Jílková" [level=3] [ref=e676]
+              - generic [ref=e677]:
+                - paragraph [ref=e678]: Magdalena Houdková
+                - paragraph [ref=e679]: Miriam Jílková
+            - img [ref=e681]
+          - generic [ref=e686]:
+            - generic [ref=e687]: 3 zápasů
+            - generic [ref=e688]: 1V
+            - generic [ref=e689]: 2P
+          - link "Zobrazit zápasy →" [ref=e690] [cursor=pointer]:
+            - /url: /matches?team=Magdalena%20Houdkov%C3%A1%20%2F%20Miriam%20J%C3%ADlkov%C3%A1
+        - generic [ref=e691]:
+          - generic [ref=e692]:
+            - generic [ref=e693]:
+              - heading "Ella Foltasová / Kristina Kašíková" [level=3] [ref=e694]
+              - generic [ref=e695]:
+                - paragraph [ref=e696]: Ella Foltasová
+                - paragraph [ref=e697]: Kristina Kašíková
+            - img [ref=e699]
+          - generic [ref=e704]:
+            - generic [ref=e705]: 2 zápasů
+            - generic [ref=e706]: 2P
+          - link "Zobrazit zápasy →" [ref=e707] [cursor=pointer]:
+            - /url: /matches?team=Ella%20Foltasov%C3%A1%20%2F%20Kristina%20Ka%C5%A1%C3%ADkov%C3%A1
+        - generic [ref=e708]:
+          - generic [ref=e709]:
+            - generic [ref=e710]:
+              - heading "Kristýna Majerová / Marie Antošová" [level=3] [ref=e711]
+              - generic [ref=e712]:
+                - paragraph [ref=e713]: Kristýna Majerová
+                - paragraph [ref=e714]: Marie Antošová
+            - img [ref=e716]
+          - generic [ref=e721]:
+            - generic [ref=e722]: 3 zápasů
+            - generic [ref=e723]: 1V
+            - generic [ref=e724]: 2P
+          - link "Zobrazit zápasy →" [ref=e725] [cursor=pointer]:
+            - /url: /matches?team=Krist%C3%BDna%20Majerov%C3%A1%20%2F%20Marie%20Anto%C5%A1ov%C3%A1
+  - navigation [ref=e726]:
+    - generic [ref=e727]:
+      - link "Přehled" [ref=e728] [cursor=pointer]:
+        - /url: /
+        - img [ref=e729]
+        - generic [ref=e734]: Přehled
+      - link "Pavouk" [ref=e735] [cursor=pointer]:
+        - /url: /bracket
+        - img [ref=e736]
+        - generic [ref=e740]: Pavouk
+      - link "Skupiny" [ref=e741] [cursor=pointer]:
+        - /url: /groups
+        - img [ref=e742]
+        - generic [ref=e748]: Skupiny
+      - link "Zápasy" [ref=e749] [cursor=pointer]:
+        - /url: /matches
+        - img [ref=e750]
+        - generic [ref=e759]: Zápasy
+      - link "Týmy" [ref=e760] [cursor=pointer]:
+        - /url: /teams
+        - img [ref=e761]
+        - generic [ref=e766]: Týmy
+  - alert [ref=e767]

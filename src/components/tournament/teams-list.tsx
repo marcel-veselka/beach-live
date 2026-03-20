@@ -58,9 +58,14 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           placeholder={msg.teams.search}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-input bg-card px-10 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-xl border border-input bg-card px-10 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring shadow-sm"
         />
       </div>
+
+      {/* Results count */}
+      <p className="text-xs text-muted-foreground px-1">
+        {filtered.length} {filtered.length === 1 ? "tým" : filtered.length < 5 ? "týmy" : "týmů"}
+      </p>
 
       {/* Team grid */}
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -69,53 +74,60 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
             Žádné týmy neodpovídají hledání.
           </p>
         ) : (
-          filtered.map((team) => {
+          filtered.map((team, index) => {
             const stats = getTeamStats(team.id)
             return (
-              <Card
+              <Link
                 key={team.id}
-                className="hover:border-primary/30 hover:shadow-md transition-all"
+                href={`/matches?team=${encodeURIComponent(team.name)}`}
+                className="block"
               >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-base">{team.name}</CardTitle>
-                    {team.players.length > 0 && (
-                      <div className="mt-1 space-y-0.5">
-                        {team.players.map((player, i) => (
-                          <p
-                            key={i}
-                            className="text-sm text-muted-foreground"
-                          >
-                            {player.name}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </div>
-
-                {stats.played > 0 && (
-                  <div className="mt-3 flex items-center gap-2 text-xs">
-                    <Badge variant="default">{stats.played} zápasů</Badge>
-                    {stats.won > 0 && (
-                      <Badge variant="success">{stats.won}V</Badge>
-                    )}
-                    {stats.lost > 0 && (
-                      <Badge variant="warning">{stats.lost}P</Badge>
-                    )}
-                  </div>
-                )}
-
-                <Link
-                  href={`/matches?team=${encodeURIComponent(team.name)}`}
-                  className="mt-3 block text-xs text-primary hover:underline"
+                <Card
+                  className="hover:border-primary/30 hover:shadow-md transition-all group cursor-pointer"
                 >
-                  Zobrazit zápasy →
-                </Link>
-              </Card>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2.5 mb-1.5">
+                        <span className="shrink-0 w-6 h-6 rounded-full bg-primary/8 text-primary text-[11px] font-bold flex items-center justify-center">
+                          {index + 1}
+                        </span>
+                        <CardTitle className="text-[15px] leading-snug truncate">{team.name}</CardTitle>
+                      </div>
+                      {team.players.length > 0 && (
+                        <div className="ml-[34px] flex flex-col gap-0.5">
+                          {team.players.map((player, i) => (
+                            <p
+                              key={i}
+                              className="text-[13px] text-muted-foreground leading-snug"
+                            >
+                              {player.name}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="shrink-0 p-1.5 rounded-lg bg-muted/50">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  </div>
+
+                  {stats.played > 0 && (
+                    <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-2 text-xs">
+                      <Badge variant="default">{stats.played} zápasů</Badge>
+                      {stats.won > 0 && (
+                        <Badge variant="success">{stats.won}V</Badge>
+                      )}
+                      {stats.lost > 0 && (
+                        <Badge variant="warning">{stats.lost}P</Badge>
+                      )}
+                    </div>
+                  )}
+
+                  <span className="mt-3 block text-xs text-primary font-medium group-hover:underline">
+                    Zobrazit zápasy &rarr;
+                  </span>
+                </Card>
+              </Link>
             )
           })
         )}

@@ -65,7 +65,13 @@ export class BvisParser implements TournamentParser {
       ? this.parseQTeams(qStartlist, warnings)
       : []
 
-    const allTeams = [...hsTeams, ...qTeams]
+    // Deduplicate: HS teams take priority, merge Q teams that aren't already in HS
+    const teamMap = new Map<string, Team>()
+    for (const t of hsTeams) teamMap.set(t.name.toLowerCase(), t)
+    for (const t of qTeams) {
+      if (!teamMap.has(t.name.toLowerCase())) teamMap.set(t.name.toLowerCase(), t)
+    }
+    const allTeams = Array.from(teamMap.values())
 
     if (allTeams.length === 0) {
       warnings.push({
@@ -294,6 +300,9 @@ export class BvisParser implements TournamentParser {
       // Col 7: team B name
       const teamBName = (row[7] ?? "").trim()
 
+      // Skip rows where both team names are empty (phantom/trailing rows)
+      if (!teamAName && !teamBName) continue
+
       // Col 8, 10: set score (e.g. "2":"0")
       const scoreAStr = (row[8] ?? "").trim()
       const scoreA = parseInt(scoreAStr, 10)
@@ -388,11 +397,25 @@ export class BvisParser implements TournamentParser {
       return { teamId: team.id, name: team.name }
     }
 
-    // Keep TBD references like "vítěz #X" or "poražený #X"
+    // Make TBD references more readable: "vítěz #1" → "Vítěz z. č. 1", "poražený #1" → "Poražený z. č. 1"
+    const vitezMatch = /^vítěz\s*#(\d+)\s*$/i.exec(name)
+    if (vitezMatch) {
+      const displayName = `Vítěz zápasu č. ${vitezMatch[1]}`
+      return { teamId: makeId(name), name: displayName }
+    }
+    const porazenyMatch = /^poražený\s*#(\d+)\s*$/i.exec(name)
+    if (porazenyMatch) {
+      const displayName = `Poražený z. č. ${porazenyMatch[1]}`
+      return { teamId: makeId(name), name: displayName }
+    }
     return { teamId: makeId(name), name }
   }
 
-  /** Parse set scores from individual columns */
+  /** Parse set scores from individual columns.
+   * B-VIS format: positive number = team A won that set (number is opponent's score),
+   * negative number = team A lost that set (abs value is team A's score).
+   * Winner gets 21 in regular sets, 15 in tiebreak (set 3).
+   */
   private parseSetScores(
     scoreA: number,
     scoreB: number,
@@ -407,32 +430,40 @@ export class BvisParser implements TournamentParser {
     if (setsA === 0 && setsB === 0) return null
 
     const sets: { teamA: number; teamB: number }[] = []
+    const isTiebreak = setsA + setsB === 3 // 2:1 match has a tiebreak set 3
 
-    const parseSetScore = (str: string): { teamA: number; teamB: number } | null => {
+    const parseSetScore = (str: string, setIndex: number): { teamA: number; teamB: number } | null => {
       if (!str) return null
-      // Try "X:Y" format
+      // Try "X:Y" format first
       const colonMatch = /^(\d+):(\d+)$/.exec(str)
       if (colonMatch) {
         return { teamA: parseInt(colonMatch[1], 10), teamB: parseInt(colonMatch[2], 10) }
       }
-      // Single number (point difference) — positive means team A won, negative means team B won
+      // B-VIS single number format:
+      // Positive = team A won set, number is opponent's (team B) score
+      // Negative = team A lost set, abs value is team A's score
       const num = parseInt(str, 10)
       if (!isNaN(num)) {
-        // We only have the difference, not absolute scores. Store as-is.
+        const winScore = (isTiebreak && setIndex === 2) ? 15 : 21
+        // Ensure winning score is at least loser's score + 2
+        const loserScore = Math.abs(num)
+        const actualWinScore = loserScore >= winScore - 1 ? loserScore + 2 : winScore
         if (num > 0) {
-          return { teamA: 21, teamB: 21 - num }
+          // Team A won this set
+          return { teamA: actualWinScore, teamB: loserScore }
         } else if (num < 0) {
-          return { teamA: 21 + num, teamB: 21 }
+          // Team B won this set
+          return { teamA: loserScore, teamB: actualWinScore }
         }
       }
       return null
     }
 
-    const s1 = parseSetScore(set1Str)
+    const s1 = parseSetScore(set1Str, 0)
     if (s1) sets.push(s1)
-    const s2 = parseSetScore(set2Str)
+    const s2 = parseSetScore(set2Str, 1)
     if (s2) sets.push(s2)
-    const s3 = parseSetScore(set3Str)
+    const s3 = parseSetScore(set3Str, 2)
     if (s3) sets.push(s3)
 
     const winner =
@@ -483,8 +514,8 @@ export class BvisParser implements TournamentParser {
     for (const row of allRows) {
       const firstCell = (row[0] ?? "").trim()
 
-      // Detect group header: "SKUPINA X"
-      const groupHeaderMatch = /^SKUPINA\s+(\S+)/i.exec(firstCell)
+      // Detect group header: "SKUPINA X" (may appear anywhere in the cell, e.g. title row)
+      const groupHeaderMatch = /SKUPINA\s+(\S+)/i.exec(firstCell)
       if (groupHeaderMatch) {
         const letter = groupHeaderMatch[1].toUpperCase()
         currentGroup = {

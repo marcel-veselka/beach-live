@@ -47,30 +47,40 @@ export default async function HomePage() {
       <AutoRefresh />
 
       {/* Hero */}
-      <div className="relative -mx-4 mb-8 px-4 pt-6 pb-6 bg-hero-gradient rounded-b-2xl md:rounded-2xl md:mx-0">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-                {snapshot.metadata.name}
-              </h1>
-              <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-xs px-2.5 py-0.5 whitespace-nowrap">
-                {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
-              </Badge>
-            </div>
-            {snapshot.metadata.subtitle && (
-              <p className="text-muted-foreground mt-1.5 text-sm">{snapshot.metadata.subtitle}</p>
-            )}
+      <div className="relative -mx-4 mb-10 px-4 pt-8 pb-10 bg-hero-gradient rounded-b-2xl md:rounded-2xl md:mx-0">
+        <div className="mb-4">
+          <div className="flex items-center gap-2.5 flex-wrap mb-2">
+            <h1 className="text-[1.75rem] font-extrabold tracking-tight leading-tight md:text-3xl">
+              {snapshot.metadata.name}
+            </h1>
+            <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-[11px] px-3 py-1 whitespace-nowrap uppercase tracking-wider font-semibold">
+              {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
+            </Badge>
           </div>
+          {snapshot.metadata.subtitle && (
+            <p className="text-muted-foreground text-[0.9rem] leading-relaxed">{snapshot.metadata.subtitle}</p>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-          {snapshot.metadata.venue && <span>📍 {snapshot.metadata.venue}</span>}
-          {snapshot.metadata.dates && <span>📅 {snapshot.metadata.dates}</span>}
-          {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+          {snapshot.metadata.venue && (
+            <span className="inline-flex items-center gap-1.5 bg-card/60 rounded-full px-3 py-1">
+              📍 {snapshot.metadata.venue}
+            </span>
+          )}
+          {snapshot.metadata.dates && (
+            <span className="inline-flex items-center gap-1.5 bg-card/60 rounded-full px-3 py-1">
+              📅 {snapshot.metadata.dates}
+            </span>
+          )}
+          {snapshot.metadata.category && (
+            <span className="inline-flex items-center gap-1.5 bg-card/60 rounded-full px-3 py-1">
+              🏐 {snapshot.metadata.category}
+            </span>
+          )}
         </div>
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+        <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
           <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
           <SourceLinks sources={snapshot.sources} />
         </div>
@@ -130,10 +140,10 @@ export default async function HomePage() {
 function QuickLinkCard({ href, icon, label, count, suffix }: { href: string; icon: React.ReactNode; label: string; count: number; suffix: string }) {
   return (
     <Link href={href}>
-      <Card hoverable className="flex flex-col items-center py-5 cursor-pointer hover:-translate-y-0.5 transition-all duration-200">
-        <div className="text-primary mb-2">{icon}</div>
-        <CardTitle className="text-sm">{label}</CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">{count} {suffix}</p>
+      <Card hoverable className="flex flex-col items-center py-6 cursor-pointer hover:-translate-y-0.5 transition-all duration-200">
+        <div className="text-primary mb-2.5 p-2 rounded-xl bg-primary/5">{icon}</div>
+        <CardTitle className="text-sm font-semibold">{label}</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1.5">{count} {suffix}</p>
       </Card>
     </Link>
   )

@@ -19,8 +19,8 @@ export function MobileNav() {
   const msg = t().nav
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 safe-area-bottom md:hidden">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-evenly px-1 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/60 bg-card/95 backdrop-blur-lg supports-[backdrop-filter]:bg-card/80 safe-area-bottom md:hidden">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-evenly px-1 pb-safe">
         {navItems.map((item) => {
           const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
           return (
@@ -28,11 +28,11 @@ export function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-0.5 px-2 py-1 text-xs transition-colors",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                "flex flex-col items-center gap-1 px-3 py-1.5 text-[10px] font-medium transition-colors rounded-lg",
+                isActive ? "text-primary nav-active-dot" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className={cn("h-5 w-5", isActive && "stroke-[2.5]")} />
               <span>{msg[item.labelKey]}</span>
             </Link>
           )

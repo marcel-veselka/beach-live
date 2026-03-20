@@ -1,0 +1,204 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "volleyball Beach Live" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - img "volleyball" [ref=e5]: 🏐
+      - generic [ref=e6]: Beach Live
+  - main [ref=e7]:
+    - generic [ref=e8]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - heading "HMČR U18 ženy" [level=1] [ref=e12]
+          - generic [ref=e13]: Brzy
+        - paragraph [ref=e14]: Halové mistrovství ČR v plážovém volejbalu
+      - generic [ref=e15]:
+        - generic [ref=e16]: 📍 Praha-Ladví
+        - generic [ref=e17]: 📅 21. 3. 2026
+        - generic [ref=e18]: 🏐 U18 ženy
+      - generic [ref=e19]:
+        - generic [ref=e21]:
+          - img [ref=e22]
+          - text: 4 min zpět
+        - generic [ref=e25]:
+          - generic [ref=e26]: "Zdroje:"
+          - link "Google Sheet (živá data)" [ref=e28] [cursor=pointer]:
+            - /url: https://docs.google.com/spreadsheets/d/1rOtwIEPpUXzsZpagn3WPb-B1xaETdLy0_kZpk6mydw0
+            - text: Google Sheet (živá data)
+            - img [ref=e29]
+          - generic [ref=e33]:
+            - text: •
+            - link "Propozice (PDF)" [ref=e34] [cursor=pointer]:
+              - /url: https://www.cvf.cz/beach_priloha.php?nazev=20260321_Propozice_HMCR_U18z_Praha-Ladvi.pdf&id=4520
+              - text: Propozice (PDF)
+              - img [ref=e35]
+          - generic [ref=e39]:
+            - text: •
+            - link "ČVS výsledky" [ref=e40] [cursor=pointer]:
+              - /url: https://www.cvf.cz/beach/turnaje/?vysledky=4520
+              - text: ČVS výsledky
+              - img [ref=e41]
+    - generic [ref=e45]:
+      - heading "Další" [level=2] [ref=e47]
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e52]: 21. 3. 9:00
+            - generic [ref=e53]: Naplánováno
+          - generic [ref=e54]:
+            - generic [ref=e57]: Veronika Holoubková / Edita Mrkousová
+            - generic [ref=e61]: Eliška Šalanská / Markéta Ptáčková
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - generic [ref=e65]: 21. 3. 9:00
+            - generic [ref=e66]: Naplánováno
+          - generic [ref=e67]:
+            - generic [ref=e70]: Kateřina Staňková / Monika Valentová
+            - generic [ref=e74]: Laura Čejková / Lucie Frkalová
+        - generic [ref=e75]:
+          - generic [ref=e76]:
+            - generic [ref=e78]: 21. 3. 9:00
+            - generic [ref=e79]: Naplánováno
+          - generic [ref=e80]:
+            - generic [ref=e83]: Hana Štěpánková / Linda Hynková
+            - generic [ref=e87]: Natálie Markalousová / Adéla Zelenková
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - generic [ref=e91]: 21. 3.
+            - generic [ref=e92]: Naplánováno
+          - generic [ref=e93]:
+            - generic [ref=e96]: Daniela Smutná / Nikola Naskosová
+            - generic [ref=e100]: Natálie Váňová / Lea Klimentová
+    - generic [ref=e101]:
+      - heading "Právě dohráno" [level=2] [ref=e103]
+      - generic [ref=e104]:
+        - generic [ref=e105]:
+          - generic [ref=e106]:
+            - generic [ref=e107]:
+              - generic [ref=e108]: 20. 3. 19:00
+              - generic [ref=e109]: • Kurt 8
+              - generic [ref=e110]: • Kvalifikace - I. kolo
+            - generic [ref=e111]: Dokončeno
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - generic [ref=e115]: ▸
+                - generic [ref=e116]: Laura Čejková / Lucie Frkalová
+              - generic [ref=e117]:
+                - generic [ref=e118]: "21"
+                - generic [ref=e119]: "21"
+            - generic [ref=e121]:
+              - generic [ref=e123]: Nicol Macková / Luisa Strnadová
+              - generic [ref=e124]:
+                - generic [ref=e125]: "3"
+                - generic [ref=e126]: "10"
+        - generic [ref=e127]:
+          - generic [ref=e128]:
+            - generic [ref=e129]:
+              - generic [ref=e130]: 20. 3. 18:59
+              - generic [ref=e131]: • Kurt 9
+              - generic [ref=e132]: • Kvalifikace - I. kolo
+            - generic [ref=e133]: Dokončeno
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - generic [ref=e137]: Žofie Heroutová / Aneta Žižková
+              - generic [ref=e138]:
+                - generic [ref=e139]: "8"
+                - generic [ref=e140]: "0"
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: ▸
+                - generic [ref=e145]: Vanda Mastníková / Lucie Štěpánková
+              - generic [ref=e146]:
+                - generic [ref=e147]: "21"
+                - generic [ref=e148]: "21"
+        - generic [ref=e149]:
+          - generic [ref=e150]:
+            - generic [ref=e151]:
+              - generic [ref=e152]: 20. 3. 18:40
+              - generic [ref=e153]: • Kurt 7
+              - generic [ref=e154]: • Kvalifikace - I. kolo
+            - generic [ref=e155]: Dokončeno
+          - generic [ref=e156]:
+            - generic [ref=e157]:
+              - generic [ref=e158]:
+                - generic [ref=e159]: ▸
+                - generic [ref=e160]: Žofie Řechtáčková / Markéta Brandejsová
+              - generic [ref=e161]:
+                - generic [ref=e162]: "21"
+                - generic [ref=e163]: "21"
+            - generic [ref=e165]:
+              - generic [ref=e167]: Magdalena Houdková / Miriam Jílková
+              - generic [ref=e168]:
+                - generic [ref=e169]: "2"
+                - generic [ref=e170]: "8"
+        - generic [ref=e171]:
+          - generic [ref=e172]:
+            - generic [ref=e173]:
+              - generic [ref=e174]: 20. 3. 18:17
+              - generic [ref=e175]: • Kurt 8
+              - generic [ref=e176]: • Kvalifikace - I. kolo
+            - generic [ref=e177]: Dokončeno
+          - generic [ref=e178]:
+            - generic [ref=e179]:
+              - generic [ref=e180]:
+                - generic [ref=e181]: ▸
+                - generic [ref=e182]: Hana Štěpánková / Linda Hynková
+              - generic [ref=e183]:
+                - generic [ref=e184]: "21"
+                - generic [ref=e185]: "21"
+            - generic [ref=e187]:
+              - generic [ref=e189]: Sofie Varyšová / Viktorie Matoušková
+              - generic [ref=e190]:
+                - generic [ref=e191]: "11"
+                - generic [ref=e192]: "5"
+    - generic [ref=e193]:
+      - heading "Rychlé odkazy" [level=2] [ref=e195]
+      - generic [ref=e196]:
+        - link "Pavouk 6 kol" [ref=e197] [cursor=pointer]:
+          - /url: /bracket
+          - generic [ref=e198]:
+            - img [ref=e200]
+            - heading "Pavouk" [level=3] [ref=e204]
+            - paragraph [ref=e205]: 6 kol
+        - link "Skupiny 5 skupin" [ref=e206] [cursor=pointer]:
+          - /url: /groups
+          - generic [ref=e207]:
+            - img [ref=e209]
+            - heading "Skupiny" [level=3] [ref=e215]
+            - paragraph [ref=e216]: 5 skupin
+        - link "Zápasy 71 zápasů" [ref=e217] [cursor=pointer]:
+          - /url: /matches
+          - generic [ref=e218]:
+            - img [ref=e220]
+            - heading "Zápasy" [level=3] [ref=e229]
+            - paragraph [ref=e230]: 71 zápasů
+        - link "Týmy 42 týmů" [ref=e231] [cursor=pointer]:
+          - /url: /teams
+          - generic [ref=e232]:
+            - img [ref=e234]
+            - heading "Týmy" [level=3] [ref=e239]
+            - paragraph [ref=e240]: 42 týmů
+    - generic [ref=e241]: Data se automaticky aktualizují každých 5 minut z veřejných zdrojů. Může dojít k mírnému zpoždění.
+  - navigation [ref=e242]:
+    - generic [ref=e243]:
+      - link "Přehled" [ref=e244] [cursor=pointer]:
+        - /url: /
+        - img [ref=e245]
+        - generic [ref=e250]: Přehled
+      - link "Pavouk" [ref=e251] [cursor=pointer]:
+        - /url: /bracket
+        - img [ref=e252]
+        - generic [ref=e256]: Pavouk
+      - link "Skupiny" [ref=e257] [cursor=pointer]:
+        - /url: /groups
+        - img [ref=e258]
+        - generic [ref=e264]: Skupiny
+      - link "Zápasy" [ref=e265] [cursor=pointer]:
+        - /url: /matches
+        - img [ref=e266]
+        - generic [ref=e275]: Zápasy
+      - link "Týmy" [ref=e276] [cursor=pointer]:
+        - /url: /teams
+        - img [ref=e277]
+        - generic [ref=e282]: Týmy
+  - alert [ref=e283]

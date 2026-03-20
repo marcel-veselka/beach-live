@@ -10,7 +10,12 @@ import { MatchesList } from "@/components/tournament/matches-list"
 export const metadata: Metadata = { title: "Zápasy" }
 export const dynamic = "force-dynamic"
 
-export default async function MatchesPage() {
+interface PageProps {
+  searchParams: Promise<{ team?: string }>
+}
+
+export default async function MatchesPage({ searchParams }: PageProps) {
+  const { team } = await searchParams
   const { snapshot } = await loadTournamentData()
   const msg = t()
 
@@ -34,7 +39,7 @@ export default async function MatchesPage() {
         <FreshnessIndicator generatedAt={snapshot.meta.generatedAt} />
       </div>
 
-      <MatchesList matches={snapshot.matches} teams={snapshot.teams} />
+      <MatchesList matches={snapshot.matches} teams={snapshot.teams} initialSearch={team} />
     </>
   )
 }

@@ -9,10 +9,11 @@ import { t } from "@/lib/i18n"
 interface MatchesListProps {
   matches: Match[]
   teams: Team[]
+  initialSearch?: string
 }
 
-export function MatchesList({ matches, teams }: MatchesListProps) {
-  const [search, setSearch] = useState("")
+export function MatchesList({ matches, teams, initialSearch }: MatchesListProps) {
+  const [search, setSearch] = useState(initialSearch ?? "")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const msg = t()
 
