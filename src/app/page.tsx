@@ -29,9 +29,16 @@ export default async function HomePage() {
     )
   }
 
-  const liveMatches = snapshot.matches.filter((m: Match) => m.status === "live")
-  const scheduledMatches = snapshot.matches.filter((m: Match) => m.status === "scheduled").slice(0, 3)
-  const recentFinished = snapshot.matches.filter((m: Match) => m.status === "finished").slice(-3).reverse()
+  // Only show matches with real team names (not "vítěz #X" / "poražený #X" / TBD)
+  const hasRealTeams = (m: Match) =>
+    m.teamA?.name && m.teamB?.name &&
+    !m.teamA.name.startsWith("vítěz") && !m.teamA.name.startsWith("poražený") &&
+    !m.teamB.name.startsWith("vítěz") && !m.teamB.name.startsWith("poražený") &&
+    m.teamA.name !== "TBD" && m.teamB.name !== "TBD"
+
+  const liveMatches = snapshot.matches.filter((m: Match) => m.status === "live" && hasRealTeams(m))
+  const scheduledMatches = snapshot.matches.filter((m: Match) => m.status === "scheduled" && hasRealTeams(m)).slice(0, 4)
+  const recentFinished = snapshot.matches.filter((m: Match) => m.status === "finished" && hasRealTeams(m)).slice(-4).reverse()
 
   const statusBadge = snapshot.status === "live" ? "live" : snapshot.status === "finished" ? "finished" : "scheduled"
 
