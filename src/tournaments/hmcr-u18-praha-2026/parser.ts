@@ -4,72 +4,99 @@ import { TournamentConfig } from "@/lib/tournament/config"
 import {
   Team,
   Match,
+  Group,
   Bracket,
   BracketMatch,
   MatchStatus,
   TournamentStatus,
   ParserWarning,
   TournamentSnapshot,
+  GroupStanding,
 } from "@/lib/tournament/schema"
 import { makeId } from "@/lib/parsers/sheet-utils"
 
 const SOURCE = "bvis-parser"
 
-/** Score pattern: "2:0 (21:15,21:18)" or "0:0 (,)" */
-const SCORE_PATTERN = /(\d+):(\d+)\s*\(([^)]*)\)/
+/** Round code → Czech round name for main event */
+const HS_ROUND_CODE_MAP: Record<string, string> = {
+  I: "1. kolo",
+  II: "2. kolo",
+  III: "Čtvrtfinále",
+  SF: "Semifinále",
+  F1: "Finále",
+  F3: "O 3. místo",
+}
 
-/** Round label patterns in Czech bracket sheets */
-const ROUND_LABELS: Record<string, string> = {
-  "semifinále": "Semifinále",
-  "finále o 1. místo": "Finále o 1. místo",
-  "finále o 3. místo": "Finále o 3. místo",
-  "čtvrtfinále": "Čtvrtfinále",
-  "osmifinále": "Osmifinále",
+/** Round code → bracket order (for sorting bracket rounds) */
+const BRACKET_ROUND_ORDER: Record<string, number> = {
+  I: 1,
+  II: 2,
+  III: 3,
+  SF: 4,
+  F3: 5,
+  F1: 6,
+}
+
+/** Match type code → phase */
+const MATCH_TYPE_PHASE: Record<string, "playoff" | "placement"> = {
+  e: "playoff",
+  q: "placement",
+  s: "playoff",
+  f: "playoff",
 }
 
 export class BvisParser implements TournamentParser {
   parse(sheetData: GoogleSheetResult, config: TournamentConfig): ParseResult {
     const warnings: ParserWarning[] = []
 
-    const startlistSheet = sheetData.sheets["startlist"]
-    const bracketSheet = sheetData.sheets["bracket"]
-    const matchesSheet = sheetData.sheets["matches"]
-    const groupsSheet = sheetData.sheets["groups"]
+    const hsStartlist = sheetData.sheets["hs-startlist"]
+    const hsMatches = sheetData.sheets["hs-matches"]
+    const qStartlist = sheetData.sheets["q-startlist"]
+    const qMatches = sheetData.sheets["q-matches"]
+    const qGroups = sheetData.sheets["q-groups"]
 
-    // Parse teams from startlist
-    const teams = startlistSheet
-      ? this.parseTeams(startlistSheet, warnings)
+    // Parse main event teams
+    const hsTeams = hsStartlist
+      ? this.parseHsTeams(hsStartlist, warnings)
       : []
 
-    if (teams.length === 0) {
+    // Parse qualification teams
+    const qTeams = qStartlist
+      ? this.parseQTeams(qStartlist, warnings)
+      : []
+
+    const allTeams = [...hsTeams, ...qTeams]
+
+    if (allTeams.length === 0) {
       warnings.push({
         source: SOURCE,
-        message: "No teams parsed from startlist sheet",
+        message: "No teams parsed from any startlist sheet",
         timestamp: new Date().toISOString(),
       })
     }
 
-    // Parse bracket
-    const teamNames = new Set(teams.map((t) => t.name))
-    const { bracket, bracketMatches } = bracketSheet
-      ? this.parseBracket(bracketSheet, teamNames, warnings)
-      : { bracket: undefined, bracketMatches: [] as Match[] }
-
-    // Parse matches from matches sheet (may be empty)
-    const sheetMatches = matchesSheet
-      ? this.parseMatchesSheet(matchesSheet, teams, warnings)
+    // Parse main event matches
+    const hsMatchList = hsMatches
+      ? this.parseHsMatches(hsMatches, allTeams, warnings)
       : []
 
-    // Parse groups
-    const groups = groupsSheet
-      ? this.parseGroups(groupsSheet, teams, warnings)
+    // Parse qualification matches
+    const qMatchList = qMatches
+      ? this.parseQMatches(qMatches, allTeams, warnings)
       : []
 
-    // Combine all matches
-    const allMatches = [...sheetMatches, ...bracketMatches]
+    const allMatches = [...hsMatchList, ...qMatchList]
 
-    // Determine status
-    const status = this.determineTournamentStatus(allMatches)
+    // Parse qualification groups
+    const groups = qGroups
+      ? this.parseQGroups(qGroups, qTeams, warnings)
+      : []
+
+    // Build bracket from main event playoff matches only
+    const bracket = this.buildBracketFromMatches(hsMatchList)
+
+    // Determine status based on main event matches
+    const status = this.determineTournamentStatus(hsMatchList)
 
     const snapshot: TournamentSnapshot = {
       meta: {
@@ -87,7 +114,7 @@ export class BvisParser implements TournamentParser {
         organizer: config.organizer,
       },
       status,
-      teams,
+      teams: allTeams,
       matches: allMatches,
       groups,
       bracket: bracket && bracket.rounds.length > 0 ? bracket : undefined,
@@ -97,13 +124,13 @@ export class BvisParser implements TournamentParser {
     return { snapshot, warnings }
   }
 
-  /** Parse teams from B-VIS "Startovní listina" format */
-  private parseTeams(sheet: SheetData, warnings: ParserWarning[]): Team[] {
-    const teams: Team[] = []
+  // ---------------------------------------------------------------------------
+  // Team parsing
+  // ---------------------------------------------------------------------------
 
-    // B-VIS format: all rows including headers are in the flat rows array
-    // Row format: Col 0 = seed number, Col 1 = "Player1 / Player2", Col 2 = rating points, Col 3 = "Q" qualifier
-    // Skip rows where col 0 is not a number (header/title rows)
+  /** Parse main event teams from "HS - Startovní listina" */
+  private parseHsTeams(sheet: SheetData, warnings: ParserWarning[]): Team[] {
+    const teams: Team[] = []
     const allRows = [sheet.headers, ...sheet.rows]
 
     for (const row of allRows) {
@@ -114,12 +141,8 @@ export class BvisParser implements TournamentParser {
       const teamName = (row[1] ?? "").trim()
       if (!teamName) continue
 
-      // Split by " / " to get player names
       const playerNames = teamName.split(" / ").map((n) => n.trim()).filter(Boolean)
       const players = playerNames.map((name) => ({ name }))
-
-      const pointsStr = (row[2] ?? "").trim().replace(/\s/g, "").replace(",", ".")
-      const _points = parseFloat(pointsStr) || 0
 
       const qualifier = (row[3] ?? "").trim().toUpperCase() === "Q"
 
@@ -136,7 +159,7 @@ export class BvisParser implements TournamentParser {
     if (teams.length > 0) {
       warnings.push({
         source: SOURCE,
-        message: `Parsed ${teams.length} teams from startlist`,
+        message: `Parsed ${teams.length} main event teams from HS startlist`,
         timestamp: new Date().toISOString(),
       })
     }
@@ -144,184 +167,273 @@ export class BvisParser implements TournamentParser {
     return teams
   }
 
-  /** Parse bracket from B-VIS "Pavouk" sheet */
-  private parseBracket(
-    sheet: SheetData,
-    teamNames: Set<string>,
-    warnings: ParserWarning[],
-  ): { bracket: Bracket; bracketMatches: Match[] } {
+  /** Parse qualification teams from "Q - Startovní listina" */
+  private parseQTeams(sheet: SheetData, warnings: ParserWarning[]): Team[] {
+    const teams: Team[] = []
     const allRows = [sheet.headers, ...sheet.rows]
-    const matches: Match[] = []
-    const roundMatchMap = new Map<string, BracketMatch[]>()
-    const foundTeams = new Set<string>()
-    let scoreCount = 0
 
-    // Scan all cells for team names, scores, and round labels
-    for (let rowIdx = 0; rowIdx < allRows.length; rowIdx++) {
-      const row = allRows[rowIdx]
-      for (let colIdx = 0; colIdx < row.length; colIdx++) {
-        const cell = (row[colIdx] ?? "").trim()
-        if (!cell) continue
+    for (const row of allRows) {
+      const seedStr = (row[0] ?? "").trim()
+      const seed = parseInt(seedStr, 10)
+      if (isNaN(seed) || seed <= 0) continue
+      // Only parse seeded qualification teams (1-18), skip the full entry list below
+      if (seed > 18) break
 
-        // Check if cell contains a team name
-        if (teamNames.has(cell)) {
-          foundTeams.add(cell)
-        }
+      const teamName = (row[1] ?? "").trim()
+      if (!teamName) continue
 
-        // Check for score pattern
-        const scoreMatch = SCORE_PATTERN.exec(cell)
-        if (scoreMatch) {
-          const setsA = parseInt(scoreMatch[1], 10)
-          const setsB = parseInt(scoreMatch[2], 10)
-          const detailStr = scoreMatch[3]
+      const playerNames = teamName.split(" / ").map((n) => n.trim()).filter(Boolean)
+      const players = playerNames.map((name) => ({ name }))
 
-          // Skip "0:0 (,)" - not yet played
-          if (setsA === 0 && setsB === 0 && detailStr.replace(/,/g, "").trim() === "") {
-            continue
-          }
+      // Col 3: group assignment like "Skupina A"
+      const groupStr = (row[3] ?? "").trim()
+      const groupMatch = /Skupina\s+(\S+)/i.exec(groupStr)
+      const groupId = groupMatch ? makeId("q-group", groupMatch[1]) : undefined
 
-          scoreCount++
+      const id = makeId(teamName)
 
-          // Try to find team names nearby (same row, previous columns)
-          const teamA = this.findNearbyTeam(allRows, rowIdx, colIdx, teamNames, -1)
-          const teamB = this.findNearbyTeam(allRows, rowIdx, colIdx, teamNames, 1)
-
-          // Try to find round label nearby
-          const roundLabel = this.findNearbyRoundLabel(allRows, rowIdx, colIdx)
-
-          const score = this.parseScoreString(cell)
-          const status: MatchStatus = score ? "finished" : "scheduled"
-
-          const matchId = makeId("bracket", String(rowIdx), String(colIdx))
-          const match: Match = {
-            id: matchId,
-            round: roundLabel || undefined,
-            status,
-            teamA: teamA
-              ? { teamId: makeId(teamA), name: teamA }
-              : undefined,
-            teamB: teamB
-              ? { teamId: makeId(teamB), name: teamB }
-              : undefined,
-            score: score || undefined,
-            bracketRound: roundLabel || undefined,
-            phase: "playoff",
-          }
-          matches.push(match)
-
-          const roundName = roundLabel || "Unknown"
-          if (!roundMatchMap.has(roundName)) roundMatchMap.set(roundName, [])
-          roundMatchMap.get(roundName)!.push({
-            matchId,
-            round: roundName,
-            position: roundMatchMap.get(roundName)!.length,
-            teamA: match.teamA,
-            teamB: match.teamB,
-            winner: score?.winner,
-            score: score
-              ? score.sets.map((s) => `${s.teamA}:${s.teamB}`).join(", ")
-              : undefined,
-          })
-        }
-      }
+      // Check for duplicate (team may already exist in HS startlist)
+      teams.push({
+        id,
+        name: teamName,
+        players,
+        seed,
+        ...(groupId ? { groupId } : {}),
+      })
     }
 
+    if (teams.length > 0) {
+      warnings.push({
+        source: SOURCE,
+        message: `Parsed ${teams.length} qualification teams from Q startlist`,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    return teams
+  }
+
+  // ---------------------------------------------------------------------------
+  // Match parsing
+  // ---------------------------------------------------------------------------
+
+  /** Parse main event matches from "HS - utkání" */
+  private parseHsMatches(
+    sheet: SheetData,
+    teams: Team[],
+    warnings: ParserWarning[],
+  ): Match[] {
+    const matches = this.parseMatchSheet(sheet, teams, warnings, "hs")
     warnings.push({
       source: SOURCE,
-      message: `Bracket: found ${foundTeams.size} teams, ${scoreCount} scores, ${matches.length} matches`,
+      message: `Parsed ${matches.length} main event matches (${matches.filter((m) => m.status === "finished").length} finished)`,
       timestamp: new Date().toISOString(),
     })
-
-    const bracket: Bracket = {
-      rounds: Array.from(roundMatchMap.entries()).map(([name, bMatches]) => ({
-        name,
-        matches: bMatches.sort((a, b) => a.position - b.position),
-      })),
-    }
-
-    return { bracket, bracketMatches: matches }
+    return matches
   }
 
-  /** Find a team name near a given cell position */
-  private findNearbyTeam(
-    rows: string[][],
-    rowIdx: number,
-    colIdx: number,
-    teamNames: Set<string>,
-    direction: -1 | 1,
-  ): string | null {
-    // Search in same row, nearby columns
-    const searchCols = direction === -1
-      ? [colIdx - 1, colIdx - 2, colIdx - 3]
-      : [colIdx + 1, colIdx + 2, colIdx + 3]
+  /** Parse qualification matches from "Q - utkání" */
+  private parseQMatches(
+    sheet: SheetData,
+    teams: Team[],
+    warnings: ParserWarning[],
+  ): Match[] {
+    const matches = this.parseMatchSheet(sheet, teams, warnings, "q")
+    warnings.push({
+      source: SOURCE,
+      message: `Parsed ${matches.length} qualification matches (${matches.filter((m) => m.status === "finished").length} finished)`,
+      timestamp: new Date().toISOString(),
+    })
+    return matches
+  }
 
-    const row = rows[rowIdx]
-    for (const col of searchCols) {
-      if (col >= 0 && col < row.length) {
-        const cell = (row[col] ?? "").trim()
-        if (teamNames.has(cell)) return cell
-      }
+  /** Shared match sheet parser for both HS and Q formats */
+  private parseMatchSheet(
+    sheet: SheetData,
+    teams: Team[],
+    warnings: ParserWarning[],
+    prefix: "hs" | "q",
+  ): Match[] {
+    const matches: Match[] = []
+    const allRows = [sheet.headers, ...sheet.rows]
+
+    if (allRows.length <= 1) {
+      warnings.push({
+        source: SOURCE,
+        message: `${prefix.toUpperCase()} matches sheet is empty or has no data rows`,
+        timestamp: new Date().toISOString(),
+      })
+      return matches
     }
 
-    // Also search adjacent rows at same column offset
-    for (const rOffset of [-1, 1]) {
-      const r = rowIdx + rOffset
-      if (r < 0 || r >= rows.length) continue
-      for (const col of searchCols) {
-        if (col >= 0 && col < rows[r].length) {
-          const cell = (rows[r][col] ?? "").trim()
-          if (teamNames.has(cell)) return cell
+    const teamMap = new Map(teams.map((t) => [t.name.toLowerCase(), t]))
+
+    for (let i = 1; i < allRows.length; i++) {
+      const row = allRows[i]
+
+      // Col 0: match number
+      const matchNumStr = (row[0] ?? "").trim()
+      const matchNum = parseInt(matchNumStr, 10)
+      if (isNaN(matchNum) || matchNum <= 0) continue
+
+      // Col 1: round code
+      const roundCode = (row[1] ?? "").trim()
+
+      // Col 2: date (e.g. "21/3", "22/3")
+      const dateStr = (row[2] ?? "").trim()
+
+      // Col 3: time (e.g. "9:00")
+      const timeStr = (row[3] ?? "").trim()
+
+      // Col 4: court
+      const courtStr = (row[4] ?? "").trim()
+
+      // Col 5: team A name
+      const teamAName = (row[5] ?? "").trim()
+
+      // Col 7: team B name
+      const teamBName = (row[7] ?? "").trim()
+
+      // Col 8, 10: set score (e.g. "2":"0")
+      const scoreAStr = (row[8] ?? "").trim()
+      const scoreA = parseInt(scoreAStr, 10)
+      const scoreBStr = (row[10] ?? "").trim()
+      const scoreB = parseInt(scoreBStr, 10)
+
+      // Set scores from cols 12, 14, 16
+      const set1Str = (row[12] ?? "").trim()
+      const set2Str = (row[14] ?? "").trim()
+      const set3Str = (row[16] ?? "").trim()
+
+      // Col 22: match type code
+      const matchTypeCode = (row[22] ?? "").trim().toLowerCase()
+
+      // Map round code to name and determine phase/groupId
+      let roundName: string | undefined
+      let phase: Match["phase"]
+      let groupId: string | undefined
+
+      if (prefix === "hs") {
+        // Main event round mapping
+        if (HS_ROUND_CODE_MAP[roundCode]) {
+          roundName = HS_ROUND_CODE_MAP[roundCode]
+        } else {
+          // Placement rounds: numeric codes like "17", "13", "9", "7", "5"
+          const placementNum = parseInt(roundCode, 10)
+          if (!isNaN(placementNum) && placementNum > 0) {
+            roundName = `O ${placementNum}. místo`
+          }
+        }
+        // Phase from match type code
+        phase = MATCH_TYPE_PHASE[matchTypeCode] || "playoff"
+      } else {
+        // Qualification round mapping
+        // Group rounds: "A-I", "A-II", "B-I", etc.
+        // Crossover rounds: just "I"
+        const qGroupRoundMatch = /^([A-F])-(.+)$/i.exec(roundCode)
+        if (qGroupRoundMatch) {
+          const groupLetter = qGroupRoundMatch[1].toUpperCase()
+          const subRound = qGroupRoundMatch[2]
+          roundName = `Sk. ${groupLetter} - ${subRound}. zápas`
+          phase = "group"
+          groupId = makeId("q-group", groupLetter)
+        } else {
+          // Crossover/playoff round in qualification
+          roundName = `Kvalifikace - ${roundCode}. kolo`
+          phase = "playoff"
         }
       }
+
+      // Determine match status
+      const hasScore = (!isNaN(scoreA) && scoreA > 0) || (!isNaN(scoreB) && scoreB > 0)
+      const status: MatchStatus = hasScore ? "finished" : "scheduled"
+
+      // Parse set scores
+      const score = this.parseSetScores(scoreA, scoreB, set1Str, set2Str, set3Str)
+
+      // Resolve teams
+      const teamAResolved = this.resolveTeam(teamAName, teamMap)
+      const teamBResolved = this.resolveTeam(teamBName, teamMap)
+
+      // Build scheduled time
+      const scheduledTime = this.buildScheduledTime(dateStr, timeStr)
+
+      matches.push({
+        id: makeId(prefix, "match", String(matchNum)),
+        round: roundName,
+        court: courtStr || undefined,
+        scheduledTime: scheduledTime || undefined,
+        status,
+        teamA: teamAResolved,
+        teamB: teamBResolved,
+        score: score || undefined,
+        bracketRound: prefix === "hs" ? roundName : undefined,
+        phase,
+        groupId,
+      })
     }
 
-    return null
+    return matches
   }
 
-  /** Find a round label near a given cell position */
-  private findNearbyRoundLabel(
-    rows: string[][],
-    rowIdx: number,
-    _colIdx: number,
-  ): string | null {
-    // Search in nearby rows, typically round labels are above the match
-    for (let rOffset = -5; rOffset <= 0; rOffset++) {
-      const r = rowIdx + rOffset
-      if (r < 0 || r >= rows.length) continue
-      for (const cell of rows[r]) {
-        const lower = (cell ?? "").trim().toLowerCase()
-        for (const [key, label] of Object.entries(ROUND_LABELS)) {
-          if (lower.includes(key)) return label
-        }
-      }
+  /** Resolve a team name to a match team reference */
+  private resolveTeam(
+    name: string,
+    teamMap: Map<string, Team>,
+  ): { teamId: string; name: string } | undefined {
+    if (!name) return undefined
+
+    const team = teamMap.get(name.toLowerCase())
+    if (team) {
+      return { teamId: team.id, name: team.name }
     }
-    return null
+
+    // Keep TBD references like "vítěz #X" or "poražený #X"
+    return { teamId: makeId(name), name }
   }
 
-  /** Parse score string like "2:0 (21:15,21:18)" */
-  private parseScoreString(
-    scoreStr: string,
+  /** Parse set scores from individual columns */
+  private parseSetScores(
+    scoreA: number,
+    scoreB: number,
+    set1Str: string,
+    set2Str: string,
+    set3Str: string,
   ): Match["score"] | null {
-    const match = SCORE_PATTERN.exec(scoreStr)
-    if (!match) return null
+    const setsA = isNaN(scoreA) ? 0 : scoreA
+    const setsB = isNaN(scoreB) ? 0 : scoreB
 
-    const setsA = parseInt(match[1], 10)
-    const setsB = parseInt(match[2], 10)
-    const detailStr = match[3]
+    // Not yet played
+    if (setsA === 0 && setsB === 0) return null
 
-    if (setsA === 0 && setsB === 0 && detailStr.replace(/,/g, "").trim() === "") {
+    const sets: { teamA: number; teamB: number }[] = []
+
+    const parseSetScore = (str: string): { teamA: number; teamB: number } | null => {
+      if (!str) return null
+      // Try "X:Y" format
+      const colonMatch = /^(\d+):(\d+)$/.exec(str)
+      if (colonMatch) {
+        return { teamA: parseInt(colonMatch[1], 10), teamB: parseInt(colonMatch[2], 10) }
+      }
+      // Single number (point difference) — positive means team A won, negative means team B won
+      const num = parseInt(str, 10)
+      if (!isNaN(num)) {
+        // We only have the difference, not absolute scores. Store as-is.
+        if (num > 0) {
+          return { teamA: 21, teamB: 21 - num }
+        } else if (num < 0) {
+          return { teamA: 21 + num, teamB: 21 }
+        }
+      }
       return null
     }
 
-    // Parse individual set scores from detail like "21:15,21:18"
-    const sets: { teamA: number; teamB: number }[] = []
-    const setPattern = /(\d+):(\d+)/g
-    let m
-    while ((m = setPattern.exec(detailStr)) !== null) {
-      sets.push({ teamA: parseInt(m[1], 10), teamB: parseInt(m[2], 10) })
-    }
-
-    if (sets.length === 0) return null
+    const s1 = parseSetScore(set1Str)
+    if (s1) sets.push(s1)
+    const s2 = parseSetScore(set2Str)
+    if (s2) sets.push(s2)
+    const s3 = parseSetScore(set3Str)
+    if (s3) sets.push(s3)
 
     const winner =
       setsA > setsB
@@ -333,163 +445,118 @@ export class BvisParser implements TournamentParser {
     return { sets, winner }
   }
 
-  /** Parse matches from the "Zápasy" sheet */
-  private parseMatchesSheet(
-    sheet: SheetData,
-    teams: Team[],
-    warnings: ParserWarning[],
-  ): Match[] {
-    const matches: Match[] = []
+  /** Build scheduled time string from date and time columns */
+  private buildScheduledTime(dateStr: string, timeStr: string): string | null {
+    if (!dateStr) return null
 
-    if (sheet.rows.length === 0) {
-      warnings.push({
-        source: SOURCE,
-        message: "Matches sheet is empty or has no data rows",
-        timestamp: new Date().toISOString(),
-      })
-      return matches
+    // dateStr is like "21/3" or "22/3"
+    const dateParts = dateStr.split("/")
+    if (dateParts.length !== 2) return dateStr
+
+    const day = dateParts[0].trim()
+    const month = dateParts[1].trim()
+
+    const formatted = `${day}. ${month}.`
+    if (timeStr) {
+      return `${formatted} ${timeStr}`
     }
-
-    // Try to find standard match columns
-    const headerLower = sheet.headers.map((h) => h.toLowerCase().trim())
-    const teamMap = new Map(teams.map((t) => [t.name.toLowerCase(), t]))
-
-    const findCol = (candidates: string[]) =>
-      headerLower.findIndex((h) =>
-        candidates.some((c) => h === c || h.includes(c)),
-      )
-
-    const teamAIdx = findCol(["tým a", "team a", "tým 1", "team 1", "domácí"])
-    const teamBIdx = findCol(["tým b", "team b", "tým 2", "team 2", "hosté"])
-    const scoreIdx = findCol(["výsledek", "score", "skóre", "sety"])
-    const roundIdx = findCol(["kolo", "round", "fáze"])
-    const courtIdx = findCol(["kurt", "court"])
-    const timeIdx = findCol(["čas", "time", "začátek"])
-
-    if (teamAIdx < 0 || teamBIdx < 0) {
-      warnings.push({
-        source: SOURCE,
-        message: "Matches sheet: could not find team columns",
-        timestamp: new Date().toISOString(),
-      })
-      return matches
-    }
-
-    for (let i = 0; i < sheet.rows.length; i++) {
-      const row = sheet.rows[i]
-      const nameA = (row[teamAIdx] ?? "").trim()
-      const nameB = (row[teamBIdx] ?? "").trim()
-      if (!nameA && !nameB) continue
-
-      const teamA = teamMap.get(nameA.toLowerCase())
-      const teamB = teamMap.get(nameB.toLowerCase())
-      const scoreStr = scoreIdx >= 0 ? (row[scoreIdx] ?? "").trim() : ""
-      const round = roundIdx >= 0 ? (row[roundIdx] ?? "").trim() : undefined
-      const court = courtIdx >= 0 ? (row[courtIdx] ?? "").trim() : undefined
-      const time = timeIdx >= 0 ? (row[timeIdx] ?? "").trim() : undefined
-
-      const score = this.parseScoreString(scoreStr)
-      const status: MatchStatus = score ? "finished" : "scheduled"
-
-      matches.push({
-        id: makeId("match", String(i + 1)),
-        round: round || undefined,
-        court: court || undefined,
-        scheduledTime: time || undefined,
-        status,
-        teamA: teamA
-          ? { teamId: teamA.id, name: teamA.name }
-          : nameA
-            ? { teamId: makeId(nameA), name: nameA }
-            : undefined,
-        teamB: teamB
-          ? { teamId: teamB.id, name: teamB.name }
-          : nameB
-            ? { teamId: makeId(nameB), name: nameB }
-            : undefined,
-        score: score || undefined,
-      })
-    }
-
-    return matches
+    return formatted
   }
 
-  /** Parse groups from the "Skupiny" sheet */
-  private parseGroups(
+  // ---------------------------------------------------------------------------
+  // Qualification groups
+  // ---------------------------------------------------------------------------
+
+  /** Parse qualification groups from "Q - Skupiny" */
+  private parseQGroups(
     sheet: SheetData,
-    teams: Team[],
+    qTeams: Team[],
     warnings: ParserWarning[],
-  ) {
+  ): Group[] {
     const allRows = [sheet.headers, ...sheet.rows]
+    const groups: Group[] = []
 
-    // B-VIS groups sheet typically has group headers like "Skupina A", "Skupina B"
-    // followed by team listings
-    const groups: {
-      id: string
-      name: string
-      standings: {
-        teamId: string
-        teamName: string
-        rank: number
-        played: number
-        won: number
-        lost: number
-        setsWon: number
-        setsLost: number
-        pointsWon: number
-        pointsLost: number
-      }[]
-    }[] = []
+    const teamsByName = new Map(qTeams.map((t) => [t.name.toLowerCase(), t]))
 
-    const teamNames = new Set(teams.map((t) => t.name))
-    let currentGroup: (typeof groups)[number] | null = null
-    let teamRank = 0
+    let currentGroup: Group | null = null
 
     for (const row of allRows) {
       const firstCell = (row[0] ?? "").trim()
 
-      // Check if this is a group header
-      const groupMatch = /^Skupina\s+(\S+)/i.exec(firstCell)
-      if (groupMatch) {
-        const groupName = `Skupina ${groupMatch[1]}`
+      // Detect group header: "SKUPINA X"
+      const groupHeaderMatch = /^SKUPINA\s+(\S+)/i.exec(firstCell)
+      if (groupHeaderMatch) {
+        const letter = groupHeaderMatch[1].toUpperCase()
         currentGroup = {
-          id: makeId("group", groupName),
-          name: groupName,
+          id: makeId("q-group", letter),
+          name: `Skupina ${letter}`,
           standings: [],
         }
         groups.push(currentGroup)
-        teamRank = 0
         continue
       }
 
-      // Check if any cell in this row contains a team name
-      if (currentGroup) {
-        for (const cell of row) {
-          const trimmed = (cell ?? "").trim()
-          if (teamNames.has(trimmed)) {
-            teamRank++
-            currentGroup.standings.push({
-              teamId: makeId(trimmed),
-              teamName: trimmed,
-              rank: teamRank,
-              played: 0,
-              won: 0,
-              lost: 0,
-              setsWon: 0,
-              setsLost: 0,
-              pointsWon: 0,
-              pointsLost: 0,
-            })
-            break
-          }
-        }
+      if (!currentGroup) continue
+
+      // Team rows have ID like "A1", "A2", "A3" in col 0 and team name in col 1
+      const idCell = (row[0] ?? "").trim()
+      const teamIdMatch = /^[A-F]\d$/i.exec(idCell)
+      if (!teamIdMatch) continue
+
+      const teamName = (row[1] ?? "").trim()
+      if (!teamName) continue
+
+      const team = teamsByName.get(teamName.toLowerCase())
+
+      // Parse sets ratio from col 23 (format like "4:1" or "2:4")
+      const setsRatioStr = (row[23] ?? "").trim()
+      const setsMatch = /^(\d+)\s*:\s*(\d+)$/.exec(setsRatioStr)
+      const setsWon = setsMatch ? parseInt(setsMatch[1], 10) : 0
+      const setsLost = setsMatch ? parseInt(setsMatch[2], 10) : 0
+
+      // Parse points ratio from col 24 (format like "120:80")
+      const pointsRatioStr = (row[24] ?? "").trim()
+      const pointsMatch = /^(\d+)\s*:\s*(\d+)$/.exec(pointsRatioStr)
+      const pointsWon = pointsMatch ? parseInt(pointsMatch[1], 10) : 0
+      const pointsLost = pointsMatch ? parseInt(pointsMatch[2], 10) : 0
+
+      // Parse rank from col 25
+      const rankStr = (row[25] ?? "").trim()
+      const rank = parseInt(rankStr, 10) || (currentGroup.standings.length + 1)
+
+      // Calculate played/won/lost from sets
+      const totalSets = setsWon + setsLost
+      // In groups of 3, each team plays 2 matches
+      const played = totalSets > 0 ? Math.min(2, Math.ceil(totalSets / 2)) : 0
+      // A match win = winning 2 sets
+      const won = Math.floor(setsWon / 2)
+      const lost = played - won
+
+      const standing: GroupStanding = {
+        teamId: team?.id ?? makeId(teamName),
+        teamName,
+        rank,
+        played,
+        won,
+        lost,
+        setsWon,
+        setsLost,
+        pointsWon,
+        pointsLost,
       }
+
+      currentGroup.standings.push(standing)
+    }
+
+    // Sort standings by rank within each group
+    for (const group of groups) {
+      group.standings.sort((a, b) => a.rank - b.rank)
     }
 
     if (groups.length > 0) {
       warnings.push({
         source: SOURCE,
-        message: `Parsed ${groups.length} groups from groups sheet`,
+        message: `Parsed ${groups.length} qualification groups from Q groups sheet`,
         timestamp: new Date().toISOString(),
       })
     }
@@ -497,7 +564,65 @@ export class BvisParser implements TournamentParser {
     return groups
   }
 
-  /** Determine tournament status from matches */
+  // ---------------------------------------------------------------------------
+  // Bracket building
+  // ---------------------------------------------------------------------------
+
+  /** Build bracket structure from main event playoff matches */
+  private buildBracketFromMatches(matches: Match[]): Bracket {
+    const bracketMatches = matches.filter(
+      (m) => m.phase === "playoff" && m.bracketRound,
+    )
+
+    // Group by round name
+    const roundMap = new Map<string, { order: number; matches: Match[] }>()
+
+    for (const m of bracketMatches) {
+      const roundName = m.bracketRound!
+      if (!roundMap.has(roundName)) {
+        const order = this.getRoundOrder(roundName)
+        roundMap.set(roundName, { order, matches: [] })
+      }
+      roundMap.get(roundName)!.matches.push(m)
+    }
+
+    // Sort rounds by order
+    const sortedRounds = Array.from(roundMap.entries())
+      .sort((a, b) => a[1].order - b[1].order)
+
+    const rounds = sortedRounds.map(([name, { matches: roundMatches }]) => ({
+      name,
+      matches: roundMatches.map((m, idx): BracketMatch => ({
+        matchId: m.id,
+        round: name,
+        position: idx,
+        teamA: m.teamA,
+        teamB: m.teamB,
+        winner: m.score?.winner,
+        score: m.score
+          ? m.score.sets.map((s) => `${s.teamA}:${s.teamB}`).join(", ")
+          : undefined,
+      })),
+    }))
+
+    return { rounds }
+  }
+
+  /** Get bracket round ordering from Czech round name */
+  private getRoundOrder(roundName: string): number {
+    for (const [code, name] of Object.entries(HS_ROUND_CODE_MAP)) {
+      if (name === roundName) {
+        return BRACKET_ROUND_ORDER[code] ?? 99
+      }
+    }
+    return 99
+  }
+
+  // ---------------------------------------------------------------------------
+  // Tournament status
+  // ---------------------------------------------------------------------------
+
+  /** Determine tournament status from main event matches */
   private determineTournamentStatus(matches: Match[]): TournamentStatus {
     if (matches.length === 0) return "upcoming"
     const hasLive = matches.some((m) => m.status === "live")

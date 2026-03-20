@@ -16,10 +16,11 @@ export const hmcrU18Praha2026: TournamentConfig = {
     googleSheet: {
       spreadsheetId: "1rOtwIEPpUXzsZpagn3WPb-B1xaETdLy0_kZpk6mydw0",
       sheets: [
-        { name: "startlist", sheetName: "HS - Startovní listina" },
-        { name: "bracket", sheetName: "HS - Pavouk" },
-        { name: "matches", sheetName: "HS - Zápasy" },
-        { name: "groups", sheetName: "HS - Skupiny" },
+        { name: "hs-startlist", sheetName: "HS - Startovní listina" },
+        { name: "hs-matches", sheetName: "HS - utkání" },
+        { name: "q-startlist", sheetName: "Q - Startovní listina" },
+        { name: "q-matches", sheetName: "Q - utkání" },
+        { name: "q-groups", sheetName: "Q - Skupiny" },
       ],
     },
     pdf: {
