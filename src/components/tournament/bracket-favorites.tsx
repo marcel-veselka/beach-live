@@ -80,8 +80,10 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
           />
         </div>
         {match.score && (
-          <div className="ml-3 text-sm font-score font-medium text-muted-foreground bg-muted/50 px-2.5 py-1.5 rounded-lg shrink-0">
-            {match.score}
+          <div className="ml-3 font-score font-medium text-muted-foreground shrink-0 flex flex-col items-end gap-0.5">
+            {match.score.split(", ").map((s, i) => (
+              <span key={i} className="text-xs bg-muted/50 px-2 py-0.5 rounded-md whitespace-nowrap">{s}</span>
+            ))}
           </div>
         )}
         {match.winner && (

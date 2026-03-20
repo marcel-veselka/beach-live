@@ -10,7 +10,8 @@ import { FavoriteMatches } from "@/components/tournament/favorite-matches"
 import { EmptyState } from "@/components/ui/empty-state"
 import { t, pluralize } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { Trophy, GitBranch, Users, Swords, LayoutGrid, Info } from "lucide-react"
+import { GitBranch, Users, Swords, LayoutGrid, Info } from "lucide-react"
+import { VolleyballIcon } from "@/components/ui/volleyball-icon"
 import Link from "next/link"
 import { Match } from "@/lib/tournament/schema"
 
@@ -96,6 +97,21 @@ export default async function HomePage() {
           {snapshot.metadata.dates && <span>📅 {snapshot.metadata.dates}</span>}
           {snapshot.metadata.category && <span>🏐 {snapshot.metadata.category}</span>}
         </div>
+
+        {(() => {
+          const totalMatches = snapshot.matches.filter(hasRealTeams).length
+          const finishedMatches = snapshot.matches.filter((m: Match) => m.status === "finished" && hasRealTeams(m)).length
+          if (totalMatches === 0) return null
+          const pct = Math.round((finishedMatches / totalMatches) * 100)
+          return (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex-1 h-1.5 rounded-full bg-border/50 overflow-hidden">
+                <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${pct}%` }} />
+              </div>
+              <span className="text-[10px] text-muted-foreground/70 font-medium font-score shrink-0">{finishedMatches}/{totalMatches}</span>
+            </div>
+          )
+        })()}
 
         {/* #7: Freshness more visually integrated - inline pill style */}
         {/* #8: Source links smaller and less prominent */}

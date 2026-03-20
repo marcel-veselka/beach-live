@@ -54,7 +54,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
       isTBD && match.status === "scheduled" && "border-dashed border-border/50 opacity-75",
     )}>
       {/* Time/court/round hierarchy */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
           {match.scheduledTime && (
             <span className="font-bold text-foreground/80 text-[13px] tracking-tight">{match.scheduledTime}</span>
@@ -66,7 +66,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
             <span className="text-[11px] text-muted-foreground/50 font-medium">#{matchNumber}</span>
           )}
           {match.court && (
-            <span className="bg-muted/80 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/70">Kurt {match.court}</span>
+            <span className="bg-muted/80 rounded-full px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground/70 font-score">K{match.court}</span>
           )}
           {/* Match type indicator */}
           {showMatchType && isQualification && (
@@ -77,12 +77,19 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           )}
         </div>
         <Badge variant={statusVariant}>{statusLabel}</Badge>
-        {(match.status === "finished" || match.status === "live") && match.score?.sets && match.score.sets.length > 0 && (() => {
-          const setsA = match.score!.sets.reduce((count, s) => count + (s.teamA > s.teamB ? 1 : 0), 0)
-          const setsB = match.score!.sets.reduce((count, s) => count + (s.teamB > s.teamA ? 1 : 0), 0)
-          return <span className={cn("text-base font-bold font-score", match.status === "finished" && "text-foreground")}>{setsA}:{setsB}</span>
-        })()}
       </div>
+
+      {(match.status === "finished" || match.status === "live") && match.score?.sets && match.score.sets.length > 0 && (() => {
+        const setsA = match.score!.sets.reduce((count, s) => count + (s.teamA > s.teamB ? 1 : 0), 0)
+        const setsB = match.score!.sets.reduce((count, s) => count + (s.teamB > s.teamA ? 1 : 0), 0)
+        return (
+          <div className="flex justify-center mb-2">
+            <span className={cn("text-lg font-bold font-score tracking-wider", match.status === "live" ? "text-live" : "text-foreground/80")}>
+              {setsA}:{setsB}
+            </span>
+          </div>
+        )
+      })()}
 
       <div className="space-y-0">
         <TeamRow

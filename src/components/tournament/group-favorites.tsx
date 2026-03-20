@@ -5,6 +5,7 @@ import { Group, GroupStanding } from "@/lib/tournament/schema"
 import { Card } from "@/components/ui/card"
 import { t } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 export function GroupCardClient({ group }: { group: Group }) {
   const msg = t().groups
@@ -72,7 +73,9 @@ export function GroupCardClient({ group }: { group: Group }) {
                     </span>
                   </td>
                   <td className={cn("py-2.5 font-medium", isFirst && "text-foreground")}>
-                    {standing.teamName}
+                    <Link href={`/matches?team=${encodeURIComponent(standing.teamName)}`} className="hover:text-primary hover:underline transition-colors">
+                      {standing.teamName}
+                    </Link>
                     {fav && <span className="text-red-400 text-[10px] ml-1">♥</span>}
                   </td>
                   <td className="py-2.5 text-center text-muted-foreground">{standing.played}</td>
@@ -129,10 +132,12 @@ export function GroupCardClient({ group }: { group: Group }) {
                   )}>
                     {standing.rank}
                   </span>
-                  <span className={cn("font-medium text-sm", isFirst && "font-semibold")}>
-                    {standing.teamName}
-                    {fav && <span className="text-red-400 text-[10px] ml-1">♥</span>}
-                  </span>
+                  <Link href={`/matches?team=${encodeURIComponent(standing.teamName)}`} className="hover:text-primary transition-colors">
+                    <span className={cn("font-medium text-sm", isFirst && "font-semibold")}>
+                      {standing.teamName}
+                    </span>
+                  </Link>
+                  {fav && <span className="text-red-400 text-[10px] ml-1">♥</span>}
                 </div>
                 <div className="flex items-center gap-2.5 text-xs shrink-0 ml-2">
                   <span className="text-success font-semibold">
