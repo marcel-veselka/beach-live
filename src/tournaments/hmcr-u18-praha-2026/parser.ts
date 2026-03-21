@@ -30,6 +30,7 @@ const HS_ROUND_CODE_MAP: Record<string, string> = {
   I: "1. kolo",
   II: "2. kolo",
   III: "Čtvrtfinále",
+  IV: "4. kolo",
   SF: "Semifinále",
   F1: "Finále",
   F3: "O 3. místo",
@@ -40,9 +41,10 @@ const BRACKET_ROUND_ORDER: Record<string, number> = {
   I: 1,
   II: 2,
   III: 3,
-  SF: 4,
-  F3: 5,
-  F1: 6,
+  IV: 4,
+  SF: 5,
+  F3: 6,
+  F1: 7,
 }
 
 /** Match type code → phase */
@@ -364,9 +366,7 @@ export class BvisParser implements TournamentParser {
         } else {
           const placementNum = parseInt(roundCode, 10)
           if (!isNaN(placementNum) && placementNum > 0) {
-            if (matchTypeCode === "q") {
-              roundName = "O umístění"
-            }
+            roundName = `O ${placementNum}. místo`
           }
         }
       } else {
@@ -671,10 +671,10 @@ export class BvisParser implements TournamentParser {
   // Bracket building
   // ---------------------------------------------------------------------------
 
-  /** Build bracket structure from main event playoff matches */
+  /** Build bracket structure from main event matches (playoff + placement) */
   private buildBracketFromMatches(matches: Match[]): Bracket {
     const bracketMatches = matches.filter(
-      (m) => m.phase === "playoff" && m.bracketRound,
+      (m) => (m.phase === "playoff" || m.phase === "placement") && m.bracketRound,
     )
 
     // Group by round name
@@ -713,10 +713,19 @@ export class BvisParser implements TournamentParser {
 
   /** Get bracket round ordering from Czech round name */
   private getRoundOrder(roundName: string): number {
+    // Check main draw rounds
     for (const [code, name] of Object.entries(HS_ROUND_CODE_MAP)) {
       if (name === roundName) {
         return BRACKET_ROUND_ORDER[code] ?? 99
       }
+    }
+    // Placement rounds: "O 17. místo" → order by descending placement number
+    // (17th place plays first, then 13th, 9th, 7th, 5th)
+    const placementMatch = /^O (\d+)\. místo$/.exec(roundName)
+    if (placementMatch) {
+      const num = parseInt(placementMatch[1], 10)
+      // Place after main draw rounds (100+), higher placement number = earlier round
+      return 100 + (20 - num)
     }
     return 99
   }
