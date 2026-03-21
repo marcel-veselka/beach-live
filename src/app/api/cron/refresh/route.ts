@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { refreshTournament } from "@/lib/refresh/pipeline"
 import { getActiveTournament } from "@/lib/tournament/registry"
 import { acquireRefreshLock, releaseRefreshLock } from "@/lib/refresh/lock"
+import { checkCooldown, recordRefresh } from "@/lib/refresh/cooldown"
 import "@/tournaments"
 
 export async function GET(request: NextRequest) {
@@ -20,6 +21,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "No active tournament" }, { status: 404 })
   }
 
+  // Cooldown: skip if webhook already refreshed recently
+  const cooldown = await checkCooldown(config.slug)
+  if (!cooldown.allowed) {
+    return NextResponse.json({
+      skipped: true,
+      reason: "cooldown",
+      secondsRemaining: cooldown.secondsRemaining,
+      slug: config.slug,
+    })
+  }
+
   if (!acquireRefreshLock(config.slug)) {
     return NextResponse.json(
       { error: "Refresh already in progress", slug: config.slug },
@@ -29,6 +41,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const result = await refreshTournament(config)
+    await recordRefresh(config.slug)
     return NextResponse.json(result)
   } finally {
     releaseRefreshLock(config.slug)
