@@ -5,9 +5,9 @@ export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 text-center">
       <div className="mb-4 animate-fade-in-up"><VolleyballIcon size={48} /></div>
-      <h2 className="text-xl font-bold mb-2">Stránka nenalezena</h2>
+      <h2 className="text-xl font-bold mb-2">Stránka neexistuje</h2>
       <p className="text-muted-foreground mb-6">
-        Tato stránka neexistuje nebo byla přesunuta.
+        Hledaná stránka nebyla nalezena.
       </p>
       <Link
         href="/"

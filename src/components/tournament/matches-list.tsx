@@ -231,7 +231,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
               <SearchX className="h-7 w-7 text-muted-foreground/40" />
             </div>
             <p className="text-sm font-semibold text-foreground/70">
-              Žádné zápasy nenalezeny
+              Žádné zápasy
             </p>
             <p className="text-xs text-muted-foreground/60 mt-1.5 max-w-[220px]">
               {search
@@ -243,7 +243,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
                 onClick={() => { setSearch(""); setStatusFilter("all"); setPhaseFilter("all") }}
                 className="mt-4 text-xs text-primary font-medium hover:underline"
               >
-                Zobrazit všechny zápasy
+                Zobrazit vše
               </button>
             )}
           </div>

@@ -25,7 +25,7 @@ export function FreshnessIndicator({ generatedAt, className }: FreshnessIndicato
       ) : (
         <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/60 rounded-full px-2.5 py-1">
           <Clock className="h-3 w-3 text-primary/60" />
-          {diffMin < 1 ? "právě teď" : `${diffMin} ${msg.minutesAgo}`}
+          {diffMin < 1 ? "aktuální" : `${diffMin} ${msg.minutesAgo}`}
         </span>
       )}
     </div>

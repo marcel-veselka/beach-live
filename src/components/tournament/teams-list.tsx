@@ -305,12 +305,12 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           <div className="w-16 h-16 rounded-full bg-muted/60 flex items-center justify-center mb-4">
             <Search className="h-7 w-7 text-muted-foreground/40" />
           </div>
-          <p className="text-sm font-semibold text-foreground/70">Žádné týmy nenalezeny</p>
+          <p className="text-sm font-semibold text-foreground/70">Žádné výsledky</p>
           <p className="text-xs text-muted-foreground/60 mt-1.5 max-w-[220px]">
             Pro &ldquo;{search}&rdquo; nebyly nalezeny žádné výsledky
           </p>
           <button onClick={() => setSearch("")} className="mt-4 text-xs text-primary font-medium hover:underline">
-            Zobrazit všechny týmy
+            Zobrazit vše
           </button>
         </div>
       ) : hasQTeams ? (

@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/50 bg-muted/20 py-3 text-center hidden md:block">
       <p className="text-[11px] text-muted-foreground/60 inline-flex items-center justify-center gap-1.5">
-        <VolleyballIcon size={14} /> Beach Live • Živé výsledky plážového volejbalu •{" "}
+        <VolleyballIcon size={14} /> Beach Live • Živé výsledky z turnaje •{" "}
         <a
           href="https://github.com/marcel-veselka"
           target="_blank"

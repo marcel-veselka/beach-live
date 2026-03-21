@@ -20,8 +20,8 @@ export default async function BracketPage() {
     return (
       <EmptyState
         icon={<GitBranch className="h-12 w-12" />}
-        title="Pavouk zatím není k dispozici"
-        description="Data o vyřazovací části budou dostupná po zahájení playoff."
+        title="Pavouk se připravuje"
+        description="Vyřazovací část začne po skupinách."
       />
     )
   }

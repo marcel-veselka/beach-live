@@ -90,7 +90,7 @@ export default async function HomePage() {
           </h1>
           {/* #1: Shimmer on status badge */}
           <Badge variant={statusBadge as "live" | "finished" | "scheduled"} className="text-[10px] px-2.5 py-0.5 whitespace-nowrap uppercase tracking-wider font-semibold">
-            {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Hotovo" : "Brzy"}
+            {snapshot.status === "live" ? "Živě" : snapshot.status === "finished" ? "Konec" : "Brzy"}
           </Badge>
         </div>
 
@@ -208,7 +208,7 @@ export default async function HomePage() {
       {/* #5: Transparency note - single compact line */}
       <p className="text-[11px] text-muted-foreground/50 text-center mt-8 mb-2">
         <Info className="inline h-3 w-3 mr-1 -mt-0.5" />
-        Data se aktualizují každých 5 min z veřejných zdrojů.
+        Výsledky se aktualizují automaticky každých 5 minut.
       </p>
 
       {/* #9: Gradient fade before bottom nav (rendered via CSS class in globals) */}

@@ -19,8 +19,8 @@ export default async function GroupsPage() {
     return (
       <EmptyState
         icon={<Trophy className="h-12 w-12" />}
-        title="Skupiny zatím nejsou k dispozici"
-        description="Data o skupinách budou dostupná po rozlosování."
+        title="Skupiny se připravují"
+        description="Data budou dostupná po rozlosování."
       />
     )
   }

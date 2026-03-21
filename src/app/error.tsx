@@ -16,9 +16,9 @@ export default function Error({
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] px-4 text-center">
       <div className="text-4xl mb-4">⚠️</div>
-      <h2 className="text-xl font-bold mb-2">Něco se pokazilo</h2>
+      <h2 className="text-xl font-bold mb-2">Ouha, něco se pokazilo</h2>
       <p className="text-muted-foreground mb-6 max-w-md">
-        Nepodařilo se načíst data. Zkuste to prosím znovu nebo se vraťte později.
+        Data se nepodařilo načíst. Zkuste to za chvíli znovu.
       </p>
       <button
         onClick={() => reset()}
