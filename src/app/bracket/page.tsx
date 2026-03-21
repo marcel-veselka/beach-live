@@ -91,7 +91,7 @@ export default async function BracketPage() {
                   {/* Connector between rounds */}
                   {!isLastRound && (
                     <div className="flex items-center justify-center w-8 self-stretch">
-                      <div className="w-px h-3/4 bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
+                      <div className="w-px h-3/4 bg-gradient-to-b from-transparent via-border/80 to-transparent" />
                     </div>
                   )}
                 </div>

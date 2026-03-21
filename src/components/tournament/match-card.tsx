@@ -102,6 +102,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           isFavorite={favoriteTeamIds?.has(match.teamA?.teamId ?? "") ?? false}
           isSeedFavorite={teamAIsSeedFavorite}
           seed={seedA}
+          players={teamAData?.players}
         />
         <div className="score-separator my-1" />
         <TeamRow
@@ -114,14 +115,15 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           isFavorite={favoriteTeamIds?.has(match.teamB?.teamId ?? "") ?? false}
           isSeedFavorite={teamBIsSeedFavorite}
           seed={seedB}
+          players={teamBData?.players}
         />
       </div>
     </div>
   )
 }
 
-function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed }: {
-  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number
+function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed, players }: {
+  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number; players?: { name: string }[]
 }) {
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
   /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
@@ -146,6 +148,11 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
         )}>
           {name}
         </span>
+        {players && players.length > 0 && !isTBDName && (
+          <span className="text-[10px] text-muted-foreground/40 hidden sm:inline truncate">
+            {players.map(p => p.name.split(/\s+/)[0]).join(" & ")}
+          </span>
+        )}
         {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
         {isSeedFavorite && <span className="text-primary/30 text-[8px] leading-none" title="Vyšší nasazení">▲</span>}
       </div>

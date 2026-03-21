@@ -17,6 +17,7 @@ interface MatchesListProps {
 export function MatchesList({ matches, teams, initialSearch }: MatchesListProps) {
   const [search, setSearch] = useState(initialSearch ?? "")
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [phaseFilter, setPhaseFilter] = useState<string>("all")
   const msg = t()
   const { favorites } = useFavorites()
   const chipsRef = useRef<HTMLDivElement>(null)
@@ -53,6 +54,10 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
       result = result.filter((m) => m.status === statusFilter)
     }
 
+    if (phaseFilter !== "all") {
+      result = result.filter((m) => m.phase === phaseFilter)
+    }
+
     // Sort favorite team matches to the top
     if (favorites.size > 0) {
       result = [...result].sort((a, b) => {
@@ -63,7 +68,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
     }
 
     return result
-  }, [matches, teams, search, statusFilter, favorites])
+  }, [matches, teams, search, statusFilter, phaseFilter, favorites])
 
   // Group filtered matches by date for section headers
   const groupedMatches = useMemo(() => {
@@ -110,6 +115,11 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
         )
     )
   }, [matches, teams, search])
+
+  const hasQualification = matches.some(m => m.phase === "group")
+  const hasPlayoff = matches.some(m => m.phase === "playoff")
+  const hasPlacement = matches.some(m => m.phase === "placement")
+  const hasPhaseFilters = hasQualification || hasPlayoff || hasPlacement
 
   const liveCount = searchFiltered.filter((m) => m.status === "live").length
   const scheduledCount = searchFiltered.filter((m) => m.status === "scheduled").length
@@ -180,6 +190,30 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
           </div>
         )}
       </div>
+
+      {/* Phase filters */}
+      {hasPhaseFilters && (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <FilterChip active={phaseFilter === "all"} onClick={() => setPhaseFilter("all")}>
+            Vše
+          </FilterChip>
+          {hasQualification && (
+            <FilterChip active={phaseFilter === "group"} onClick={() => setPhaseFilter("group")}>
+              Kvalifikace
+            </FilterChip>
+          )}
+          {hasPlayoff && (
+            <FilterChip active={phaseFilter === "playoff"} onClick={() => setPhaseFilter("playoff")}>
+              Playoff
+            </FilterChip>
+          )}
+          {hasPlacement && (
+            <FilterChip active={phaseFilter === "placement"} onClick={() => setPhaseFilter("placement")}>
+              O umístění
+            </FilterChip>
+          )}
+        </div>
+      )}
 
       {/* #8: Better counter styling */}
       {(search || statusFilter !== "all") && filtered.length > 0 && (

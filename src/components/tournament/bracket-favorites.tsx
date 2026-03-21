@@ -34,8 +34,12 @@ export function BracketMatchNodeClient({ match }: { match: BracketMatch }) {
         isFavorite={isFavorite(match.teamB?.teamId ?? "")}
       />
       {match.score && (
-        <div className="text-[11px] text-muted-foreground text-center pt-1 font-score font-medium tracking-wide">
-          {match.score}
+        <div className="flex justify-center gap-1 pt-1.5">
+          {match.score.split(", ").map((s, i) => (
+            <span key={i} className="text-[10px] font-score font-medium text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">
+              {s}
+            </span>
+          ))}
         </div>
       )}
     </Card>
@@ -52,7 +56,7 @@ export function BracketMatchCardClient({ match, matchNumber }: { match: BracketM
 
   return (
     <Card className={cn(
-      "p-3 press-scale",
+      "p-3.5 press-scale",
       hasFav && "ring-1 ring-red-200 border-red-200/60",
       isTBD && !match.winner && "border-dashed opacity-70 tbd-pattern",
       match.winner && "bg-muted/20",

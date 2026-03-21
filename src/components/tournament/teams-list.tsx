@@ -105,6 +105,22 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
     return finished[finished.length - 1]
   }
 
+  const getTeamPhase = (teamId: string): string | null => {
+    const teamMatches = matches.filter(
+      (m) => m.teamA?.teamId === teamId || m.teamB?.teamId === teamId
+    )
+    // Find if team has active (scheduled) matches
+    const scheduled = teamMatches.find(m => m.status === "scheduled")
+    if (scheduled?.round) return scheduled.round
+    // If all finished, find the last round
+    const lastFinished = teamMatches.filter(m => m.status === "finished")
+    if (lastFinished.length > 0) {
+      const last = lastFinished[lastFinished.length - 1]
+      if (last.round) return last.round
+    }
+    return null
+  }
+
   /** Check if team qualified (came through qualification rounds) */
   const isQualified = (teamId: string): boolean => {
     return matches.some(
@@ -152,6 +168,11 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
               <CardTitle className="text-[15px] leading-snug">
                 {getSurnames(team)}
               </CardTitle>
+              {(() => {
+                const phase = getTeamPhase(team.id)
+                if (!phase) return null
+                return <p className="text-[10px] text-muted-foreground/50 mt-0.5 truncate">{phase}</p>
+              })()}
 
               <div className="mt-1.5 space-y-1">
                 {team.players.map((player, i) => (
