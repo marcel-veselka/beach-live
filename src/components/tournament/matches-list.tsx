@@ -216,7 +216,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
       )}
 
       {/* #8: Better counter styling */}
-      {(search || statusFilter !== "all") && filtered.length > 0 && (
+      {(search || statusFilter !== "all" || phaseFilter !== "all") && filtered.length > 0 && (
         <p className="text-[11px] text-muted-foreground/50 text-center font-medium tracking-wide">
           <span className="text-foreground/60 font-bold">{filtered.length}</span> z {matches.length} {pluralize(matches.length, "zápas", "zápasy", "zápasů")}
         </p>
@@ -238,9 +238,9 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
                 ? `Pro "${search}" nebyly nalezeny žádné výsledky`
                 : "Pro zvolený filtr nejsou žádné zápasy"}
             </p>
-            {(search || statusFilter !== "all") && (
+            {(search || statusFilter !== "all" || phaseFilter !== "all") && (
               <button
-                onClick={() => { setSearch(""); setStatusFilter("all") }}
+                onClick={() => { setSearch(""); setStatusFilter("all"); setPhaseFilter("all") }}
                 className="mt-4 text-xs text-primary font-medium hover:underline"
               >
                 Zobrazit všechny zápasy
@@ -257,6 +257,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
                     <div className="w-2 h-2 rounded-full bg-primary/40 shrink-0 ring-2 ring-primary/10" />
                     <p className="text-[11px] font-bold text-muted-foreground/80 uppercase tracking-widest">
                       {group.dateLabel}
+                      <span className="text-[10px] text-muted-foreground/40 font-medium ml-1">({group.matches.length})</span>
                     </p>
                     <div className="h-px flex-1 bg-border/30" />
                   </div>
