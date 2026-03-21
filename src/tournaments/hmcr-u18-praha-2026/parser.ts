@@ -364,12 +364,9 @@ export class BvisParser implements TournamentParser {
         } else {
           const placementNum = parseInt(roundCode, 10)
           if (!isNaN(placementNum) && placementNum > 0) {
-            // Only label as "O X. místo" when match type is placement ("q")
-            // Otherwise numeric codes are just internal match identifiers
             if (matchTypeCode === "q") {
-              roundName = `O ${placementNum}. místo`
+              roundName = "O umístění"
             }
-            // For non-placement matches with numeric codes, leave roundName undefined
           }
         }
       } else {
