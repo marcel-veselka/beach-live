@@ -78,7 +78,7 @@ export default async function HomePage() {
       <AutoRefresh />
 
       {/* Hero - compact with volleyball decorative element */}
-      <div className="relative -mx-4 mb-6 px-4 pt-4 pb-4 bg-hero-gradient md:rounded-2xl md:mx-0">
+      <div className="relative -mx-4 mb-6 px-4 pt-4 pb-4 md:px-6 md:pt-5 md:pb-5 bg-hero-gradient md:rounded-2xl md:mx-0">
         {/* Decorative Mikasa-style volleyball */}
         <div className="absolute top-1 right-3 opacity-[0.15] pointer-events-none" aria-hidden="true">
           <VolleyballIcon size={72} />

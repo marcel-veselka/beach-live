@@ -26,7 +26,7 @@ export function DesktopNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "px-4 py-3 text-sm font-medium transition-colors border-b-2",
+                "px-4 py-3 text-sm font-medium transition-colors duration-200 border-b-2",
                 isActive
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"

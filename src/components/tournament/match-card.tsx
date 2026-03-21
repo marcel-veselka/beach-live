@@ -91,7 +91,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
         const setsB = match.score!.sets.reduce((count, s) => count + (s.teamB > s.teamA ? 1 : 0), 0)
         return (
           <div className="flex justify-center mb-2">
-            <span className={cn("text-lg font-bold font-score tracking-wider", match.status === "live" ? "text-live" : "text-foreground/80")}>
+            <span className={cn("font-bold font-score tracking-wider", match.status === "live" ? "text-xl text-live" : "text-lg text-foreground/80")}>
               {setsA}:{setsB}
             </span>
           </div>
