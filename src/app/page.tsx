@@ -32,11 +32,11 @@ export default async function HomePage() {
     )
   }
 
-  // Only show matches with real team names (not "vítěz #X" / "poražený #X" / TBD)
+  // Only show matches with real team names (not "Vítěz #X" / "Poražený #X" / TBD)
   const hasRealTeams = (m: Match) =>
     m.teamA?.name && m.teamB?.name &&
-    !m.teamA.name.startsWith("vítěz") && !m.teamA.name.startsWith("poražený") &&
-    !m.teamB.name.startsWith("vítěz") && !m.teamB.name.startsWith("poražený") &&
+    !m.teamA.name.toLowerCase().startsWith("vítěz") && !m.teamA.name.toLowerCase().startsWith("poražen") &&
+    !m.teamB.name.toLowerCase().startsWith("vítěz") && !m.teamB.name.toLowerCase().startsWith("poražen") &&
     m.teamA.name !== "TBD" && m.teamB.name !== "TBD"
 
   const liveMatches = snapshot.matches.filter((m: Match) => m.status === "live" && hasRealTeams(m))
