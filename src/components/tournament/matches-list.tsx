@@ -23,6 +23,14 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
   const chipsRef = useRef<HTMLDivElement>(null)
   const [showScrollHint, setShowScrollHint] = useState(false)
 
+  // Sync search state when initialSearch changes (client-side navigation)
+  useEffect(() => {
+    if (initialSearch !== undefined && initialSearch !== search) {
+      setSearch(initialSearch)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSearch])
+
   // Check if filter chips overflow
   useEffect(() => {
     const el = chipsRef.current
