@@ -8,25 +8,24 @@ interface VolleyballIconProps {
 let counter = 0
 
 /**
- * Realistic Mikasa VLS300-style beach volleyball icon.
- * 10 iterations of refinement for accuracy at all sizes.
+ * Gala Smash Pro-inspired beach volleyball icon.
+ * Yellow, white & red panels — realistic with a subtle cartoonish style.
  *
- * Iter 1: Fixed panel gaps with slight overlap
- * Iter 2: Rebalanced blue/gold panel proportions
- * Iter 3: Clean center convergence at single Y-pole
- * Iter 4: Accurate Mikasa blue (#0055A4) and Olympic gold (#FFD100)
- * Iter 5: Responsive seam width for small sizes
- * Iter 6: Panel-aware 3D shading via opacity mask
- * Iter 7: Repositioned specular highlight on panel edge
- * Iter 8: Sharper edge ring at small sizes
- * Iter 9: Smoother bezier panel curves
- * Iter 10: Subtle leather grain texture on white areas
+ * Iter 1: Base panel layout with yellow/white/red
+ * Iter 2: Simplified to match actual Gala structure
+ * Iter 3: Reduced red — narrow accent wedges only, wider white center band
+ * Iter 4: Adjusted panel curves for organic 3D sphere feel
+ * Iter 5: Responsive seam width, sharper edges at small sizes
+ * Iter 6: Better 3D shading with panel-aware lighting
+ * Iter 7: Cartoonish touch — slightly thicker outline, brighter specular
+ * Iter 8: Fine-tuned yellow saturation and red accent proportions
+ * Iter 9: Improved seam convergence — all seams meet cleanly at center
+ * Iter 10: Leather dimple texture, final color balance, polished highlights
  */
 export function VolleyballIcon({ className, size = 32 }: VolleyballIconProps) {
   const p = `vb${++counter}`
-  // Iter 5: Scale seam width based on render size
-  const seamW = size < 32 ? 0.8 : size < 64 ? 1.0 : 1.3
-  const edgeW = size < 32 ? 1.0 : 0.8
+  const seamW = size < 24 ? 0.7 : size < 32 ? 0.9 : size < 64 ? 1.1 : 1.4
+  const edgeW = size < 32 ? 1.4 : size < 64 ? 1.2 : 1.0
 
   return (
     <svg
@@ -40,65 +39,66 @@ export function VolleyballIcon({ className, size = 32 }: VolleyballIconProps) {
       role="img"
     >
       <defs>
-        {/* Iter 6: Sphere shading applied over everything */}
+        {/* Sphere base — warm white leather */}
         <radialGradient id={`${p}-sph`} cx="0.38" cy="0.32" r="0.62" fx="0.38" fy="0.32">
-          <stop offset="0%" stopColor="#FFFDF6" />
-          <stop offset="35%" stopColor="#F7F1E5" />
-          <stop offset="70%" stopColor="#E5DBCC" />
-          <stop offset="100%" stopColor="#CABFAE" />
+          <stop offset="0%" stopColor="#FFFEF6" />
+          <stop offset="30%" stopColor="#FBF6EC" />
+          <stop offset="65%" stopColor="#EEE5D5" />
+          <stop offset="100%" stopColor="#D8CCBA" />
         </radialGradient>
 
-        {/* Iter 4: Accurate Mikasa blue — vivid, not too dark */}
-        <linearGradient id={`${p}-b1`} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor="#2B88C4" />
-          <stop offset="100%" stopColor="#0C5A8A" />
+        {/* Yellow panel gradients — vibrant Gala yellow */}
+        <linearGradient id={`${p}-y1`} x1="0.3" y1="0" x2="0.7" y2="1">
+          <stop offset="0%" stopColor="#FFE84D" />
+          <stop offset="50%" stopColor="#FFD830" />
+          <stop offset="100%" stopColor="#E0B818" />
         </linearGradient>
-        <linearGradient id={`${p}-b2`} x1="0.8" y1="0.1" x2="0.2" y2="0.9">
-          <stop offset="0%" stopColor="#2680B8" />
-          <stop offset="100%" stopColor="#0A5280" />
+        <linearGradient id={`${p}-y2`} x1="0.7" y1="0.1" x2="0.3" y2="0.9">
+          <stop offset="0%" stopColor="#FFE23D" />
+          <stop offset="100%" stopColor="#D4AE15" />
         </linearGradient>
-        <linearGradient id={`${p}-b3`} x1="0.5" y1="0.9" x2="0.5" y2="0.1">
-          <stop offset="0%" stopColor="#2278AD" />
-          <stop offset="100%" stopColor="#094B78" />
-        </linearGradient>
-
-        {/* Iter 4: Warmer Olympic gold */}
-        <linearGradient id={`${p}-y1`} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor="#FFDA44" />
-          <stop offset="100%" stopColor="#D4A020" />
-        </linearGradient>
-        <linearGradient id={`${p}-y2`} x1="0.8" y1="0.1" x2="0.2" y2="0.9">
-          <stop offset="0%" stopColor="#FFD633" />
-          <stop offset="100%" stopColor="#CC981C" />
-        </linearGradient>
-        <linearGradient id={`${p}-y3`} x1="0.5" y1="0.9" x2="0.5" y2="0.1">
-          <stop offset="0%" stopColor="#F5CE2E" />
-          <stop offset="100%" stopColor="#C49218" />
+        <linearGradient id={`${p}-y3`} x1="0.4" y1="0.9" x2="0.6" y2="0.1">
+          <stop offset="0%" stopColor="#FFDA2E" />
+          <stop offset="100%" stopColor="#CCA814" />
         </linearGradient>
 
-        {/* Iter 6: 3D shading overlay — darkens panels away from light */}
-        <radialGradient id={`${p}-shade`} cx="0.35" cy="0.3" r="0.65">
-          <stop offset="0%" stopColor="white" stopOpacity="0.18" />
-          <stop offset="50%" stopColor="white" stopOpacity="0" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.15" />
+        {/* Red accent gradients — vivid red */}
+        <linearGradient id={`${p}-r1`} x1="0.3" y1="0" x2="0.7" y2="1">
+          <stop offset="0%" stopColor="#E83333" />
+          <stop offset="100%" stopColor="#C21818" />
+        </linearGradient>
+        <linearGradient id={`${p}-r2`} x1="0.7" y1="0" x2="0.3" y2="1">
+          <stop offset="0%" stopColor="#E52B2B" />
+          <stop offset="100%" stopColor="#B51414" />
+        </linearGradient>
+        <linearGradient id={`${p}-r3`} x1="0.5" y1="0.8" x2="0.5" y2="0.2">
+          <stop offset="0%" stopColor="#DD2222" />
+          <stop offset="100%" stopColor="#AE1111" />
+        </linearGradient>
+
+        {/* 3D sphere shading */}
+        <radialGradient id={`${p}-shade`} cx="0.36" cy="0.30" r="0.64">
+          <stop offset="0%" stopColor="white" stopOpacity="0.15" />
+          <stop offset="45%" stopColor="white" stopOpacity="0" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.20" />
         </radialGradient>
 
-        {/* Specular highlight */}
-        <radialGradient id={`${p}-hl`} cx="0.35" cy="0.28" r="0.28">
-          <stop offset="0%" stopColor="white" stopOpacity="0.45" />
-          <stop offset="60%" stopColor="white" stopOpacity="0.08" />
+        {/* Specular highlight — cartoonish bright spot */}
+        <radialGradient id={`${p}-hl`} cx="0.32" cy="0.26" r="0.24">
+          <stop offset="0%" stopColor="white" stopOpacity="0.55" />
+          <stop offset="50%" stopColor="white" stopOpacity="0.12" />
           <stop offset="100%" stopColor="white" stopOpacity="0" />
         </radialGradient>
 
-        {/* Bottom shadow */}
-        <radialGradient id={`${p}-sh`} cx="0.55" cy="0.82" r="0.35">
+        {/* Bottom ambient shadow */}
+        <radialGradient id={`${p}-sh`} cx="0.55" cy="0.84" r="0.32">
           <stop offset="0%" stopColor="#000" stopOpacity="0.10" />
           <stop offset="100%" stopColor="#000" stopOpacity="0" />
         </radialGradient>
 
-        {/* Iter 10: Leather texture — fine grain via turbulence */}
+        {/* Dimpled leather texture */}
         <filter id={`${p}-tex`} x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" seed="2" result="noise" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="4" seed="5" result="noise" />
           <feColorMatrix type="saturate" values="0" in="noise" result="mono" />
           <feBlend in="SourceGraphic" in2="mono" mode="multiply" result="blend" />
           <feComposite in="blend" in2="SourceGraphic" operator="atop" />
@@ -109,112 +109,140 @@ export function VolleyballIcon({ className, size = 32 }: VolleyballIconProps) {
         </clipPath>
       </defs>
 
-      {/* Ball base */}
+      {/* White leather base */}
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-sph)`} />
+      <circle cx="32" cy="32" r="30" fill={`url(#${p}-sph)`} filter={`url(#${p}-tex)`} opacity="0.25" />
 
-      {/* Iter 10: Leather grain on base — very subtle */}
-      <circle cx="32" cy="32" r="30" fill={`url(#${p}-sph)`} filter={`url(#${p}-tex)`} opacity="0.4" />
-
-      {/* Iter 1,2,3,9: Panels — slightly overlapping, bezier curves, balanced sizes */}
       <g clipPath={`url(#${p}-c)`}>
         {/*
-          Panel layout: 3 pairs radiating from center (~32,32)
-          Each pair = blue outer (wider) + gold inner (narrower)
-          Iter 3: All inner seams converge at the triple point (32,32)
-          Iter 9: Use C (cubic bezier) for organic curves
+          Gala Smash Pro layout — 3 panel pairs radiating from center (~33,34).
+          Each pair: large yellow panel + narrow red accent strip.
+          White base shows through in center band.
         */}
 
-        {/* === Group 1: Upper-left — blue wraps top, gold fills left === */}
+        {/* === PAIR 1: TOP — yellow cap + thin red transition === */}
+        {/* Yellow top cap — large, covers top 30% */}
         <path
-          d="M32 2 C21 2 11.5 7 5.5 15
-             C11 13 17.5 12.5 24 14 C28.5 15 32 17 35 19.5
-             C38 12 39 6.5 38.5 2.5 C36.5 2.1 34.5 2 32 2Z"
-          fill={`url(#${p}-b1)`}
-        />
-        <path
-          d="M5.5 15 C2.8 19 2 24 2 28.5 C2.5 30 4 31.5 6 33
-             C10 30.5 16 29.5 22.5 30 C27 30.3 30 31.2 32 32
-             C34 28.5 35.5 24.5 35 19.5
-             C32 17 28.5 15 24 14 C17.5 12.5 11 13 5.5 15Z"
+          d="M32 2 C19 2 8 8 3 18
+             C9 16 16 15 23 15.5 C28 16 32 18 36 21
+             C39 14 40 7 39.5 2.5 C37 2.1 34.5 2 32 2Z"
           fill={`url(#${p}-y1)`}
         />
-
-        {/* === Group 2: Right — blue wraps upper-right, gold fills lower-right === */}
+        {/* Narrow red strip — top-left transition */}
         <path
-          d="M55 13 C50.5 8.5 45 6 39 4.5
-             C39.5 9 39 14.5 37 20 C35.5 23 34 25.5 32 28
-             C36.5 29 41 29.5 45 29 C51 28 56.5 25 60 21
-             C58.5 17.5 57 15 55 13Z"
-          fill={`url(#${p}-b2)`}
+          d="M3 18 C2 21 2 24 2 27
+             C6 25 12 23.5 18 23 C23 22.5 27 23 30 24
+             C28 21 26 19 24 17.5 C19 16 12 16 6 17
+             C4 17.5 3.5 17.8 3 18Z"
+          fill={`url(#${p}-r1)`}
         />
+        {/* Narrow red strip — top-right transition */}
         <path
-          d="M60 21 C61.5 25.5 62 30 62 34 C61 36 59.5 37.5 57.5 39
-             C53.5 37 49 36 44 35.5 C39.5 35.5 35.5 36.5 32 38
-             C33 35 33.5 32.5 32 28
-             C34 25.5 35.5 23 37 20 C39 14.5 39.5 9 39 4.5
-             C45 6 50.5 8.5 55 13 C57 15 58.5 17.5 60 21Z"
+          d="M39.5 2.5 C40 7 39 14 36 21
+             C38 19.5 41 18.5 45 18 C49 17.5 53 18 56 20
+             C52 11 46 5 39.5 2.5Z"
+          fill={`url(#${p}-r2)`}
+        />
+
+        {/* === PAIR 2: RIGHT — yellow panel + thin red strip === */}
+        {/* Yellow right panel */}
+        <path
+          d="M56 20 C59 24 61 29 62 34
+             C58 32 53 30.5 48 30.5 C42 31 37 33 34 35.5
+             C35 31 36 27 38 23.5 C40 20 43 18.5 45 18
+             C49 17.5 53 18 56 20Z"
           fill={`url(#${p}-y2)`}
         />
-
-        {/* === Group 3: Bottom — blue wraps lower-left, gold fills lower-right === */}
+        {/* Narrow red strip — right transition */}
         <path
-          d="M10 53 C14.5 57.5 20.5 60.5 27 62
-             C26.5 57.5 27 52 29 47 C30.5 44 32 41.5 34 39
-             C30 37.5 25.5 36.5 20.5 36.5
-             C14 37 8 39.5 3.5 43 C5.5 47 7.5 50.5 10 53Z"
-          fill={`url(#${p}-b3)`}
+          d="M62 34 C62 37.5 61.5 40.5 60.5 43
+             C57 40.5 52 38.5 47 38 C42 37.5 38 38.5 35 40
+             C34.5 38.5 34.5 37 34 35.5
+             C37 33 42 31 48 30.5 C53 30.5 58 32 62 34Z"
+          fill={`url(#${p}-r1)`}
         />
+
+        {/* === PAIR 3: BOTTOM — two yellow panels + red accents === */}
+        {/* Yellow bottom-right panel */}
         <path
-          d="M34 39 C37.5 41.5 40.5 44.5 42.5 48
-             C45 53 46.5 58 46.5 62
-             C41.5 62.5 37 62 32 62 C30 62 28 61.5 27 62
-             C20.5 60.5 14.5 57.5 10 53 C7.5 50.5 5.5 47 3.5 43
-             C5 40.5 7 38 9 37 C9.5 37 14 37 20.5 36.5
-             C25.5 36.5 30 37.5 34 39Z"
+          d="M60.5 43 C57.5 50 52 56 45 60
+             C44 55 41.5 50 39 46 C37 43 35.5 41 34 39.5
+             C36 38.5 40 37.5 44 37.5 C49 37.5 54 39.5 58 42
+             C59 42.5 60 42.8 60.5 43Z"
           fill={`url(#${p}-y3)`}
         />
+        {/* Yellow bottom-left panel */}
+        <path
+          d="M4.5 43 C7 50 13 56 20 60
+             C21 55 23.5 50 26 46 C28 43 29.5 41 31 39.5
+             C28.5 38.5 25 37.5 21 37.5 C16 37.5 10.5 39.5 6.5 42
+             C5.5 42.5 5 42.8 4.5 43Z"
+          fill={`url(#${p}-y2)`}
+        />
+        {/* Narrow red strip — bottom-left transition */}
+        <path
+          d="M2 27 C2 30 2 33 2.5 36 C3 38.5 3.5 40.5 4.5 43
+             C7 40.5 12 38.5 17 37.5 C21.5 37 25.5 37.5 29 39
+             C29.5 37 29.5 35 30 33
+             C27 31 23 29.5 18 29 C12 28.5 6 28.5 2 27Z"
+          fill={`url(#${p}-r3)`}
+        />
+        {/* Red accent — bottom center (narrow) */}
+        <path
+          d="M20 60 C25 61.5 29 62 32 62 C36 62 40 61.5 45 60
+             C44 56 42 51 39.5 47 C37.5 43.5 36 41.5 34 39.5
+             C33 39.5 32 39.5 31 39.5
+             C29 41.5 27.5 43.5 25.5 47 C23 51 21 56 20 60Z"
+          fill={`url(#${p}-r3)`}
+        />
       </g>
 
-      {/* Seam lines — Iter 5: adaptive width, Iter 9: bezier curves */}
-      <g clipPath={`url(#${p}-c)`} stroke="#A89878" strokeWidth={seamW} fill="none" strokeLinecap="round" strokeLinejoin="round">
-        {/* 3 inner seams radiating from center */}
-        <path d="M35 19.5 C34 24 34 27 32 28 L32 32" />
-        <path d="M32 32 L32 38 C33 35 33.5 32.5 32 28" />
-        <path d="M32 32 C30 31.2 27 30.3 22.5 30 C16 29.5 10 30.5 6 33" />
+      {/* Seam lines — warm tan color */}
+      <g clipPath={`url(#${p}-c)`} stroke="#BEA46A" strokeWidth={seamW} fill="none" strokeLinecap="round" strokeLinejoin="round">
+        {/* Top cap seams */}
+        <path d="M3 18 C9 16 16 15 23 15.5 C28 16 32 18 36 21" />
+        <path d="M39.5 2.5 C40 7 39 14 36 21" />
 
-        {/* 6 outer seams — panel boundaries */}
-        <path d="M5.5 15 C11 13 17.5 12.5 24 14 C28.5 15 32 17 35 19.5" />
-        <path d="M39 4.5 C39.5 9 39 14.5 37 20" />
-        <path d="M60 21 C56.5 25 51 28 45 29 C41 29.5 36.5 29 32 28" />
-        <path d="M57.5 39 C53.5 37 49 36 44 35.5 C39.5 35.5 35.5 36.5 32 38" />
-        <path d="M34 39 C30 37.5 25.5 36.5 20.5 36.5 C14 37 8 39.5 3.5 43" />
-        <path d="M27 62 C26.5 57.5 27 52 29 47 C30.5 44 32 41.5 34 39" />
-        <path d="M46.5 62 C46.5 58 45 53 42.5 48 C40.5 44.5 37.5 41.5 34 39" />
+        {/* Upper transition seams */}
+        <path d="M2 27 C6 25 12 23.5 18 23 C23 22.5 27 23 30 24" />
+        <path d="M56 20 C53 18 49 17.5 45 18 C41 18.5 38 19.5 36 21" />
+
+        {/* Center radial seams — converge at ~(33, 37) */}
+        <path d="M36 21 C36 26 35 31 34 35.5 C33.5 37 33 38.5 33 39.5" />
+        <path d="M30 24 C30 28 30 32 31 36 C31.5 37.5 32 38.5 33 39.5" />
+
+        {/* Bottom radiating seams */}
+        <path d="M33 39.5 C29.5 41 28 43 26 46 C23.5 50 21 55 20 60" />
+        <path d="M33 39.5 C35.5 41 37 43 39 46 C41.5 50 44 55 45 60" />
+
+        {/* Right panel seams */}
+        <path d="M62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34 35.5" />
+        <path d="M60.5 43 C57 40.5 52 38.5 47 38 C42 37.5 38 38.5 35 40" />
+
+        {/* Left panel seams */}
+        <path d="M2 27 C2 30.5 2 34 2.5 37 C3 39 3.5 41 4.5 43" />
+        <path d="M4.5 43 C7 40.5 12 38.5 17 37.5 C21.5 37 25.5 37.5 29 39 C31 39.5 32 39.5 33 39.5" />
       </g>
 
-      {/* Seam shadow — offset for embossed effect */}
-      <g clipPath={`url(#${p}-c)`} stroke="#8A7E6A" strokeWidth={seamW * 0.35} fill="none" strokeLinecap="round" opacity="0.4">
-        <path d="M35 19.5 C34 24 34 27 32 28 L32 32" transform="translate(0.4 0.6)" />
-        <path d="M5.5 15 C11 13 17.5 12.5 24 14 C28.5 15 32 17 35 19.5" transform="translate(0.4 0.6)" />
-        <path d="M6 33 C10 30.5 16 29.5 22.5 30 C27 30.3 30 31.2 32 32" transform="translate(0.4 0.6)" />
-        <path d="M34 39 C30 37.5 25.5 36.5 20.5 36.5 C14 37 8 39.5 3.5 43" transform="translate(0.4 0.6)" />
+      {/* Seam embossed shadow */}
+      <g clipPath={`url(#${p}-c)`} stroke="#9A8858" strokeWidth={seamW * 0.3} fill="none" strokeLinecap="round" opacity="0.35">
+        <path d="M3 18 C9 16 16 15 23 15.5 C28 16 32 18 36 21" transform="translate(0.4 0.5)" />
+        <path d="M36 21 C36 26 35 31 34 35.5 C33.5 37 33 38.5 33 39.5" transform="translate(0.4 0.5)" />
+        <path d="M30 24 C30 28 30 32 31 36" transform="translate(0.4 0.5)" />
+        <path d="M62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34 35.5" transform="translate(0.4 0.5)" />
       </g>
 
-      {/* Iter 6: 3D panel shading overlay */}
+      {/* 3D sphere overlays */}
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-shade)`} />
-
-      {/* Iter 7: Specular highlight — positioned at upper-left panel edge */}
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-hl)`} />
-
-      {/* Bottom ambient shadow */}
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-sh)`} />
 
-      {/* Iter 8: Edge ring — crisp at small sizes */}
-      <circle cx="32" cy="32" r="30" stroke="#B8AA96" strokeWidth={edgeW} fill="none" />
+      {/* Cartoonish edge ring — slightly warm, thicker at small sizes */}
+      <circle cx="32" cy="32" r="30" stroke="#A89070" strokeWidth={edgeW} fill="none" opacity="0.85" />
 
-      {/* Iter 7: Sharp specular dot — on the blue/white boundary */}
-      <ellipse cx="21" cy="17" rx="4.5" ry="3" fill="white" opacity="0.3" transform="rotate(-30 21 17)" />
-      <ellipse cx="19.5" cy="15.5" rx="2" ry="1.2" fill="white" opacity="0.5" transform="rotate(-30 19.5 15.5)" />
+      {/* Specular highlights — bright, slightly cartoonish */}
+      <ellipse cx="19" cy="15" rx="5.5" ry="3.5" fill="white" opacity="0.30" transform="rotate(-28 19 15)" />
+      <ellipse cx="17.5" cy="13.5" rx="2.5" ry="1.5" fill="white" opacity="0.60" transform="rotate(-28 17.5 13.5)" />
     </svg>
   )
 }
