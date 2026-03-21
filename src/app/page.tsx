@@ -123,7 +123,7 @@ export default async function HomePage() {
       {/* Live / Now */}
       {liveMatches.length > 0 && (
         <Section title={msg.overview.now}>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 md:gap-4 md:grid-cols-2">
             {liveMatches.map((match: Match) => (
               <MatchCard key={match.id} match={match} teams={snapshot.teams} />
             ))}
@@ -137,7 +137,7 @@ export default async function HomePage() {
           {scheduledAreTomorrow && (
             <p className="text-xs text-primary/70 font-medium -mt-3 mb-3 ml-3">Zápasy začínají zítra ráno</p>
           )}
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 md:gap-4 md:grid-cols-2 lg:grid-cols-3">
             {scheduledMatches.map((match: Match, i: number) => (
               <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>
                 <MatchCard match={match} compact teams={snapshot.teams} />
@@ -155,7 +155,7 @@ export default async function HomePage() {
               <Badge variant="default" className="text-[10px] font-semibold uppercase tracking-wider">Kvalifikace</Badge>
             </div>
           )}
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 md:gap-4 md:grid-cols-2 lg:grid-cols-3">
             {recentFinished.map((match: Match, i: number) => (
               <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>
                 <MatchCard match={match} teams={snapshot.teams} />

@@ -52,7 +52,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
         ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10 live-glow"
         : match.status === "finished"
           ? "border-border/40 shadow-none bg-card/80 hover:border-border/60"
-          : "border-border shadow-sm hover:shadow-md hover:border-primary/20",
+          : "border-border shadow-sm hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5",
       hasFavorite && match.status !== "live" && "border-l-[3px] border-l-red-400/70 bg-red-50/30",
       isTBD && match.status === "scheduled" && "border-dashed border-border/50 opacity-75",
       isImportantMatch && !isTBD && "ring-1 ring-secondary/20",
@@ -143,10 +143,10 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
       <div className="flex items-center gap-2 min-w-0">
         {isWinner && <span className="text-success text-xs">▸</span>}
         {!isWinner && sets && sets.length > 0 && <span className="w-[12px]" />}
-        {seed && <span className="text-[10px] text-muted-foreground/40 font-score font-bold w-5 text-right shrink-0">{seed}</span>}
+        {seed && <span className="text-[10px] text-muted-foreground/40 font-score font-bold min-w-[20px] text-right shrink-0">{seed}</span>}
         <span className={cn(
           "truncate",
-          isWinner ? "text-[15px]" : "text-sm",
+          isWinner ? "text-[15px] tracking-tight" : "text-sm",
           /* TBD styled italic and muted; "Poražený" entries even more muted */
           isTBDName && "italic text-muted-foreground/50 text-[13px]",
           isLoserRef && "text-muted-foreground/35",
