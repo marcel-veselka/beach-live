@@ -175,18 +175,6 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
   /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
   const isLoserRef = name.startsWith("Poražen")
 
-  const nameElement = (
-    <span className={cn(
-      "truncate",
-      isWinner ? "text-[15px] tracking-tight" : "text-sm",
-      isTBDName && "italic text-muted-foreground/50 text-[13px]",
-      isLoserRef && "text-muted-foreground/35",
-      !isTBDName && "hover:text-primary hover:underline transition-colors",
-    )}>
-      {name}
-    </span>
-  )
-
   return (
     <div className={cn(
       "flex items-center justify-between py-1.5",
@@ -198,10 +186,25 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
         {!isWinner && sets && sets.length > 0 && <span className="w-[12px]" />}
         {seed && <span className="text-[10px] text-muted-foreground/40 font-score font-bold min-w-[20px] text-right shrink-0">{seed}</span>}
         {!isTBDName && teamName ? (
-          <Link href={`/matches?team=${encodeURIComponent(teamName)}`} className="truncate">
-            {nameElement}
+          <Link
+            href={`/matches?team=${encodeURIComponent(teamName)}`}
+            className={cn(
+              "truncate hover:text-primary hover:underline underline-offset-2 transition-colors",
+              isWinner ? "text-[15px] tracking-tight" : "text-sm",
+            )}
+          >
+            {name}
           </Link>
-        ) : nameElement}
+        ) : (
+          <span className={cn(
+            "truncate",
+            isWinner ? "text-[15px] tracking-tight" : "text-sm",
+            isTBDName && "italic text-muted-foreground/50 text-[13px]",
+            isLoserRef && "text-muted-foreground/35",
+          )}>
+            {name}
+          </span>
+        )}
         {players && players.length > 0 && !isTBDName && (
           <span className="text-[10px] text-muted-foreground/40 hidden sm:inline truncate">
             {players.map(p => p.name.split(/\s+/)[0]).join(" & ")}
