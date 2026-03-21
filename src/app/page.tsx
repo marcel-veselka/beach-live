@@ -53,6 +53,15 @@ export default async function HomePage() {
   const tomorrowMonth = tomorrow.getMonth() + 1
   const tomorrowLabel = `${tomorrowDay}. ${tomorrowMonth}.`
 
+  const todayDay = today.getDate()
+  const todayMonth = today.getMonth() + 1
+
+  const scheduledAreToday = scheduledMatches.length > 0 && scheduledMatches.some((m: Match) => {
+    const dateMatch = m.scheduledTime?.match(/^(\d+)\.\s*(\d+)\./)
+    if (!dateMatch) return false
+    return parseInt(dateMatch[1]) === todayDay && parseInt(dateMatch[2]) === todayMonth
+  })
+
   const scheduledAreTomorrow = scheduledMatches.length > 0 && scheduledMatches.every((m: Match) => {
     const dateMatch = m.scheduledTime?.match(/^(\d+)\.\s*(\d+)\./)
     if (!dateMatch) return false
@@ -133,10 +142,7 @@ export default async function HomePage() {
 
       {/* #10: Next matches with visually distinct section title + #2: "Zítra" countdown */}
       {scheduledMatches.length > 0 && (
-        <Section title={scheduledAreTomorrow ? `${msg.overview.next} — Zítra` : msg.overview.next}>
-          {scheduledAreTomorrow && (
-            <p className="text-xs text-primary/70 font-medium -mt-3 mb-3 ml-3">Zápasy začínají zítra ráno</p>
-          )}
+        <Section title={scheduledAreTomorrow ? `${msg.overview.next} — Zítra` : scheduledAreToday ? `${msg.overview.next} — Dnes` : msg.overview.next}>
           <div className="grid gap-3 md:gap-4 md:grid-cols-2 lg:grid-cols-3">
             {scheduledMatches.map((match: Match, i: number) => (
               <div key={match.id} className="animate-card-in" style={{ animationDelay: `${i * 60}ms` }}>

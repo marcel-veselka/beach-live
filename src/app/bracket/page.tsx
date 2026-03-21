@@ -60,7 +60,7 @@ export default async function BracketPage() {
               const isLastRound = roundIdx === mainDrawRounds.length - 1
               return (
                 <div key={round.name} className="flex items-stretch">
-                  <div className="flex flex-col gap-4 min-w-[260px]">
+                  <div className="flex flex-col gap-4 min-w-[280px]">
                     {/* Round header with current indicator */}
                     <div className="flex items-center justify-center gap-2">
                       {isCurrentRound && (
@@ -110,7 +110,7 @@ export default async function BracketPage() {
             </div>
             <div className="flex gap-6 min-w-max pb-4">
               {placementRounds.map((round) => (
-                <div key={round.name} className="flex flex-col gap-4 min-w-[260px]">
+                <div key={round.name} className="flex flex-col gap-4 min-w-[280px]">
                   <div className="flex items-center justify-center">
                     <h3 className="text-[11px] font-bold text-muted-foreground/60 text-center uppercase tracking-widest bg-muted/40 rounded-full px-4 py-1.5 border border-border/30">
                       {round.name}

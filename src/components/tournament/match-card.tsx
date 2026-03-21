@@ -46,7 +46,9 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
   const isPlayoff = match.phase === "playoff" || match.bracketRound != null
 
   return (
-    <div className={cn(
+    <div
+      aria-label={`Zápas: ${match.teamA?.name ?? 'TBD'} vs ${match.teamB?.name ?? 'TBD'}${match.score?.winner ? ', dokončeno' : ''}`}
+      className={cn(
       "rounded-xl border bg-card p-4 transition-all duration-200",
       match.status === "live"
         ? "border-live/30 shadow-md shadow-live/5 ring-1 ring-live/10 live-glow"
@@ -67,7 +69,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           {match.round && !compact && (
             <span className="text-[11px] text-muted-foreground/70 font-medium">{match.round}</span>
           )}
-          {matchNumber && (
+          {matchNumber && !compact && (
             <span className="text-[11px] text-muted-foreground/50 font-medium">#{matchNumber}</span>
           )}
           {match.court && (

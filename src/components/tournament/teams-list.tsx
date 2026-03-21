@@ -243,17 +243,23 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           })()}
 
           {/* Next match preview */}
-          {nextMatch && (
-            <div className="mt-2.5 flex items-center gap-2 text-[11px] text-muted-foreground/70 bg-primary/[0.03] border border-primary/10 rounded-lg px-3 py-2">
-              <Clock className="h-3.5 w-3.5 shrink-0 text-primary/50" />
-              <span className="font-semibold text-foreground/70">
-                {nextMatch.scheduledTime}
-              </span>
-              <span className="truncate">
-                vs {nextMatch.teamA?.teamId === team.id ? nextMatch.teamB?.name : nextMatch.teamA?.name}
-              </span>
-            </div>
-          )}
+          {nextMatch && (() => {
+            const opponentName = nextMatch.teamA?.teamId === team.id ? nextMatch.teamB?.name : nextMatch.teamA?.name
+            const opponentId = nextMatch.teamA?.teamId === team.id ? nextMatch.teamB?.teamId : nextMatch.teamA?.teamId
+            const opponentTeam = teams.find(t => t.id === opponentId)
+            const opponentSeed = opponentTeam?.seed
+            return (
+              <div className="mt-2.5 flex items-center gap-2 text-[11px] text-muted-foreground/70 bg-primary/[0.03] border border-primary/10 rounded-lg px-3 py-2">
+                <Clock className="h-3.5 w-3.5 shrink-0 text-primary/50" />
+                <span className="font-semibold text-foreground/70">
+                  {nextMatch.scheduledTime}
+                </span>
+                <span className="truncate">
+                  vs {opponentSeed && <span className="text-[10px] text-muted-foreground/40 font-score mr-0.5">({opponentSeed})</span>}{opponentName}
+                </span>
+              </div>
+            )
+          })()}
 
           <span className="mt-2 inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:underline bg-primary/5 rounded-full px-3 py-1.5 transition-colors group-hover:bg-primary/10">
             {stats.played > 0 ? `${stats.played} ${pluralize(stats.played, "zápas", "zápasy", "zápasů")}` : "Zobrazit zápasy"} &rarr;
