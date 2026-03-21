@@ -62,7 +62,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
           {match.scheduledTime && (
-            <span className="font-bold text-foreground/80 text-[13px] tracking-tight">{match.scheduledTime}</span>
+            <span className="font-bold text-foreground/80 text-[13px] tracking-tight whitespace-nowrap">{match.scheduledTime}</span>
           )}
           {match.round && !compact && (
             <span className="text-[11px] text-muted-foreground/70 font-medium">{match.round}</span>

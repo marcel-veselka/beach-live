@@ -41,11 +41,14 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           team.players.some((p) => normalizeSearch(p.name).includes(q))
       )
     }
-    // Sort favorites to top
+    // Sort: favorites first, then by seed ascending (unseeded last)
     return [...result].sort((a, b) => {
       const aFav = isFavorite(a.id) ? 0 : 1
       const bFav = isFavorite(b.id) ? 0 : 1
-      return aFav - bFav
+      if (aFav !== bFav) return aFav - bFav
+      const aSeed = a.seed ?? 999
+      const bSeed = b.seed ?? 999
+      return aSeed - bSeed
     })
   }, [teams, search, isFavorite])
 
@@ -178,7 +181,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
                 {team.players.map((player, i) => (
                   <p key={i} className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
                     <span>{player.name}</span>
-                    {player.club && <span className="text-[10px] text-muted-foreground/50 bg-muted/60 rounded-full px-1.5 py-0.5">{player.club}</span>}
+                    {player.club && <span className="text-[10px] text-muted-foreground/60 bg-muted/80 rounded-full px-1.5 py-0.5">{player.club}</span>}
                   </p>
                 ))}
               </div>
