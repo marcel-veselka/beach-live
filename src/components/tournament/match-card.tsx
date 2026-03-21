@@ -38,6 +38,9 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
     || match.teamA.name.startsWith("Vítěz") || match.teamB.name.startsWith("Vítěz")
     || match.teamA.name.startsWith("Poražen") || match.teamB.name.startsWith("Poražen")
 
+  const isImportantMatch = match.round?.includes("Finále") || match.round?.includes("Semifinále") || match.round?.includes("3. místo")
+  const isFinal = match.round === "Finále"
+
   // Determine match type for badge display
   const isQualification = match.round?.toLowerCase().includes("kvalifikac") || match.phase === "group"
   const isPlayoff = match.phase === "playoff" || match.bracketRound != null
@@ -52,6 +55,8 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           : "border-border shadow-sm hover:shadow-md hover:border-primary/20",
       hasFavorite && match.status !== "live" && "border-l-[3px] border-l-red-400/70 bg-red-50/30",
       isTBD && match.status === "scheduled" && "border-dashed border-border/50 opacity-75",
+      isImportantMatch && !isTBD && "ring-1 ring-secondary/20",
+      isFinal && !isTBD && "ring-1 ring-secondary/40 shadow-md",
     )}>
       {/* Time/court/round hierarchy */}
       <div className="flex items-center justify-between mb-2">

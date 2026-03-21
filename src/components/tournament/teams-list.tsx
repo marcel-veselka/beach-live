@@ -188,7 +188,16 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           </div>
 
           {/* Badges row */}
-          <div className="mt-2.5 pt-2.5 border-t border-border/40 flex items-center gap-1.5 text-xs flex-wrap">
+          <div className="mt-2.5 pt-2.5 border-t border-border/40">
+            {(stats.won2 + stats.won3 + stats.lost2 + stats.lost3) > 0 && (
+              <div className="flex gap-0.5 mb-2 h-1.5 rounded-full overflow-hidden">
+                {stats.won2 > 0 && <div className="bg-success/70 rounded-full" style={{ flex: stats.won2 }} />}
+                {stats.won3 > 0 && <div className="bg-success/40 rounded-full" style={{ flex: stats.won3 }} />}
+                {stats.lost3 > 0 && <div className="bg-warning/40 rounded-full" style={{ flex: stats.lost3 }} />}
+                {stats.lost2 > 0 && <div className="bg-warning/70 rounded-full" style={{ flex: stats.lost2 }} />}
+              </div>
+            )}
+          <div className="flex items-center gap-1.5 text-xs flex-wrap">
             {qualified && !isQSection && (
               <Badge variant="default" className="text-[10px] font-semibold uppercase tracking-wider bg-gradient-to-r from-secondary/20 to-secondary/10 text-secondary-foreground/80 border border-secondary/25">Kvalifikace</Badge>
             )}
@@ -207,6 +216,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
             {stats.lost2 > 0 && (
               <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-warning/12 text-warning border border-warning/20">{stats.lost2}P</span>
             )}
+          </div>
           </div>
 
           {/* Last match result (shown when no next match) */}

@@ -165,6 +165,31 @@ export default async function HomePage() {
         </Section>
       )}
 
+      {/* Bracket summary */}
+      {snapshot.bracket && snapshot.bracket.rounds.length > 0 && (() => {
+        const lastRound = snapshot.bracket.rounds[snapshot.bracket.rounds.length - 1]
+        const finalMatch = lastRound.matches[0]
+        if (!finalMatch?.teamA?.name || finalMatch.teamA.name.startsWith("Vítěz")) return null
+        return (
+          <Section title="Pavouk">
+            <Card className="p-4">
+              <div className="text-center">
+                <p className="text-[10px] text-muted-foreground/60 uppercase tracking-widest font-bold mb-2">{lastRound.name}</p>
+                <div className="flex items-center justify-center gap-3">
+                  <span className={cn("text-sm font-semibold", finalMatch.winner === "teamA" && "text-success")}>{finalMatch.teamA.name}</span>
+                  {finalMatch.score ? (
+                    <span className="text-xs font-score font-bold text-muted-foreground bg-muted/50 px-2 py-1 rounded-lg">{finalMatch.score}</span>
+                  ) : (
+                    <span className="text-xs text-muted-foreground/50">vs</span>
+                  )}
+                  <span className={cn("text-sm font-semibold", finalMatch.winner === "teamB" && "text-success")}>{finalMatch.teamB?.name ?? "TBD"}</span>
+                </div>
+              </div>
+            </Card>
+          </Section>
+        )
+      })()}
+
       {/* Quick links with subtle icon backgrounds */}
       <Section title={msg.overview.quickLinks}>
         <div className="grid grid-cols-3 gap-3">
