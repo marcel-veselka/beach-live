@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volleyball Icon v4 Preview — Iterations 41-90</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; color: #333; }
+  h2 { font-size: 1.1rem; margin: 24px 0 12px; color: #555; }
+  .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 24px; }
+  .row { display: flex; align-items: end; gap: 20px; padding: 20px; border-radius: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .beach { background: linear-gradient(135deg, #87CEEB 0%, #E0F0FF 30%, #FFF5D4 60%, #F5DEB3 100%); }
+  .white { background: #FFFFFF; border: 1px solid #eee; }
+  .dark { background: #1a1a2e; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .label { font-size: 10px; color: #666; font-weight: 500; }
+  .dark .label { color: #aaa; }
+  .note { font-size: 0.75rem; color: #999; margin-top: 2px; font-style: italic; }
+  .dark .note { color: #777; }
+  .section-note { font-size: 0.78rem; color: #666; margin-bottom: 16px; padding: 8px 12px; background: #f8f6f0; border-radius: 6px; border-left: 3px solid #BFA558; }
+  .size-notes { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px; }
+  .size-note { font-size: 0.78rem; padding: 6px 10px; background: #fafafa; border-radius: 4px; }
+  .size-note strong { color: #333; }
+</style>
+</head>
+<body>
+
+<h1>Volleyball Icon v4 — Gala Smash Pro BP5363S</h1>
+<p class="subtitle">Iterations 41-90: Panel geometry, bezier curves, color science, advanced shading, texture, specular, edge, and size optimization</p>
+
+<div class="section-note">
+  <strong>Reference targets:</strong> Yellow ~45%, White ~40%, Red ~12%, Seams ~3%.
+  Asymmetric yellow top cap, wide white center band, prominent bottom-right yellow, razor-thin red accents.
+</div>
+
+<h2>Beach Background</h2>
+<div class="row beach" id="beach-row"></div>
+
+<h2>White Background</h2>
+<div class="row white" id="white-row"></div>
+
+<h2>Dark Background</h2>
+<div class="row dark" id="dark-row"></div>
+
+<div class="size-notes">
+  <div class="size-note"><strong>14px:</strong> Minimal — basic yellow/white/red shape, single specular dot, bold outline</div>
+  <div class="size-note"><strong>20px:</strong> Secondary specular visible, still simplified geometry</div>
+  <div class="size-note"><strong>24px:</strong> Leather texture appears, seam lines legible</div>
+  <div class="size-note"><strong>28px:</strong> Seam embossing (highlight + shadow) appears, star specular</div>
+  <div class="size-note"><strong>32px:</strong> Ambient occlusion at seam intersections, outer glow on lit side</div>
+  <div class="size-note"><strong>48px:</strong> Detail texture layers (dual turbulence), canvas-weave on seams</div>
+  <div class="size-note"><strong>72px:</strong> All details crisp — per-panel shading, environmental blue reflection</div>
+  <div class="size-note"><strong>128px:</strong> Full fidelity — every texture, emboss, and specular detail sharp</div>
+  <div class="size-note"><strong>200px:</strong> Maximum detail — leather dimples, seam canvas texture, star specular, AO all visible</div>
+</div>
+
+<script>
+const sizes = [14, 20, 24, 32, 48, 72, 128, 200];
+
+function createBall(size) {
+  const p = `p${size}`;
+  const seamW = size < 20 ? 0.5 : size < 24 ? 0.7 : size < 32 ? 0.9 : size < 64 ? 1.1 : 1.3;
+  const edgeW = size < 24 ? 1.6 : size < 32 ? 1.4 : size < 64 ? 1.2 : 1.0;
+  const edgeOpacity = size < 24 ? 0.9 : size < 48 ? 0.85 : 0.75;
+  const showTexture = size >= 24;
+  const showDetailTexture = size >= 48;
+  const showSecondarySpecular = size >= 20;
+  const showEmbossing = size >= 28;
+  const showAO = size >= 32;
+  const showEnvReflection = size >= 40;
+  const showOuterGlow = size >= 32;
+  const showStarSpecular = size >= 28;
+  const texOpacity = showDetailTexture ? 0.20 : 0.14;
+
+  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="${p}-sph" cx="0.38" cy="0.32" r="0.62" fx="0.38" fy="0.32">
+      <stop offset="0%" stop-color="#FFFEFA"/><stop offset="15%" stop-color="#FAF4EA"/>
+      <stop offset="35%" stop-color="#F6EFE0"/><stop offset="55%" stop-color="#F0E6D2"/>
+      <stop offset="75%" stop-color="#E4D8C4"/><stop offset="100%" stop-color="#CCBB9E"/>
+    </radialGradient>
+    <radialGradient id="${p}-yref" cx="0.35" cy="0.20" r="0.50">
+      <stop offset="0%" stop-color="#FFF0B0" stop-opacity="0.10"/>
+      <stop offset="40%" stop-color="#FFF0B0" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#FFF0B0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="${p}-y1" x1="0.10" y1="0" x2="0.90" y2="1">
+      <stop offset="0%" stop-color="#FFEA68"/><stop offset="25%" stop-color="#FFE550"/>
+      <stop offset="55%" stop-color="#F5D228"/><stop offset="100%" stop-color="#E8BC15"/>
+    </linearGradient>
+    <linearGradient id="${p}-y2" x1="0.6" y1="0.05" x2="0.35" y2="0.95">
+      <stop offset="0%" stop-color="#F5D830"/><stop offset="35%" stop-color="#E4C218"/>
+      <stop offset="75%" stop-color="#CCA810"/><stop offset="100%" stop-color="#B8980C"/>
+    </linearGradient>
+    <linearGradient id="${p}-y3" x1="0.4" y1="0.05" x2="0.6" y2="0.95">
+      <stop offset="0%" stop-color="#ECCC20"/><stop offset="40%" stop-color="#D4B418"/>
+      <stop offset="80%" stop-color="#B89808"/><stop offset="100%" stop-color="#A88C05"/>
+    </linearGradient>
+    <linearGradient id="${p}-y4" x1="0.25" y1="0.15" x2="0.75" y2="0.95">
+      <stop offset="0%" stop-color="#FFE040"/><stop offset="45%" stop-color="#ECC018"/>
+      <stop offset="100%" stop-color="#C0A010"/>
+    </linearGradient>
+    <linearGradient id="${p}-r1" x1="0.25" y1="0" x2="0.75" y2="1">
+      <stop offset="0%" stop-color="#D83838"/><stop offset="100%" stop-color="#B82222"/>
+    </linearGradient>
+    <linearGradient id="${p}-r2" x1="0.7" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#D03030"/><stop offset="100%" stop-color="#A81818"/>
+    </linearGradient>
+    <linearGradient id="${p}-r3" x1="0.5" y1="0.1" x2="0.5" y2="0.95">
+      <stop offset="0%" stop-color="#CC2828"/><stop offset="100%" stop-color="#9C1212"/>
+    </linearGradient>
+    <linearGradient id="${p}-r4" x1="0.2" y1="0.2" x2="0.8" y2="0.8">
+      <stop offset="0%" stop-color="#D43535"/><stop offset="100%" stop-color="#AA1A1A"/>
+    </linearGradient>
+    <radialGradient id="${p}-shade" cx="0.32" cy="0.26" r="0.68">
+      <stop offset="0%" stop-color="white" stop-opacity="0.22"/>
+      <stop offset="12%" stop-color="white" stop-opacity="0.14"/>
+      <stop offset="25%" stop-color="white" stop-opacity="0.06"/>
+      <stop offset="38%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="black" stop-opacity="0.02"/>
+      <stop offset="62%" stop-color="black" stop-opacity="0.08"/>
+      <stop offset="75%" stop-color="black" stop-opacity="0.18"/>
+      <stop offset="87%" stop-color="black" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.38"/>
+    </radialGradient>
+    <radialGradient id="${p}-psh" cx="0.28" cy="0.23" r="0.75">
+      <stop offset="0%" stop-color="white" stop-opacity="0.14"/>
+      <stop offset="40%" stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.20"/>
+    </radialGradient>
+    <radialGradient id="${p}-inner" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="85%" stop-color="black" stop-opacity="0"/>
+      <stop offset="95%" stop-color="black" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.15"/>
+    </radialGradient>
+    <radialGradient id="${p}-hl" cx="0.30" cy="0.26" r="0.22">
+      <stop offset="0%" stop-color="#FFF8E8" stop-opacity="0.50"/>
+      <stop offset="35%" stop-color="#FFF8E8" stop-opacity="0.18"/>
+      <stop offset="70%" stop-color="#FFF8E8" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#FFF8E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${p}-glow" cx="0.26" cy="0.20" r="0.38">
+      <stop offset="0%" stop-color="#FFF8E0" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#FFF8E0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${p}-sh" cx="0.58" cy="0.90" r="0.24">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${p}-env" cx="0.72" cy="0.72" r="0.35">
+      <stop offset="0%" stop-color="#B0C8E8" stop-opacity="0.06"/>
+      <stop offset="60%" stop-color="#B0C8E8" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#B0C8E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${p}-rim" cx="0.18" cy="0.78" r="0.25">
+      <stop offset="0%" stop-color="#FFF8E8" stop-opacity="0.10"/>
+      <stop offset="60%" stop-color="#FFF8E8" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#FFF8E8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${p}-hl2" cx="0.78" cy="0.38" r="0.18">
+      <stop offset="0%" stop-color="#FFF8E8" stop-opacity="0.10"/>
+      <stop offset="60%" stop-color="#FFF8E8" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#FFF8E8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="${p}-edge" x1="0.15" y1="0.15" x2="0.85" y2="0.85">
+      <stop offset="0%" stop-color="#B09068"/><stop offset="45%" stop-color="#9A7E58"/>
+      <stop offset="100%" stop-color="#786048"/>
+    </linearGradient>
+    <radialGradient id="${p}-oglow" cx="0.30" cy="0.25" r="0.55">
+      <stop offset="80%" stop-color="#FFE860" stop-opacity="0"/>
+      <stop offset="90%" stop-color="#FFE860" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#FFE860" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${p}-ao" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="${p}-tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="4" seed="7" result="n1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="19" result="n2"/>
+      <feMerge result="noise"><feMergeNode in="n1"/><feMergeNode in="n2"/></feMerge>
+      <feColorMatrix type="saturate" values="0" in="noise" result="mono"/>
+      <feComponentTransfer in="mono" result="soft"><feFuncA type="linear" slope="0.40" intercept="0.30"/></feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="soft" mode="multiply" result="blend"/>
+      <feComposite in="blend" in2="SourceGraphic" operator="atop"/>
+    </filter>
+    <filter id="${p}-ytex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.50" numOctaves="3" seed="12" result="n1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="2" seed="22" result="n2"/>
+      <feMerge result="noise"><feMergeNode in="n1"/><feMergeNode in="n2"/></feMerge>
+      <feColorMatrix type="saturate" values="0" in="noise" result="mono"/>
+      <feComponentTransfer in="mono" result="soft"><feFuncA type="linear" slope="0.28" intercept="0.36"/></feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="soft" mode="multiply" result="blend"/>
+      <feComposite in="blend" in2="SourceGraphic" operator="atop"/>
+    </filter>
+    <clipPath id="${p}-c"><circle cx="32" cy="32" r="30"/></clipPath>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#${p}-sph)"/>`;
+
+  if (showTexture) svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-sph)" filter="url(#${p}-tex)" opacity="${texOpacity}"/>`;
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-yref)"/>`;
+
+  svg += `<g clip-path="url(#${p}-c)">`;
+  // Yellow top cap
+  svg += `<path d="M32 2 C17 2 6 9 2.5 17 C10 15 18 14.5 25 15.5 S34 19 36.5 21.5 C39 14 41.5 7 40.5 3 C37.5 2.2 35 2 32 2Z" fill="url(#${p}-y1)"/>`;
+  if (showTexture) svg += `<path d="M32 2 C17 2 6 9 2.5 17 C10 15 18 14.5 25 15.5 S34 19 36.5 21.5 C39 14 41.5 7 40.5 3 C37.5 2.2 35 2 32 2Z" fill="url(#${p}-y1)" filter="url(#${p}-ytex)" opacity="0.12"/>`;
+  // Red top-left
+  svg += `<path d="M2.5 17 C2.2 19 2 21 2 23 C6 22 12 21.5 18 21.5 C23 21.5 27 22 30 23.5 C28.5 21 26.5 19 25 17 C20 15.5 12 15.5 6 16 C4 16.5 3 17 2.5 17Z" fill="url(#${p}-r1)"/>`;
+  // Red top-right
+  svg += `<path d="M40.5 3 C41.5 7 39 14 36.5 21.5 C38 20 41 18.5 44.5 18 C49 17.5 53 18 55.5 19.5 C51 11 46 5 40.5 3Z" fill="url(#${p}-r2)"/>`;
+  // Right yellow
+  svg += `<path d="M55.5 19.5 C59 23.5 61.5 28.5 62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5 C35 31 35.5 26 37 23 C39 20 42 18.5 44.5 18 C49 17.5 53 18 55.5 19.5Z" fill="url(#${p}-y2)"/>`;
+  if (showTexture) svg += `<path d="M55.5 19.5 C59 23.5 61.5 28.5 62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5 C35 31 35.5 26 37 23 C39 20 42 18.5 44.5 18 C49 17.5 53 18 55.5 19.5Z" fill="url(#${p}-y2)" filter="url(#${p}-ytex)" opacity="0.10"/>`;
+  // Red right
+  svg += `<path d="M62 34 C62.2 37 61.5 40 60.5 42.5 C57 40 52 38.5 47 38 C42 37.5 38 38.5 35.5 39.5 C35 38 34.5 37 34.5 35.5 C37 33 42 31 48 30.5 C53 30.5 58 32 62 34Z" fill="url(#${p}-r1)"/>`;
+  // Bottom-right yellow
+  svg += `<path d="M60.5 42.5 C57 50 51 56.5 43 60.5 C41.5 54.5 39.5 49 38 45 C37 42.5 36 40.5 35.5 39.5 C36 38.5 39 37.5 43 37.5 C48.5 37.5 54 39.5 58 41.5 C59.5 42 60 42.3 60.5 42.5Z" fill="url(#${p}-y3)"/>`;
+  if (showTexture) svg += `<path d="M60.5 42.5 C57 50 51 56.5 43 60.5 C41.5 54.5 39.5 49 38 45 C37 42.5 36 40.5 35.5 39.5 C36 38.5 39 37.5 43 37.5 C48.5 37.5 54 39.5 58 41.5 C59.5 42 60 42.3 60.5 42.5Z" fill="url(#${p}-y3)" filter="url(#${p}-ytex)" opacity="0.08"/>`;
+  // Bottom-left yellow
+  svg += `<path d="M4.5 42.5 C7.5 49.5 13 56 20 60 C22 54.5 24.5 49 26.5 45 C27.5 42.5 28.5 40.5 29.5 39.5 C28.5 38.5 25.5 37.5 22 37.5 C17 37.5 11 39.5 7 41.5 C5.5 42 5 42.3 4.5 42.5Z" fill="url(#${p}-y4)"/>`;
+  if (showTexture) svg += `<path d="M4.5 42.5 C7.5 49.5 13 56 20 60 C22 54.5 24.5 49 26.5 45 C27.5 42.5 28.5 40.5 29.5 39.5 C28.5 38.5 25.5 37.5 22 37.5 C17 37.5 11 39.5 7 41.5 C5.5 42 5 42.3 4.5 42.5Z" fill="url(#${p}-y4)" filter="url(#${p}-ytex)" opacity="0.08"/>`;
+  // Left red
+  svg += `<path d="M2 23 C2 26 2.2 29 2.5 32 C3 36 3.5 39.5 4.5 42.5 C7 40.5 12 39 17 38 C21 37.5 25 37.5 28 38.5 C28.5 37 28.5 35 29 33 C26 31.5 22 30 18 29.5 C12 28.5 6 25 2 23Z" fill="url(#${p}-r4)"/>`;
+  // Bottom-center red
+  svg += `<path d="M20 60 C25 61.5 29 62 32 62 C36 62 40 61.5 43 60.5 C41.5 55.5 40 51 39 48 C38 45 37 42.5 36 40.5 C34.5 39.5 33.5 39 32.5 39 C31.5 39 30.5 39.5 29.5 40.5 C28.5 42.5 27.5 45 26.5 48 C25 51 22.5 55.5 20 60Z" fill="url(#${p}-r3)"/>`;
+  // Per-panel shadow
+  svg += `<circle cx="32" cy="32" r="31" fill="url(#${p}-psh)"/>`;
+  svg += `</g>`;
+
+  // Seams
+  svg += `<g clip-path="url(#${p}-c)" stroke="#BFA558" stroke-width="${seamW}" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 17 C10 15 18 14.5 25 15.5 S34 19 36.5 21.5"/>
+    <path d="M40.5 3 C41.5 7 39 14 36.5 21.5"/>
+    <path d="M2 23 C6 22 12 21.5 18 21.5 S27 22 30 23.5"/>
+    <path d="M55.5 19.5 C53 18 49 17.5 44.5 18 S39 20 36.5 21.5"/>
+    <path d="M36.5 21.5 C36 26 35.5 31 34.5 35.5 S33 38 32.5 39"/>
+    <path d="M30 23.5 C30 27.5 30.5 32 31.5 36 S32 38.5 32.5 39"/>
+    <path d="M32.5 39 C30 41.5 28 44 26.5 48 S22.5 55.5 20 60"/>
+    <path d="M32.5 39 C35 41.5 37 44 38.5 48 S41.5 55 43 60.5"/>
+    <path d="M62 34 C58 32 53 30.5 48 30.5 S37 33 34.5 35.5"/>
+    <path d="M60.5 42.5 C57 40 52 38.5 47 38 S38 38.5 35.5 39.5"/>
+    <path d="M2 23 C2 26 2.2 29 2.5 32 S3.5 39.5 4.5 42.5"/>
+    <path d="M4.5 42.5 C7 40.5 12 39 17 38 S25 37.5 28 38.5 C30.5 39 31.5 39.2 32.5 39"/>
+  </g>`;
+
+  // Embossing
+  if (showEmbossing) {
+    svg += `<g clip-path="url(#${p}-c)" stroke="#E8DCA8" stroke-width="${seamW*0.35}" fill="none" stroke-linecap="round" opacity="0.36">
+      <path d="M2.5 17 C10 15 18 14.5 25 15.5 S34 19 36.5 21.5" transform="translate(-0.3 -0.4)"/>
+      <path d="M36.5 21.5 C36 26 35.5 31 34.5 35.5 S33 38 32.5 39" transform="translate(-0.4 -0.3)"/>
+      <path d="M30 23.5 C30 27.5 30.5 32 31.5 36" transform="translate(-0.3 -0.4)"/>
+      <path d="M62 34 C58 32 53 30.5 48 30.5 S37 33 34.5 35.5" transform="translate(-0.2 -0.4)"/>
+      <path d="M2 23 C6 22 12 21.5 18 21.5 S27 22 30 23.5" transform="translate(-0.3 -0.4)"/>
+      <path d="M55.5 19.5 C53 18 49 17.5 44.5 18 S39 20 36.5 21.5" transform="translate(-0.3 -0.4)"/>
+    </g>`;
+    svg += `<g clip-path="url(#${p}-c)" stroke="#907840" stroke-width="${seamW*0.3}" fill="none" stroke-linecap="round" opacity="0.26">
+      <path d="M2.5 17 C10 15 18 14.5 25 15.5 S34 19 36.5 21.5" transform="translate(0.3 0.4)"/>
+      <path d="M36.5 21.5 C36 26 35.5 31 34.5 35.5 S33 38 32.5 39" transform="translate(0.4 0.3)"/>
+      <path d="M30 23.5 C30 27.5 30.5 32 31.5 36" transform="translate(0.3 0.4)"/>
+      <path d="M62 34 C58 32 53 30.5 48 30.5 S37 33 34.5 35.5" transform="translate(0.2 0.4)"/>
+      <path d="M32.5 39 C30 41.5 28 44 26.5 48" transform="translate(0.3 0.3)"/>
+      <path d="M32.5 39 C35 41.5 37 44 38.5 48" transform="translate(0.3 0.3)"/>
+    </g>`;
+  }
+
+  // AO
+  if (showAO) {
+    svg += `<circle cx="32.5" cy="39" r="2.5" fill="url(#${p}-ao)"/>`;
+    svg += `<circle cx="36.5" cy="21.5" r="2" fill="url(#${p}-ao)"/>`;
+  }
+
+  // Sphere overlays
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-shade)"/>`;
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-inner)"/>`;
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-hl)"/>`;
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-glow)"/>`;
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-sh)"/>`;
+  svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-rim)"/>`;
+  if (showEnvReflection) svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-env)"/>`;
+  if (showSecondarySpecular) svg += `<circle cx="32" cy="32" r="30" fill="url(#${p}-hl2)"/>`;
+
+  // Edge
+  svg += `<circle cx="32" cy="32" r="30" stroke="url(#${p}-edge)" stroke-width="${edgeW}" fill="none" opacity="${edgeOpacity}"/>`;
+  if (showOuterGlow) svg += `<circle cx="32" cy="32" r="31" fill="url(#${p}-oglow)"/>`;
+
+  // Specular
+  svg += `<ellipse cx="22" cy="16.5" rx="7" ry="3" fill="#FFF8E8" opacity="0.24" transform="rotate(-22 22 16.5)"/>`;
+  svg += `<ellipse cx="20.5" cy="15.5" rx="4" ry="1.8" fill="#FFF8E8" opacity="0.48" transform="rotate(-22 20.5 15.5)"/>`;
+  if (showStarSpecular) svg += `<circle cx="19" cy="15" r="1.0" fill="#FFFEF8" opacity="0.65"/>`;
+  if (!showStarSpecular && size >= 14) svg += `<circle cx="20" cy="16" r="1.5" fill="white" opacity="0.45"/>`;
+  if (showSecondarySpecular) svg += `<circle cx="46" cy="26" r="0.8" fill="#FFF8E8" opacity="0.18"/>`;
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function populate(rowId) {
+  const row = document.getElementById(rowId);
+  sizes.forEach(s => {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.innerHTML = createBall(s) + `<span class="label">${s}px</span>`;
+    row.appendChild(cell);
+  });
+}
+
+populate('beach-row');
+populate('white-row');
+populate('dark-row');
+</script>
+</body>
+</html>
