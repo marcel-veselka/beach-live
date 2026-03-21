@@ -1,0 +1,27 @@
+name: Renew Drive Watch
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Register Drive watch channel
+        run: |
+          response=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            "${{ vars.DEPLOYMENT_URL }}/api/google/watch/register?secret=${{ secrets.REFRESH_SECRET }}")
+
+          http_code=$(echo "$response" | tail -1)
+          body=$(echo "$response" | head -n -1)
+
+          echo "HTTP $http_code"
+          echo "$body" | jq . 2>/dev/null || echo "$body"
+
+          if [ "$http_code" -ge 400 ]; then
+            echo "::error::Watch registration failed ($http_code)"
+            exit 1
+          fi
