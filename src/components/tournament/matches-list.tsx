@@ -236,7 +236,7 @@ export function MatchesList({ matches, teams, initialSearch }: MatchesListProps)
             <p className="text-xs text-muted-foreground/60 mt-1.5 max-w-[220px]">
               {search
                 ? `Pro "${search}" nebyly nalezeny žádné výsledky`
-                : "Pro zvolený filtr nejsou žádné zápasy"}
+                : "Zkus změnit filtr"}
             </p>
             {(search || statusFilter !== "all" || phaseFilter !== "all") && (
               <button

@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/ui/empty-state"
 import { FreshnessIndicator } from "@/components/tournament/freshness-indicator"
 import { AutoRefresh } from "@/components/tournament/auto-refresh"
 import { BracketMatchNodeClient, BracketMatchCardClient } from "@/components/tournament/bracket-favorites"
-import { t } from "@/lib/i18n"
+import { t, pluralize } from "@/lib/i18n"
 import { GitBranch } from "lucide-react"
 import { BracketMatch } from "@/lib/tournament/schema"
 
@@ -180,7 +180,7 @@ export default async function BracketPage() {
                     <span className="text-[9px] font-bold text-primary bg-primary/10 rounded-full px-2 py-0.5 uppercase tracking-wider">Aktuální</span>
                   )}
                   <span className="text-[10px] text-muted-foreground/50 ml-auto font-medium">
-                    {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
+                    {round.matches.length} {pluralize(round.matches.length, "zápas", "zápasy", "zápasů")}
                   </span>
                 </div>
                 {/* #1: Colored bar under round header */}
@@ -218,7 +218,7 @@ export default async function BracketPage() {
                       {round.name}
                     </h3>
                     <span className="text-[10px] text-muted-foreground/50 ml-auto font-medium">
-                      {round.matches.length} {round.matches.length === 1 ? "zápas" : round.matches.length < 5 ? "zápasy" : "zápasů"}
+                      {round.matches.length} {pluralize(round.matches.length, "zápas", "zápasy", "zápasů")}
                     </span>
                   </div>
                 </div>

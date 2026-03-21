@@ -2,6 +2,7 @@ import { Match, Team } from "@/lib/tournament/schema"
 import { Badge } from "@/components/ui/badge"
 import { t } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface MatchCardProps {
   match: Match
@@ -101,6 +102,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
       <div className="space-y-0">
         <TeamRow
           name={match.teamA?.name ?? "TBD"}
+          teamName={match.teamA?.name}
           isWinner={match.score?.winner === "teamA"}
           sets={match.score?.sets.map(s => s.teamA)}
           opponentSets={match.score?.sets.map(s => s.teamB)}
@@ -114,6 +116,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
         <div className="score-separator my-1" />
         <TeamRow
           name={match.teamB?.name ?? "TBD"}
+          teamName={match.teamB?.name}
           isWinner={match.score?.winner === "teamB"}
           sets={match.score?.sets.map(s => s.teamB)}
           opponentSets={match.score?.sets.map(s => s.teamA)}
@@ -129,12 +132,24 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
   )
 }
 
-function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed, players }: {
-  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number; players?: { name: string }[]
+function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed, players, teamName }: {
+  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number; players?: { name: string }[]; teamName?: string
 }) {
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
   /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
   const isLoserRef = name.startsWith("Poražen")
+
+  const nameElement = (
+    <span className={cn(
+      "truncate",
+      isWinner ? "text-[15px] tracking-tight" : "text-sm",
+      isTBDName && "italic text-muted-foreground/50 text-[13px]",
+      isLoserRef && "text-muted-foreground/35",
+      !isTBDName && "hover:text-primary hover:underline transition-colors",
+    )}>
+      {name}
+    </span>
+  )
 
   return (
     <div className={cn(
@@ -146,15 +161,11 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
         {isWinner && <span className="text-success text-xs">▸</span>}
         {!isWinner && sets && sets.length > 0 && <span className="w-[12px]" />}
         {seed && <span className="text-[10px] text-muted-foreground/40 font-score font-bold min-w-[20px] text-right shrink-0">{seed}</span>}
-        <span className={cn(
-          "truncate",
-          isWinner ? "text-[15px] tracking-tight" : "text-sm",
-          /* TBD styled italic and muted; "Poražený" entries even more muted */
-          isTBDName && "italic text-muted-foreground/50 text-[13px]",
-          isLoserRef && "text-muted-foreground/35",
-        )}>
-          {name}
-        </span>
+        {!isTBDName && teamName ? (
+          <Link href={`/matches?team=${encodeURIComponent(teamName)}`} className="truncate">
+            {nameElement}
+          </Link>
+        ) : nameElement}
         {players && players.length > 0 && !isTBDName && (
           <span className="text-[10px] text-muted-foreground/40 hidden sm:inline truncate">
             {players.map(p => p.name.split(/\s+/)[0]).join(" & ")}
