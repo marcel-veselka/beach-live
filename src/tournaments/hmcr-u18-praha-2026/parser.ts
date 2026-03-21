@@ -18,6 +18,13 @@ import { clubData } from "./clubs"
 
 const SOURCE = "bvis-parser"
 
+/** Parse Czech-formatted number like "1 279,00" → 1279.00 */
+function parseCzechNumber(str: string): number | undefined {
+  const cleaned = str.replace(/\s/g, "").replace(",", ".")
+  const num = parseFloat(cleaned)
+  return isNaN(num) ? undefined : num
+}
+
 /** Round code → Czech round name for main event */
 const HS_ROUND_CODE_MAP: Record<string, string> = {
   I: "1. kolo",
@@ -151,6 +158,9 @@ export class BvisParser implements TournamentParser {
       const playerNames = teamName.split(" / ").map((n) => n.trim()).filter(Boolean)
       const players = playerNames.map((name) => ({ name }))
 
+      const pointsStr = (row[2] ?? "").trim()
+      const points = parseCzechNumber(pointsStr)
+
       const qualifier = (row[3] ?? "").trim().toUpperCase() === "Q"
 
       const id = makeId(teamName)
@@ -159,6 +169,7 @@ export class BvisParser implements TournamentParser {
         name: teamName,
         players,
         seed,
+        ...(points != null ? { points } : {}),
         ...(qualifier ? { groupId: "qualifier" } : {}),
       }
 
@@ -200,6 +211,9 @@ export class BvisParser implements TournamentParser {
       const playerNames = teamName.split(" / ").map((n) => n.trim()).filter(Boolean)
       const players = playerNames.map((name) => ({ name }))
 
+      const pointsStr = (row[2] ?? "").trim()
+      const points = parseCzechNumber(pointsStr)
+
       // Col 3: group assignment like "Skupina A"
       const groupStr = (row[3] ?? "").trim()
       const groupMatch = /Skupina\s+(\S+)/i.exec(groupStr)
@@ -213,6 +227,7 @@ export class BvisParser implements TournamentParser {
         name: teamName,
         players,
         seed,
+        ...(points != null ? { points } : {}),
         ...(groupId ? { groupId } : {}),
       }
 

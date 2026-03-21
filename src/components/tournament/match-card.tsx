@@ -39,6 +39,13 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
     || match.teamA.name.startsWith("Vítěz") || match.teamB.name.startsWith("Vítěz")
     || match.teamA.name.startsWith("Poražen") || match.teamB.name.startsWith("Poražen")
 
+  // Win probability from ranking points (only for non-finished, non-TBD matches)
+  const pointsA = teamAData?.points
+  const pointsB = teamBData?.points
+  const showProbability = !isTBD && match.status !== "finished" && pointsA != null && pointsB != null && (pointsA + pointsB) > 0
+  const probA = showProbability ? Math.round(pointsA! / (pointsA! + pointsB!) * 100) : 0
+  const probB = showProbability ? 100 - probA : 0
+
   const isImportantMatch = match.round?.includes("Finále") || match.round?.includes("Semifinále") || match.round?.includes("3. místo")
   const isFinal = match.round === "Finále"
 
@@ -98,6 +105,35 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           </div>
         )
       })()}
+
+      {showProbability && (
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className={cn(
+            "text-[10px] font-score font-semibold tabular-nums min-w-[32px] text-right",
+            probA >= probB ? "text-foreground/70" : "text-muted-foreground/50"
+          )}>{probA}%</span>
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted/40 flex">
+            <div
+              className={cn(
+                "h-full rounded-l-full transition-all",
+                probA >= probB ? "bg-primary/40" : "bg-muted-foreground/20"
+              )}
+              style={{ width: `${probA}%` }}
+            />
+            <div
+              className={cn(
+                "h-full rounded-r-full transition-all",
+                probB > probA ? "bg-primary/40" : "bg-muted-foreground/20"
+              )}
+              style={{ width: `${probB}%` }}
+            />
+          </div>
+          <span className={cn(
+            "text-[10px] font-score font-semibold tabular-nums min-w-[32px]",
+            probB > probA ? "text-foreground/70" : "text-muted-foreground/50"
+          )}>{probB}%</span>
+        </div>
+      )}
 
       <div className="space-y-0">
         <TeamRow

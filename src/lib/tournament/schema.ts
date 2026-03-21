@@ -14,6 +14,7 @@ export const TeamSchema = z.object({
   name: z.string(),
   players: z.array(PlayerSchema),
   seed: z.number().optional(),
+  points: z.number().optional(),
   groupId: z.string().optional(),
 })
 export type Team = z.infer<typeof TeamSchema>
