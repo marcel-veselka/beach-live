@@ -109,8 +109,8 @@ export class BvisParser implements TournamentParser {
     // Build bracket from main event playoff matches only
     const bracket = this.buildBracketFromMatches(hsMatchList)
 
-    // Determine status based on main event matches
-    const status = this.determineTournamentStatus(hsMatchList)
+    // Determine status based on ALL matches (HS + Q)
+    const status = this.determineTournamentStatus(allMatches)
 
     const snapshot: TournamentSnapshot = {
       meta: {

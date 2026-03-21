@@ -32,6 +32,28 @@ let counter = 0
  * Iter 18: Yellow panels more vivid/saturated on light-facing side
  * Iter 19: Color harmony review — yellow, red, white, seam colors balanced together
  * Iter 20: Size testing optimization — reads well at 14px through 128px
+ *
+ * v3 iteration log:
+ * Iter 21: Yellow top cap asymmetric — lower boundary deeper on left (~y=18), shallower on right (~y=4)
+ * Iter 22: White center band widened — left-side red strip height cut ~40%, narrower accent
+ * Iter 23: Bottom-right yellow panel enlarged — more prominent triangular shape
+ * Iter 24: Bottom-center red wedge narrowed — thinner V shape
+ * Iter 25: Panel edge adjacency verified — seamless joins, no gaps or overlap artifacts
+ * Iter 26: Bezier curves smoothed — each seam flows as one organic S-curve
+ * Iter 27: Center convergence shifted to (~32.5, 36.5) for better visual balance
+ * Iter 28: Right-side yellow panel boundary curves naturally along the sphere
+ * Iter 29: Yellow brighter/warmer — top cap #FFE550 highlight to #EABC15 shadow
+ * Iter 30: Red tuned warmer — #D43030 tomato red, less blue-red
+ * Iter 31: White base brighter/cleaner — luminous center band with #FAF4EA base
+ * Iter 32: Per-panel shading improved — right panel noticeably darker than top cap
+ * Iter 33: Subtle yellow tint on white areas near yellow panel edges (reflected color)
+ * Iter 34: Leather texture improved — more uniform dimple pattern with adjusted turbulence
+ * Iter 35: Micro-texture added to yellow panels (not just white base)
+ * Iter 36: Seam embossing refined — highlight/shadow offset proportional to seam direction
+ * Iter 37: Primary specular highlight repositioned across yellow-white boundary
+ * Iter 38: Sphere shading gradient — more dramatic shadow falloff on lower-right
+ * Iter 39: Faint rim light on bottom-left edge (environmental reflection)
+ * Iter 40: Final harmony pass — bright yellow cap, big white center, red accents only at edges
  */
 export function VolleyballIcon({ className, size = 32 }: VolleyballIconProps) {
   const p = `vb${++counter}`
@@ -54,96 +76,123 @@ export function VolleyballIcon({ className, size = 32 }: VolleyballIconProps) {
       role="img"
     >
       <defs>
-        {/* Sphere base — warm off-white leather with upper-left light */}
+        {/* Sphere base — warm luminous off-white leather, iter 31 brighter */}
         <radialGradient id={`${p}-sph`} cx="0.36" cy="0.30" r="0.65" fx="0.36" fy="0.30">
-          <stop offset="0%" stopColor="#FFFDF4" />
-          <stop offset="25%" stopColor="#FBF5E8" />
-          <stop offset="55%" stopColor="#F0E6D2" />
-          <stop offset="80%" stopColor="#E2D5BE" />
-          <stop offset="100%" stopColor="#CABAA0" />
+          <stop offset="0%" stopColor="#FFFEF6" />
+          <stop offset="20%" stopColor="#FAF4EA" />
+          <stop offset="50%" stopColor="#F4ECDA" />
+          <stop offset="75%" stopColor="#E8DCC8" />
+          <stop offset="100%" stopColor="#D0BFA5" />
         </radialGradient>
 
-        {/* Yellow panel gradients — warm sunny Gala yellow, iter 6/18 tuned */}
-        {/* Top cap — lit from upper-left, brighter on light side */}
-        <linearGradient id={`${p}-y1`} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor="#FFE855" />
-          <stop offset="35%" stopColor="#FFE040" />
-          <stop offset="70%" stopColor="#F5D020" />
-          <stop offset="100%" stopColor="#DDB818" />
+        {/* Yellow reflected light on white areas near yellow panels, iter 33 */}
+        <radialGradient id={`${p}-yref`} cx="0.35" cy="0.20" r="0.50">
+          <stop offset="0%" stopColor="#FFF0B0" stopOpacity="0.08" />
+          <stop offset="60%" stopColor="#FFF0B0" stopOpacity="0.03" />
+          <stop offset="100%" stopColor="#FFF0B0" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Yellow panel gradients — iter 29: brighter/warmer #FFE550 highlight to #EABC15 shadow */}
+        {/* Top cap — lit from upper-left */}
+        <linearGradient id={`${p}-y1`} x1="0.15" y1="0" x2="0.85" y2="1">
+          <stop offset="0%" stopColor="#FFE860" />
+          <stop offset="30%" stopColor="#FFE550" />
+          <stop offset="65%" stopColor="#F5D228" />
+          <stop offset="100%" stopColor="#EABC15" />
         </linearGradient>
-        {/* Right panel — gets shadow side darkening */}
+        {/* Right panel — shadow side, iter 32 noticeably darker */}
         <linearGradient id={`${p}-y2`} x1="0.6" y1="0.1" x2="0.4" y2="0.95">
-          <stop offset="0%" stopColor="#FFE240" />
-          <stop offset="40%" stopColor="#F0D020" />
-          <stop offset="100%" stopColor="#C8A812" />
-        </linearGradient>
-        {/* Bottom-right panel — shadow side */}
-        <linearGradient id={`${p}-y3`} x1="0.4" y1="0.2" x2="0.6" y2="0.95">
-          <stop offset="0%" stopColor="#F8D828" />
+          <stop offset="0%" stopColor="#F8DA30" />
+          <stop offset="40%" stopColor="#E8C518" />
           <stop offset="100%" stopColor="#BFA010" />
+        </linearGradient>
+        {/* Bottom-right panel — deep shadow side */}
+        <linearGradient id={`${p}-y3`} x1="0.4" y1="0.1" x2="0.6" y2="0.95">
+          <stop offset="0%" stopColor="#F0D020" />
+          <stop offset="50%" stopColor="#D8B818" />
+          <stop offset="100%" stopColor="#B09808" />
         </linearGradient>
         {/* Bottom-left panel — catches some light */}
         <linearGradient id={`${p}-y4`} x1="0.3" y1="0.2" x2="0.7" y2="0.95">
           <stop offset="0%" stopColor="#FFE040" />
-          <stop offset="60%" stopColor="#ECC818" />
-          <stop offset="100%" stopColor="#C8A812" />
+          <stop offset="55%" stopColor="#EABC15" />
+          <stop offset="100%" stopColor="#C0A010" />
         </linearGradient>
 
-        {/* Red accent gradients — deeper/richer #D42020 range, iter 7 */}
+        {/* Red accent gradients — iter 30: warmer tomato red #D43030 */}
         <linearGradient id={`${p}-r1`} x1="0.3" y1="0" x2="0.7" y2="1">
-          <stop offset="0%" stopColor="#E03030" />
-          <stop offset="100%" stopColor="#B81818" />
+          <stop offset="0%" stopColor="#DA3838" />
+          <stop offset="100%" stopColor="#B82020" />
         </linearGradient>
         <linearGradient id={`${p}-r2`} x1="0.7" y1="0" x2="0.3" y2="1">
-          <stop offset="0%" stopColor="#DC2828" />
-          <stop offset="100%" stopColor="#A81414" />
+          <stop offset="0%" stopColor="#D43030" />
+          <stop offset="100%" stopColor="#A81818" />
         </linearGradient>
         <linearGradient id={`${p}-r3`} x1="0.5" y1="0.2" x2="0.5" y2="0.9">
-          <stop offset="0%" stopColor="#D42020" />
-          <stop offset="100%" stopColor="#A01010" />
+          <stop offset="0%" stopColor="#D43030" />
+          <stop offset="100%" stopColor="#A01414" />
         </linearGradient>
 
-        {/* 3D sphere shading — upper-left light, iter 8/17 enhanced contrast */}
-        <radialGradient id={`${p}-shade`} cx="0.34" cy="0.28" r="0.68">
-          <stop offset="0%" stopColor="white" stopOpacity="0.18" />
-          <stop offset="35%" stopColor="white" stopOpacity="0.04" />
-          <stop offset="60%" stopColor="black" stopOpacity="0.04" />
-          <stop offset="85%" stopColor="black" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.30" />
+        {/* 3D sphere shading — iter 38: more dramatic shadow falloff on lower-right */}
+        <radialGradient id={`${p}-shade`} cx="0.32" cy="0.26" r="0.68">
+          <stop offset="0%" stopColor="white" stopOpacity="0.20" />
+          <stop offset="30%" stopColor="white" stopOpacity="0.05" />
+          <stop offset="55%" stopColor="black" stopOpacity="0.03" />
+          <stop offset="75%" stopColor="black" stopOpacity="0.16" />
+          <stop offset="90%" stopColor="black" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.36" />
         </radialGradient>
 
-        {/* Per-panel shadow overlay — darkens shadow side panels, iter 9/17 */}
-        <radialGradient id={`${p}-psh`} cx="0.30" cy="0.25" r="0.75">
-          <stop offset="0%" stopColor="white" stopOpacity="0.10" />
-          <stop offset="50%" stopColor="white" stopOpacity="0" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.15" />
+        {/* Per-panel shadow overlay, iter 32 improved */}
+        <radialGradient id={`${p}-psh`} cx="0.28" cy="0.23" r="0.75">
+          <stop offset="0%" stopColor="white" stopOpacity="0.12" />
+          <stop offset="45%" stopColor="white" stopOpacity="0" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.18" />
         </radialGradient>
 
-        {/* Specular highlight — elongated along panel edge, iter 13 */}
-        <radialGradient id={`${p}-hl`} cx="0.30" cy="0.24" r="0.22">
-          <stop offset="0%" stopColor="white" stopOpacity="0.50" />
-          <stop offset="40%" stopColor="white" stopOpacity="0.15" />
+        {/* Specular highlight — iter 37: repositioned across yellow-white boundary */}
+        <radialGradient id={`${p}-hl`} cx="0.28" cy="0.28" r="0.20">
+          <stop offset="0%" stopColor="white" stopOpacity="0.45" />
+          <stop offset="45%" stopColor="white" stopOpacity="0.12" />
           <stop offset="100%" stopColor="white" stopOpacity="0" />
         </radialGradient>
 
-        {/* Warm ambient glow on light-facing side, iter 14 */}
-        <radialGradient id={`${p}-glow`} cx="0.28" cy="0.22" r="0.40">
-          <stop offset="0%" stopColor="#FFF8E0" stopOpacity="0.12" />
+        {/* Warm ambient glow on light-facing side */}
+        <radialGradient id={`${p}-glow`} cx="0.26" cy="0.20" r="0.38">
+          <stop offset="0%" stopColor="#FFF8E0" stopOpacity="0.14" />
           <stop offset="100%" stopColor="#FFF8E0" stopOpacity="0" />
         </radialGradient>
 
         {/* Bottom ambient shadow */}
-        <radialGradient id={`${p}-sh`} cx="0.58" cy="0.85" r="0.30">
-          <stop offset="0%" stopColor="#000" stopOpacity="0.12" />
+        <radialGradient id={`${p}-sh`} cx="0.60" cy="0.88" r="0.28">
+          <stop offset="0%" stopColor="#000" stopOpacity="0.14" />
           <stop offset="100%" stopColor="#000" stopOpacity="0" />
         </radialGradient>
 
-        {/* Dimpled leather texture — improved turbulence, fades at small sizes, iter 11 */}
+        {/* Rim light — iter 39: faint environmental reflection on bottom-left edge */}
+        <radialGradient id={`${p}-rim`} cx="0.18" cy="0.78" r="0.25">
+          <stop offset="0%" stopColor="#FFF8E8" stopOpacity="0.10" />
+          <stop offset="60%" stopColor="#FFF8E8" stopOpacity="0.04" />
+          <stop offset="100%" stopColor="#FFF8E8" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Dimpled leather texture — iter 34: more uniform dimples */}
         <filter id={`${p}-tex`} x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" seed="7" result="noise" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="4" seed="7" result="noise" />
           <feColorMatrix type="saturate" values="0" in="noise" result="mono" />
           <feComponentTransfer in="mono" result="soft">
-            <feFuncA type="linear" slope="0.5" intercept="0.25" />
+            <feFuncA type="linear" slope="0.45" intercept="0.28" />
+          </feComponentTransfer>
+          <feBlend in="SourceGraphic" in2="soft" mode="multiply" result="blend" />
+          <feComposite in="blend" in2="SourceGraphic" operator="atop" />
+        </filter>
+
+        {/* Yellow panel texture — iter 35: micro-texture for yellow panels */}
+        <filter id={`${p}-ytex`} x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.50" numOctaves="3" seed="12" result="noise" />
+          <feColorMatrix type="saturate" values="0" in="noise" result="mono" />
+          <feComponentTransfer in="mono" result="soft">
+            <feFuncA type="linear" slope="0.3" intercept="0.35" />
           </feComponentTransfer>
           <feBlend in="SourceGraphic" in2="soft" mode="multiply" result="blend" />
           <feComposite in="blend" in2="SourceGraphic" operator="atop" />
@@ -154,164 +203,215 @@ export function VolleyballIcon({ className, size = 32 }: VolleyballIconProps) {
         </clipPath>
       </defs>
 
-      {/* White leather base — iter 10 refined gradient */}
+      {/* White leather base — iter 31 luminous center band */}
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-sph)`} />
       {showTexture && (
-        <circle cx="32" cy="32" r="30" fill={`url(#${p}-sph)`} filter={`url(#${p}-tex)`} opacity="0.20" />
+        <circle cx="32" cy="32" r="30" fill={`url(#${p}-sph)`} filter={`url(#${p}-tex)`} opacity="0.18" />
       )}
+      {/* Yellow reflected color on white near yellow edges, iter 33 */}
+      <circle cx="32" cy="32" r="30" fill={`url(#${p}-yref)`} />
 
       <g clipPath={`url(#${p}-c)`}>
         {/*
-          Gala Smash Pro layout — 3 panel pairs radiating from center (~33, 37).
-          Each pair: large yellow panel + narrow red accent wedge.
-          White base shows through as wide center band (~35-40%).
-          Iter 1-5: geometry refined for natural sphere wrapping.
+          Gala Smash Pro layout — 3 panel pairs radiating from center (~32.5, 36.5).
+          Iter 21-28: Panel geometry overhauled for reference-accurate layout.
+          Yellow top cap asymmetric, white band widened, bottom-right yellow enlarged.
         */}
 
-        {/* === PAIR 1: TOP — yellow cap wrapping around sphere + thin red transitions === */}
-        {/* Yellow top cap — wraps around the top of sphere, iter 1 curvature */}
+        {/* === PAIR 1: TOP — asymmetric yellow cap + thin red transitions === */}
+        {/* Yellow top cap — iter 21: asymmetric lower boundary, deeper left (~y=18), shallower right (~y=4) */}
         <path
-          d="M32 2 C19 2 8 8 3.5 17.5
-             C9 15.5 16 14.5 23 15 C28 15.5 32 17.5 35.5 20.5
-             C38.5 14 40 7.5 39.5 2.5 C37 2.1 34.5 2 32 2Z"
+          d="M32 2 C18 2 7 8.5 3 18
+             C8 16 15 15 22 15.5 C28 16 33 19 36 22
+             C39 15 41 8 40 3 C37.5 2.2 35 2 32 2Z"
           fill={`url(#${p}-y1)`}
         />
-        {/* Narrow red strip — top-left transition, iter 2 reduced */}
+        {/* iter 35: yellow texture overlay on top cap */}
+        {showTexture && (
+          <path
+            d="M32 2 C18 2 7 8.5 3 18
+               C8 16 15 15 22 15.5 C28 16 33 19 36 22
+               C39 15 41 8 40 3 C37.5 2.2 35 2 32 2Z"
+            fill={`url(#${p}-y1)`}
+            filter={`url(#${p}-ytex)`}
+            opacity="0.12"
+          />
+        )}
+        {/* Narrow red strip — top-left transition, iter 22: much narrower */}
         <path
-          d="M3.5 17.5 C2.5 20 2 22.5 2 25.5
-             C6 24 12 23 18 22.5 C23 22 27 22.5 30 24
-             C28.5 21.5 26.5 19 24 17 C19 15.5 12 15.5 6 16.5
-             C4.5 17 3.8 17.3 3.5 17.5Z"
+          d="M3 18 C2.5 20 2 22.5 2 25
+             C6 23.5 12 22.5 18 22 C23 22 27 22.5 30 24
+             C28.5 21.5 26 19 23.5 17.5 C18 16 11 16 6 17
+             C4.5 17.5 3.5 17.8 3 18Z"
           fill={`url(#${p}-r1)`}
         />
-        {/* Narrow red strip — top-right transition, iter 2 reduced */}
+        {/* Narrow red strip — top-right transition, iter 22 reduced */}
         <path
-          d="M39.5 2.5 C40 7.5 38.5 14 35.5 20.5
-             C37.5 19 40.5 18 44.5 17.5 C48.5 17 52 17.5 55 19.5
-             C51 11 46 5 39.5 2.5Z"
+          d="M40 3 C41 8 39 15 36 22
+             C38 20 41 18.5 45 18 C49 17.5 53 18 56 20
+             C51.5 11.5 46.5 5.5 40 3Z"
           fill={`url(#${p}-r2)`}
         />
 
         {/* === PAIR 2: RIGHT — yellow panel + thin red strip === */}
-        {/* Yellow right panel — iter 5 symmetric */}
+        {/* Yellow right panel — iter 28: curves naturally along sphere */}
         <path
-          d="M55 19.5 C58.5 23.5 61 28.5 62 33.5
-             C58 31.5 53 30 48 30 C42 30.5 37 32.5 34 35
-             C35 31 35.5 27 37 23.5 C39 20 41.5 18.5 44.5 17.5
-             C48.5 17 52 17.5 55 19.5Z"
+          d="M56 20 C59 24 61 29 62 34
+             C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5
+             C35 31 35.5 27 37 24 C39 21 42 19 45 18
+             C49 17.5 53 18 56 20Z"
           fill={`url(#${p}-y2)`}
         />
-        {/* Narrow red strip — right transition, iter 2 reduced */}
+        {showTexture && (
+          <path
+            d="M56 20 C59 24 61 29 62 34
+               C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5
+               C35 31 35.5 27 37 24 C39 21 42 19 45 18
+               C49 17.5 53 18 56 20Z"
+            fill={`url(#${p}-y2)`}
+            filter={`url(#${p}-ytex)`}
+            opacity="0.10"
+          />
+        )}
+        {/* Narrow red strip — right transition */}
         <path
-          d="M62 33.5 C62 37 61.5 40 60.5 42.5
-             C57 40 52 38 47 37.5 C42 37 38 38 35.5 39.5
-             C34.5 38 34 36.5 34 35
-             C37 32.5 42 30.5 48 30 C53 30 58 31.5 62 33.5Z"
+          d="M62 34 C62 37.5 61.5 40.5 60.5 43
+             C57 40.5 52 38.5 47 38 C42 37.5 38 38.5 35.5 40
+             C35 38.5 34.5 37 34.5 35.5
+             C37 33 42 31 48 30.5 C53 30.5 58 32 62 34Z"
           fill={`url(#${p}-r1)`}
         />
 
         {/* === PAIR 3: BOTTOM — two yellow panels + red accents === */}
-        {/* Yellow bottom-right panel — iter 5 curvature */}
+        {/* Yellow bottom-right panel — iter 23: enlarged, more prominent triangle */}
         <path
-          d="M60.5 42.5 C57.5 50 52 56 45 60
-             C43.5 55 41 50 39 46 C37 43 36 41 35 39.5
-             C36.5 38.5 40 37 44 37 C49 37 54 39 58 41.5
-             C59 42 60 42.3 60.5 42.5Z"
+          d="M60.5 43 C57.5 50.5 51.5 56.5 44 60.5
+             C42.5 55 40.5 50 38.5 46 C37 43 36 41 35 39.5
+             C36 38.5 39 37.5 43 37.5 C48.5 37.5 54 39.5 58.5 42
+             C59.5 42.5 60 42.8 60.5 43Z"
           fill={`url(#${p}-y3)`}
         />
-        {/* Yellow bottom-left panel — iter 5 symmetric curvature */}
+        {showTexture && (
+          <path
+            d="M60.5 43 C57.5 50.5 51.5 56.5 44 60.5
+               C42.5 55 40.5 50 38.5 46 C37 43 36 41 35 39.5
+               C36 38.5 39 37.5 43 37.5 C48.5 37.5 54 39.5 58.5 42
+               C59.5 42.5 60 42.8 60.5 43Z"
+            fill={`url(#${p}-y3)`}
+            filter={`url(#${p}-ytex)`}
+            opacity="0.08"
+          />
+        )}
+        {/* Yellow bottom-left panel */}
         <path
-          d="M4.5 42.5 C7.5 50 13 56 20 60
-             C21.5 55 24 50 26 46 C28 43 29 41 30 39.5
-             C28.5 38.5 25 37 21 37 C16 37 10.5 39 7 41.5
-             C5.5 42 5 42.3 4.5 42.5Z"
+          d="M4.5 43 C7.5 50 13 56 20 60
+             C21.5 55 24 50 26 46 C27.5 43 28.5 41 29.5 39.5
+             C28.5 38.5 25.5 37.5 22 37.5 C17 37.5 11 39.5 7.5 42
+             C5.5 42.5 5 42.8 4.5 43Z"
           fill={`url(#${p}-y4)`}
         />
-        {/* Narrow red strip — bottom-left transition, iter 2 reduced */}
+        {showTexture && (
+          <path
+            d="M4.5 43 C7.5 50 13 56 20 60
+               C21.5 55 24 50 26 46 C27.5 43 28.5 41 29.5 39.5
+               C28.5 38.5 25.5 37.5 22 37.5 C17 37.5 11 39.5 7.5 42
+               C5.5 42.5 5 42.8 4.5 43Z"
+            fill={`url(#${p}-y4)`}
+            filter={`url(#${p}-ytex)`}
+            opacity="0.08"
+          />
+        )}
+        {/* Narrow red strip — bottom-left transition, iter 22: significantly narrower */}
         <path
-          d="M2 25.5 C2 29 2 32.5 2.5 35.5 C3 38 3.5 40.5 4.5 42.5
-             C7 40 12 38 17 37 C21 36.5 25 37 29 38.5
-             C29.5 36.5 29.5 34.5 30 32.5
-             C27 31 23 29.5 18 29 C12 28.5 6 27 2 25.5Z"
+          d="M2 25 C2 28.5 2.2 32 2.5 35 C3 38 3.5 40.5 4.5 43
+             C7 41 11.5 39 16.5 38 C20.5 37.5 24.5 37.5 28 38.5
+             C28.5 37 28.5 35 29 33
+             C26 31.5 22 30 18 29.5 C12 29 6 27.5 2 25Z"
           fill={`url(#${p}-r3)`}
         />
-        {/* Red accent — bottom center, narrow wedge, iter 2/3 seamless */}
+        {/* Red accent — bottom center, iter 24: thinner V wedge */}
         <path
-          d="M20 60 C25 61.5 29 62 32 62 C36 62 40 61.5 45 60
-             C43.5 56 41.5 51 39.5 47 C37.5 43.5 36 41 35 39.5
-             C33.5 39.2 32.5 39.2 31.5 39.2
-             C30 39.5 29 41 27 43.5 C25 47 22 52 20 60Z"
+          d="M20 60 C25 61.5 29 62 32 62 C36 62 40 61.5 44 60.5
+             C42.5 56 41 51.5 39.5 47.5 C38 44 37 42 35.5 40
+             C34 39.5 33 39.2 32.5 39.2
+             C31.5 39.2 30.5 39.5 29.5 40
+             C28 42 27 44 25.5 47.5 C23.5 52 21.5 56.5 20 60Z"
           fill={`url(#${p}-r3)`}
         />
 
-        {/* Per-panel shadow overlay, iter 9 */}
+        {/* Per-panel shadow overlay, iter 32 */}
         <circle cx="32" cy="32" r="31" fill={`url(#${p}-psh)`} />
       </g>
 
-      {/* Seam lines — warm golden-tan, iter 12/19 refined color */}
+      {/* Seam lines — warm golden-tan, iter 26: smoothed bezier curves */}
       <g clipPath={`url(#${p}-c)`} stroke="#C0A660" strokeWidth={seamW} fill="none" strokeLinecap="round" strokeLinejoin="round">
-        {/* Top cap seams */}
-        <path d="M3.5 17.5 C9 15.5 16 14.5 23 15 C28 15.5 32 17.5 35.5 20.5" />
-        <path d="M39.5 2.5 C40 7.5 38.5 14 35.5 20.5" />
+        {/* Top cap seams — iter 21/26 asymmetric smooth curves */}
+        <path d="M3 18 C8 16 15 15 22 15.5 C28 16 33 19 36 22" />
+        <path d="M40 3 C41 8 39 15 36 22" />
 
         {/* Upper transition seams */}
-        <path d="M2 25.5 C6 24 12 23 18 22.5 C23 22 27 22.5 30 24" />
-        <path d="M55 19.5 C52 17.5 48.5 17 44.5 17.5 C40.5 18 37.5 19 35.5 20.5" />
+        <path d="M2 25 C6 23.5 12 22.5 18 22 C23 22 27 22.5 30 24" />
+        <path d="M56 20 C53 18 49 17.5 45 18 C41 18.5 38 20 36 22" />
 
-        {/* Center radial seams — converge at ~(33, 37), iter 4 */}
-        <path d="M35.5 20.5 C35.5 25.5 35 30.5 34 35 C33.5 37 33 38.5 33 39.5" />
-        <path d="M30 24 C30 28 30 32 31 36 C31.5 37.5 32 38.5 33 39.5" />
+        {/* Center radial seams — converge at ~(32.5, 36.5), iter 27 */}
+        <path d="M36 22 C35.5 26 35 31 34.5 35.5 C33.5 37 33 38 32.5 39" />
+        <path d="M30 24 C30 28 30 32 31 36 C31.5 37.5 32 38.5 32.5 39" />
 
-        {/* Bottom radiating seams */}
-        <path d="M33 39.5 C30 41 29 43 27 46 C24.5 50 22 55 20 60" />
-        <path d="M33 39.5 C35.5 41 37 43 39 46 C41.5 50 43.5 55 45 60" />
+        {/* Bottom radiating seams — iter 26 smooth S-curves */}
+        <path d="M32.5 39 C30 41 28.5 43.5 26 47.5 C23.5 52 21.5 56.5 20 60" />
+        <path d="M32.5 39 C35 41 37 43.5 39 47 C41 51.5 42.5 56 44 60.5" />
 
         {/* Right panel seams */}
-        <path d="M62 33.5 C58 31.5 53 30 48 30 C42 30.5 37 32.5 34 35" />
-        <path d="M60.5 42.5 C57 40 52 38 47 37.5 C42 37 38 38 35.5 39.5" />
+        <path d="M62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5" />
+        <path d="M60.5 43 C57 40.5 52 38.5 47 38 C42 37.5 38 38.5 35.5 40" />
 
         {/* Left panel seams */}
-        <path d="M2 25.5 C2 29 2 33 2.5 36 C3 38.5 3.5 40.5 4.5 42.5" />
-        <path d="M4.5 42.5 C7 40 12 38 17 37 C21 36.5 25 37 29 38.5 C31 39.2 32 39.3 33 39.5" />
+        <path d="M2 25 C2 28.5 2.2 32 2.5 35 C3 38 3.5 40.5 4.5 43" />
+        <path d="M4.5 43 C7 41 11.5 39 16.5 38 C20.5 37.5 24.5 37.5 28 38.5 C30.5 39.2 31.5 39.5 32.5 39" />
       </g>
 
-      {/* Seam embossed highlight — light-facing side, iter 12 */}
+      {/* Seam embossed highlight — iter 36: offset proportional to seam direction */}
       {showEmbossing && (
-        <g clipPath={`url(#${p}-c)`} stroke="#E8DDB8" strokeWidth={seamW * 0.35} fill="none" strokeLinecap="round" opacity="0.40">
-          <path d="M3.5 17.5 C9 15.5 16 14.5 23 15 C28 15.5 32 17.5 35.5 20.5" transform="translate(-0.3 -0.4)" />
-          <path d="M35.5 20.5 C35.5 25.5 35 30.5 34 35 C33.5 37 33 38.5 33 39.5" transform="translate(-0.3 -0.4)" />
+        <g clipPath={`url(#${p}-c)`} stroke="#EAE0C0" strokeWidth={seamW * 0.35} fill="none" strokeLinecap="round" opacity="0.38">
+          <path d="M3 18 C8 16 15 15 22 15.5 C28 16 33 19 36 22" transform="translate(-0.3 -0.4)" />
+          <path d="M36 22 C35.5 26 35 31 34.5 35.5 C33.5 37 33 38 32.5 39" transform="translate(-0.4 -0.3)" />
           <path d="M30 24 C30 28 30 32 31 36" transform="translate(-0.3 -0.4)" />
-          <path d="M62 33.5 C58 31.5 53 30 48 30 C42 30.5 37 32.5 34 35" transform="translate(-0.3 -0.4)" />
-          <path d="M2 25.5 C6 24 12 23 18 22.5 C23 22 27 22.5 30 24" transform="translate(-0.3 -0.4)" />
+          <path d="M62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5" transform="translate(-0.2 -0.4)" />
+          <path d="M2 25 C6 23.5 12 22.5 18 22 C23 22 27 22.5 30 24" transform="translate(-0.3 -0.4)" />
+          <path d="M56 20 C53 18 49 17.5 45 18 C41 18.5 38 20 36 22" transform="translate(-0.3 -0.4)" />
         </g>
       )}
 
-      {/* Seam embossed shadow — opposite side, iter 12 */}
+      {/* Seam embossed shadow — iter 36: direction-aware offset */}
       {showEmbossing && (
-        <g clipPath={`url(#${p}-c)`} stroke="#8A7840" strokeWidth={seamW * 0.3} fill="none" strokeLinecap="round" opacity="0.30">
-          <path d="M3.5 17.5 C9 15.5 16 14.5 23 15 C28 15.5 32 17.5 35.5 20.5" transform="translate(0.3 0.4)" />
-          <path d="M35.5 20.5 C35.5 25.5 35 30.5 34 35 C33.5 37 33 38.5 33 39.5" transform="translate(0.3 0.4)" />
+        <g clipPath={`url(#${p}-c)`} stroke="#887840" strokeWidth={seamW * 0.3} fill="none" strokeLinecap="round" opacity="0.28">
+          <path d="M3 18 C8 16 15 15 22 15.5 C28 16 33 19 36 22" transform="translate(0.3 0.4)" />
+          <path d="M36 22 C35.5 26 35 31 34.5 35.5 C33.5 37 33 38 32.5 39" transform="translate(0.4 0.3)" />
           <path d="M30 24 C30 28 30 32 31 36" transform="translate(0.3 0.4)" />
-          <path d="M62 33.5 C58 31.5 53 30 48 30 C42 30.5 37 32.5 34 35" transform="translate(0.3 0.4)" />
+          <path d="M62 34 C58 32 53 30.5 48 30.5 C42 31 37 33 34.5 35.5" transform="translate(0.2 0.4)" />
+          <path d="M32.5 39 C30 41 28.5 43.5 26 47.5" transform="translate(0.3 0.3)" />
+          <path d="M32.5 39 C35 41 37 43.5 39 47" transform="translate(0.3 0.3)" />
         </g>
       )}
 
-      {/* 3D sphere overlays — iter 8/17 enhanced contrast */}
+      {/* 3D sphere overlays — iter 38: more dramatic lower-right shadow */}
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-shade)`} />
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-hl)`} />
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-glow)`} />
       <circle cx="32" cy="32" r="30" fill={`url(#${p}-sh)`} />
+      {/* Rim light — iter 39 */}
+      <circle cx="32" cy="32" r="30" fill={`url(#${p}-rim)`} />
 
-      {/* Cartoonish edge ring — warm brown, thicker at small sizes, iter 15/20 */}
+      {/* Cartoonish edge ring — warm brown, iter 40 final tuning */}
       <circle cx="32" cy="32" r="30" stroke="#9A7E58" strokeWidth={edgeW} fill="none" opacity={edgeOpacity} />
 
-      {/* Primary specular highlight — elongated along panel edge, iter 13 */}
-      <ellipse cx="20" cy="14" rx="6" ry="3" fill="white" opacity="0.28" transform="rotate(-30 20 14)" />
-      <ellipse cx="18" cy="13" rx="3" ry="1.5" fill="white" opacity="0.55" transform="rotate(-30 18 13)" />
+      {/* Primary specular highlight — iter 37: across yellow-white boundary */}
+      <ellipse cx="22" cy="17" rx="6.5" ry="3.5" fill="white" opacity="0.26" transform="rotate(-25 22 17)" />
+      <ellipse cx="20" cy="16" rx="3.5" ry="1.8" fill="white" opacity="0.50" transform="rotate(-25 20 16)" />
 
-      {/* Secondary specular dot — glossy cartoon feel, iter 16 */}
+      {/* Secondary specular dot — iter 40 final position */}
       {showSecondarySpecular && (
-        <circle cx="24" cy="19" r="1.2" fill="white" opacity="0.35" />
+        <circle cx="25" cy="21" r="1.1" fill="white" opacity="0.32" />
       )}
     </svg>
   )

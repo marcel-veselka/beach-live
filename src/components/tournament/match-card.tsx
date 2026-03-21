@@ -106,34 +106,7 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
         )
       })()}
 
-      {showProbability && (
-        <div className="flex items-center gap-1.5 mb-2">
-          <span className={cn(
-            "text-[10px] font-score font-semibold tabular-nums min-w-[32px] text-right",
-            probA >= probB ? "text-foreground/70" : "text-muted-foreground/50"
-          )}>{probA}%</span>
-          <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted/40 flex">
-            <div
-              className={cn(
-                "h-full rounded-l-full transition-all",
-                probA >= probB ? "bg-primary/40" : "bg-muted-foreground/20"
-              )}
-              style={{ width: `${probA}%` }}
-            />
-            <div
-              className={cn(
-                "h-full rounded-r-full transition-all",
-                probB > probA ? "bg-primary/40" : "bg-muted-foreground/20"
-              )}
-              style={{ width: `${probB}%` }}
-            />
-          </div>
-          <span className={cn(
-            "text-[10px] font-score font-semibold tabular-nums min-w-[32px]",
-            probB > probA ? "text-foreground/70" : "text-muted-foreground/50"
-          )}>{probB}%</span>
-        </div>
-      )}
+      {/* Probability shown as subtle separator gradient — no extra space used */}
 
       <div className="space-y-0">
         <TeamRow
@@ -148,8 +121,18 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           isSeedFavorite={teamAIsSeedFavorite}
           seed={seedA}
           players={teamAData?.players}
+          winProb={showProbability && probA >= probB ? probA : undefined}
+          isFavRow={showProbability && probA > probB}
         />
-        <div className="score-separator my-1" />
+        {/* Probability-weighted separator: gradient shifts toward the favorite */}
+        {showProbability ? (
+          <div className="my-1 h-px" style={{
+            background: `linear-gradient(90deg, transparent 0%, var(--color-primary) ${probA}%, var(--color-border) ${probA}%, transparent 100%)`,
+            opacity: 0.15,
+          }} />
+        ) : (
+          <div className="score-separator my-1" />
+        )}
         <TeamRow
           name={match.teamB?.name ?? "TBD"}
           teamName={match.teamB?.name}
@@ -162,24 +145,27 @@ export function MatchCard({ match, compact, favoriteTeamIds, showMatchType, team
           isSeedFavorite={teamBIsSeedFavorite}
           seed={seedB}
           players={teamBData?.players}
+          winProb={showProbability && probB > probA ? probB : undefined}
+          isFavRow={showProbability && probB > probA}
         />
       </div>
     </div>
   )
 }
 
-function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed, players, teamName }: {
-  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number; players?: { name: string }[]; teamName?: string
+function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFavorite, isSeedFavorite, seed, players, teamName, winProb, isFavRow }: {
+  name: string; isWinner: boolean; sets?: number[]; opponentSets?: number[]; isLive?: boolean; isFinished?: boolean; isFavorite?: boolean; isSeedFavorite?: boolean; seed?: number; players?: { name: string }[]; teamName?: string; winProb?: number; isFavRow?: boolean
 }) {
   const isTBDName = name === "TBD" || name.startsWith("Vítěz") || name.startsWith("Poražen")
-  /* Distinguish between "Vítěz #X" and "Poražený #X" with different styling */
   const isLoserRef = name.startsWith("Poražen")
 
   return (
     <div className={cn(
-      "flex items-center justify-between py-1.5",
+      "flex items-center justify-between py-1.5 rounded-md px-1 -mx-1",
       isWinner ? "font-semibold" : "text-muted-foreground",
       isFinished && !isWinner && sets && sets.length > 0 && "opacity-60",
+      /* Subtle background tint for the predicted favorite */
+      isFavRow && "bg-primary/[0.03]",
     )}>
       <div className="flex items-center gap-2 min-w-0">
         {isWinner && <span className="text-success text-xs">▸</span>}
@@ -205,13 +191,15 @@ function TeamRow({ name, isWinner, sets, opponentSets, isLive, isFinished, isFav
             {name}
           </span>
         )}
+        {/* Inline win probability — tiny, next to favorite team only */}
+        {winProb && <span className="text-[9px] text-muted-foreground/30 font-score shrink-0" title="Pravděpodobnost výhry">{winProb}%</span>}
         {players && players.length > 0 && !isTBDName && (
           <span className="text-[10px] text-muted-foreground/40 hidden sm:inline truncate">
             {players.map(p => p.name.split(/\s+/)[0]).join(" & ")}
           </span>
         )}
         {isFavorite && <span className="text-red-400 text-xs">&#9829;</span>}
-        {isSeedFavorite && <span className="text-primary/30 text-[8px] leading-none" title="Vyšší nasazení">▲</span>}
+        {isSeedFavorite && !winProb && <span className="text-primary/30 text-[8px] leading-none" title="Vyšší nasazení">▲</span>}
       </div>
       {/* #2: Volleyball-style scoreboard look */}
       {sets && (
