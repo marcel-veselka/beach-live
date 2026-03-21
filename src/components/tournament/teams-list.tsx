@@ -256,7 +256,7 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
           )}
 
           <span className="mt-2 inline-flex items-center gap-1 text-xs text-primary font-semibold group-hover:underline bg-primary/5 rounded-full px-3 py-1.5 transition-colors group-hover:bg-primary/10">
-            Zobrazit zápasy &rarr;
+            {stats.played > 0 ? `${stats.played} ${pluralize(stats.played, "zápas", "zápasy", "zápasů")}` : "Zobrazit zápasy"} &rarr;
           </span>
         </Card>
       </Link>

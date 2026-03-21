@@ -91,7 +91,7 @@ export default async function BracketPage() {
                   {/* Connector between rounds */}
                   {!isLastRound && (
                     <div className="flex items-center justify-center w-8 self-stretch">
-                      <div className="w-px h-3/4 bg-gradient-to-b from-transparent via-border/80 to-transparent" />
+                      <div className="w-px flex-1 bg-gradient-to-b from-transparent via-border to-transparent" />
                     </div>
                   )}
                 </div>
@@ -184,7 +184,7 @@ export default async function BracketPage() {
                   </span>
                 </div>
                 {/* #1: Colored bar under round header */}
-                <div className={`mt-2 h-0.5 rounded-full ${isCurrentRound ? "bg-primary/30" : isLastRound ? "bg-secondary/30" : "bg-border/30"}`} />
+                <div className={`mt-2 h-0.5 rounded-full ${isCurrentRound ? "bg-primary/30" : isLastRound ? "bg-gradient-to-r from-secondary/40 to-primary/30" : "bg-border/30"}`} />
               </div>
               {/* #10: Cards with increasing shadow toward final */}
               <div className="space-y-2.5">

@@ -103,7 +103,7 @@ export default async function HomePage() {
               <div className="flex-1 h-1.5 rounded-full bg-border/50 overflow-hidden">
                 <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${pct}%` }} />
               </div>
-              <span className="text-[10px] text-muted-foreground/70 font-medium font-score shrink-0">{finishedMatches}/{totalMatches}</span>
+              <span className="text-[10px] text-muted-foreground/70 font-medium shrink-0">{finishedMatches}/{totalMatches} zápasů</span>
             </div>
           )
         })()}
