@@ -211,10 +211,10 @@ export function TeamsList({ teams, matches }: TeamsListProps) {
               <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-success/12 text-success border border-success/20">{stats.won2}V</span>
             )}
             {stats.won3 > 0 && (
-              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-success/6 text-success/80 border border-dashed border-success/20">{stats.won3}V<sup className="text-[8px] ml-px">3</sup></span>
+              <span title="Výhra ve 3 setech" className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-success/6 text-success/80 border border-dashed border-success/20">{stats.won3}V<sup className="text-[8px] ml-px">3</sup></span>
             )}
             {stats.lost3 > 0 && (
-              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-warning/6 text-warning/80 border border-dashed border-warning/20">{stats.lost3}P<sup className="text-[8px] ml-px">3</sup></span>
+              <span title="Prohra ve 3 setech" className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-warning/6 text-warning/80 border border-dashed border-warning/20">{stats.lost3}P<sup className="text-[8px] ml-px">3</sup></span>
             )}
             {stats.lost2 > 0 && (
               <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold bg-warning/12 text-warning border border-warning/20">{stats.lost2}P</span>

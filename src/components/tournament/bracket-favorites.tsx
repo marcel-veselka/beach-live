@@ -117,9 +117,9 @@ function BracketTeamRow({
 
   // Generate tooltip text for TBD entries explaining where the team comes from
   const tbdTooltip = isTBDName && name !== "TBD"
-    ? `Bude doplněno po dohrání předchozího zápasu`
+    ? `Bude známo po předchozím zápase`
     : isTBDName
-      ? "Tým bude určen"
+      ? "Zatím neurčeno"
       : undefined
 
   return (

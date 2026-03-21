@@ -29,7 +29,7 @@ export function FavoriteMatches({ matches, teams }: FavoriteMatchesProps) {
   if (display.length === 0) return null
 
   return (
-    <Section title="Moje týmy" description="Zápasy oblíbených týmů">
+    <Section title="Tvoje zápasy" description="Zápasy týmů, které sleduješ">
       <div className="grid gap-3 md:grid-cols-2">
         {display.map(match => (
           <MatchCard key={match.id} match={match} favoriteTeamIds={favorites} teams={teams} />
