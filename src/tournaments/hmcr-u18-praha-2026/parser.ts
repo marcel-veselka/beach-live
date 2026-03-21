@@ -355,18 +355,23 @@ export class BvisParser implements TournamentParser {
       let groupId: string | undefined
 
       if (prefix === "hs") {
+        // Phase from match type code (determine first, needed for round naming)
+        phase = MATCH_TYPE_PHASE[matchTypeCode] || "playoff"
+
         // Main event round mapping
         if (HS_ROUND_CODE_MAP[roundCode]) {
           roundName = HS_ROUND_CODE_MAP[roundCode]
         } else {
-          // Placement rounds: numeric codes like "17", "13", "9", "7", "5"
           const placementNum = parseInt(roundCode, 10)
           if (!isNaN(placementNum) && placementNum > 0) {
-            roundName = `O ${placementNum}. místo`
+            // Only label as "O X. místo" when match type is placement ("q")
+            // Otherwise numeric codes are just internal match identifiers
+            if (matchTypeCode === "q") {
+              roundName = `O ${placementNum}. místo`
+            }
+            // For non-placement matches with numeric codes, leave roundName undefined
           }
         }
-        // Phase from match type code
-        phase = MATCH_TYPE_PHASE[matchTypeCode] || "playoff"
       } else {
         // Qualification round mapping
         // Group rounds: "A-I", "A-II", "B-I", etc.
