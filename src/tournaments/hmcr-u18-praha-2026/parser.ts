@@ -385,9 +385,19 @@ export class BvisParser implements TournamentParser {
         }
       }
 
-      // Determine match status
+      // Determine match status:
+      // - finished: has set scores
+      // - live: scheduled time has passed but no score yet (match in progress)
+      // - scheduled: future match
       const hasScore = (!isNaN(scoreA) && scoreA > 0) || (!isNaN(scoreB) && scoreB > 0)
-      const status: MatchStatus = hasScore ? "finished" : "scheduled"
+      let status: MatchStatus
+      if (hasScore) {
+        status = "finished"
+      } else if (this.isMatchTimePassed(dateStr, timeStr)) {
+        status = "live"
+      } else {
+        status = "scheduled"
+      }
 
       // Parse set scores
       const score = this.parseSetScores(scoreA, scoreB, set1Str, set2Str, set3Str)
@@ -522,6 +532,36 @@ export class BvisParser implements TournamentParser {
       return `${formatted} ${timeStr}`
     }
     return formatted
+  }
+
+  /** Check if a match's scheduled time has already passed */
+  private isMatchTimePassed(dateStr: string, timeStr: string): boolean {
+    if (!dateStr || !timeStr) return false
+
+    const dateParts = dateStr.split("/")
+    if (dateParts.length !== 2) return false
+
+    const day = parseInt(dateParts[0].trim(), 10)
+    const month = parseInt(dateParts[1].trim(), 10)
+    if (isNaN(day) || isNaN(month)) return false
+
+    const timeParts = timeStr.split(":")
+    const hour = parseInt(timeParts[0]?.trim() ?? "", 10)
+    const minute = parseInt(timeParts[1]?.trim() ?? "0", 10)
+    if (isNaN(hour)) return false
+
+    const now = new Date()
+    const year = now.getFullYear()
+    // CET/CEST: Czech tournament times are in local time (Europe/Prague)
+    // Server runs in UTC; Czech is UTC+1 (CET) or UTC+2 (CEST in summer)
+    // March = CET (UTC+1), so subtract 1 hour from match time to get UTC
+    // Actually, compare in local terms: construct match date as if UTC,
+    // then compare against now adjusted to CET
+    const matchDate = new Date(year, month - 1, day, hour, minute)
+    // Adjust: assume match times are CET (UTC+1 in March)
+    const matchUtc = new Date(matchDate.getTime() - 60 * 60 * 1000)
+
+    return now >= matchUtc
   }
 
   // ---------------------------------------------------------------------------
